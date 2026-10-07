@@ -2,10 +2,12 @@
     <div class="flex flex-col gap-6">
         <x-auth-header :title="__('Lupa kata sandi')" :description="__('Masukkan emailmu untuk menerima tautan atur ulang kata sandi')" />
 
+        <x-form-alert />
+
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <form method="POST" action="{{ route('password.email') }}" class="flex flex-col gap-6">
+        <form novalidate method="POST" action="{{ route('password.email') }}" class="flex flex-col gap-6">
             @csrf
 
             <!-- Email Address -->

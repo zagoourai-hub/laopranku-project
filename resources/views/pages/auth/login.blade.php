@@ -1,13 +1,15 @@
-<x-layouts::auth :title="__('Masuk')">
+<x-layouts::auth :title="__('Masuk')" variant="login">
     <div class="flex flex-col gap-6">
         <x-auth-header :title="__('Masuk ke akunmu')" :description="__('Masukkan email dan kata sandimu untuk masuk')" />
+
+        <x-form-alert :credential="true" />
 
         <!-- Session Status -->
         <x-auth-session-status :status="session('status')" />
 
         <x-passkey-verify />
 
-        <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
+        <form novalidate method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
             @csrf
 
             <!-- Email Address -->
@@ -16,6 +18,7 @@
                 :label="__('Alamat email')"
                 :value="old('email')"
                 type="email"
+                icon="envelope"
                 required
                 autofocus
                 autocomplete="email"
@@ -28,6 +31,7 @@
                     name="password"
                     :label="__('Kata sandi')"
                     type="password"
+                    icon="lock-closed"
                     required
                     autocomplete="current-password"
                     :placeholder="__('Kata sandi')"
@@ -45,7 +49,7 @@
             <flux:checkbox name="remember" :label="__('Ingat saya')" :checked="old('remember')" />
 
             <div class="flex items-center justify-end">
-                <flux:button variant="primary" type="submit" class="w-full" data-test="login-button">
+                <flux:button variant="primary" type="submit" class="w-full" icon-trailing="arrow-right" data-test="login-button">
                     {{ __('Masuk') }}
                 </flux:button>
             </div>

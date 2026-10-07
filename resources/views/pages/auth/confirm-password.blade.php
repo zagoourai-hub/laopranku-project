@@ -5,6 +5,8 @@
             :description="__('Ini area aman aplikasi. Konfirmasi kata sandimu sebelum melanjutkan.')"
         />
 
+        <x-form-alert />
+
         <x-auth-session-status class="text-center" :status="session('status')" />
 
         <x-passkey-verify
@@ -15,7 +17,7 @@
             :separator="__('Atau konfirmasi dengan kata sandi')"
         />
 
-        <form method="POST" action="{{ route('password.confirm.store') }}" class="flex flex-col gap-6">
+        <form novalidate method="POST" action="{{ route('password.confirm.store') }}" class="flex flex-col gap-6">
             @csrf
 
             <flux:input

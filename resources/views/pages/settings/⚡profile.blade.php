@@ -82,7 +82,7 @@ new #[Title('Pengaturan profil')] class extends Component {
     <flux:heading level="2" class="sr-only">{{ __('Pengaturan profil') }}</flux:heading>
 
     <x-pages::settings.layout :heading="__('Profil')" :subheading="__('Perbarui nama dan alamat emailmu')">
-        <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
+        <form novalidate wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
             <flux:input wire:model="name" :label="__('Nama')" type="text" required autofocus autocomplete="name" />
 
             <div>

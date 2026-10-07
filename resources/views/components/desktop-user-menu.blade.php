@@ -22,7 +22,7 @@
             <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
                 {{ __('Pengaturan') }}
             </flux:menu.item>
-            <form method="POST" action="{{ route('logout') }}" class="w-full">
+            <form novalidate method="POST" action="{{ route('logout') }}" class="w-full">
                 @csrf
                 <flux:menu.item
                     as="button"

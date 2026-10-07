@@ -172,7 +172,7 @@ new #[Title('Pengaturan keamanan')] class extends Component {
     <flux:heading level="2" class="sr-only">{{ __('Pengaturan keamanan') }}</flux:heading>
 
     <x-pages::settings.layout :heading="__('Perbarui kata sandi')" :subheading="__('Pakai kata sandi yang panjang dan acak agar akunmu tetap aman')">
-        <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
+        <form novalidate method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
             <flux:input
                 wire:model="current_password"
                 :label="__('Kata sandi saat ini')"

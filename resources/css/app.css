@@ -67,3 +67,54 @@ select:focus[data-flux-control] {
     line-height: 1.5;
     text-align: justify;
 }
+
+/* Halaman auth: kontrol 44px, placeholder terbaca (AA), lembar masuk halus. */
+.auth-sheet input[data-flux-control]:not([type='checkbox']):not([type='radio']) {
+    min-height: 2.75rem;
+    font-size: 0.9375rem;
+}
+
+.auth-sheet [data-flux-button] {
+    min-height: 2.75rem;
+}
+
+.auth-sheet input::placeholder {
+    color: var(--color-zinc-500);
+}
+
+.dark .auth-sheet input::placeholder {
+    color: var(--color-zinc-400);
+}
+
+@keyframes sheet-in {
+    from {
+        opacity: 0;
+        transform: translateY(0.75rem);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .sheet-in {
+        animation: sheet-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .paper-sheet {
+        animation: sheet-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+}
+
+/* Pesan error inline: kontras AA di light, ikon + teks di bawah input. */
+.auth-sheet [data-flux-error] {
+    margin-top: 0.5rem;
+    color: var(--color-red-700);
+}
+
+.dark .auth-sheet [data-flux-error] {
+    color: var(--color-red-400);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .alert-in {
+        animation: sheet-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+}

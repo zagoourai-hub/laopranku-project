@@ -43,7 +43,9 @@
                 />
             </div>
 
-            <form method="POST" action="{{ route('two-factor.login.store') }}">
+            <x-form-alert />
+
+            <form novalidate method="POST" action="{{ route('two-factor.login.store') }}">
                 @csrf
 
                 <div class="space-y-5 text-center">

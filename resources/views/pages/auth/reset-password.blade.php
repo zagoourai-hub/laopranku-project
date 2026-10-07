@@ -2,10 +2,12 @@
     <div class="flex flex-col gap-6">
         <x-auth-header :title="__('Atur ulang kata sandi')" :description="__('Masukkan kata sandi barumu di bawah')" />
 
+        <x-form-alert />
+
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <form method="POST" action="{{ route('password.update') }}" class="flex flex-col gap-6">
+        <form novalidate method="POST" action="{{ route('password.update') }}" class="flex flex-col gap-6">
             @csrf
             <!-- Token -->
             <input type="hidden" name="token" value="{{ request()->route('token') }}">
