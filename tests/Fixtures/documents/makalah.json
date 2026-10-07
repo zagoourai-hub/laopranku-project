@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "type": "makalah",
+  "cover": {
+    "title": "Pengaruh Media Sosial terhadap Prestasi Belajar Mahasiswa",
+    "name": "Budi Santoso",
+    "nim": "2201234567",
+    "prodi": "Teknik Informatika",
+    "campus": "Universitas Contoh",
+    "year": "2026"
+  },
+  "style": "formal",
+  "chapters": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "title": "Pendahuluan",
+      "sections": [
+        {
+          "id": "00000000-0000-4000-8000-000000000002",
+          "title": "Latar Belakang",
+          "blocks": [
+            { "id": "00000000-0000-4000-8000-000000000003", "type": "paragraph", "text": "Media sosial telah menjadi bagian dari kehidupan mahasiswa sehari-hari, dari Instagram & TikTok sampai WhatsApp. Penggunaan yang berlebihan dapat memengaruhi waktu belajar." },
+            { "id": "00000000-0000-4000-8000-000000000004", "type": "paragraph", "text": "Karena itu penelitian tentang hubungan antara durasi penggunaan dan prestasi belajar perlu dilakukan." }
+          ]
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000005",
+          "title": "Rumusan Masalah",
+          "blocks": [
+            { "id": "00000000-0000-4000-8000-000000000006", "type": "list", "ordered": true, "items": ["Bagaimana pola penggunaan media sosial mahasiswa?", "Apakah terdapat pengaruh terhadap prestasi belajar?"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000007",
+      "title": "Pembahasan",
+      "sections": [
+        {
+          "id": "00000000-0000-4000-8000-000000000008",
+          "title": "Pola Penggunaan",
+          "blocks": [
+            { "id": "00000000-0000-4000-8000-000000000009", "type": "paragraph", "text": "Rata-rata mahasiswa menggunakan media sosial lebih dari empat jam per hari." },
+            { "id": "00000000-0000-4000-8000-00000000000a", "type": "list", "ordered": false, "items": ["Hiburan", "Komunikasi", "Informasi"] }
+          ]
+        },
+        {
+          "id": "00000000-0000-4000-8000-00000000000b",
+          "title": "Dampak terhadap Prestasi",
+          "blocks": [
+            { "id": "00000000-0000-4000-8000-00000000000c", "type": "paragraph", "text": "Terdapat korelasi negatif yang lemah antara durasi penggunaan dan IPK." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-00000000000d",
+      "title": "Penutup",
+      "sections": [
+        {
+          "id": "00000000-0000-4000-8000-00000000000e",
+          "title": "Kesimpulan",
+          "blocks": [
+            { "id": "00000000-0000-4000-8000-00000000000f", "type": "paragraph", "text": "Media sosial berpengaruh terhadap prestasi belajar." }
+          ]
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000010",
+          "title": "Saran",
+          "blocks": [
+            { "id": "00000000-0000-4000-8000-000000000011", "type": "paragraph", "text": "Mahasiswa disarankan mengatur waktu penggunaan." }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    { "id": "00000000-0000-4000-8000-000000000012", "text": "Kirschner, P. A., & Karpinski, A. C. (2010). Facebook and academic performance. Computers in Human Behavior, 26(6), 1237-1245." },
+    { "id": "00000000-0000-4000-8000-000000000013", "text": "Kaplan, A. M., & Haenlein, M. (2010). Users of the world, unite! Business Horizons, 53(1), 59-68." }
+  ]
+}

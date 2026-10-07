@@ -4,6 +4,6 @@ COPY --from=ghcr.io/mlocati/php-extension-installer /usr/bin/install-php-extensi
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
 RUN install-php-extensions pdo_pgsql pcntl zip gd intl bcmath && apt-get update \
-    && apt-get install -y --no-install-recommends git unzip && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y --no-install-recommends git unzip poppler-utils && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
