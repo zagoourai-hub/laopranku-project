@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rapi - Format Dokumen Akademik Otomatis</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              DEFAULT: '#DC2626',
+              hover: '#B91C1C',
+              light: '#FEE2E2',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body class="bg-white text-zinc-900 min-h-full flex flex-col justify-between selection:bg-red-100 selection:text-red-700">
+<!-- TOP BAR -->
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-zinc-200 px-4 h-14 flex items-center justify-between">
+<!-- Wordmark -->
+<a class="flex items-center text-xl font-bold tracking-tight text-zinc-900" href="#">
+<span>rapi</span><span class="text-brand">.</span>
+</a>
+<!-- Right Actions -->
+<div class="flex items-center gap-2">
+<a class="px-3 py-1.5 text-xs font-medium text-zinc-700 bg-white border border-zinc-300 rounded-lg hover:bg-zinc-50 active:scale-95 transition-all" href="#">
+        Masuk
+      </a>
+<button aria-label="Menu" class="p-1.5 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors" type="button">
+<span class="material-symbols-outlined text-[22px] leading-none block">menu</span>
+</button>
+</div>
+</header>
+<!-- MAIN CONTENT CONTAINER -->
+<main class="flex-1 w-full px-4 py-6 space-y-10">
+<!-- HERO SECTION -->
+<section class="space-y-5">
+<!-- Tag / Badge -->
+<div>
+<span class="inline-block px-2.5 py-1 text-[11px] font-medium text-zinc-600 bg-zinc-100 border border-zinc-200 rounded-md">
+          Makalah · Laporan praktikum · Laporan PKL · Proposal
+        </span>
+</div>
+<!-- Headline & Subtitle -->
+<div class="space-y-3">
+<h1 class="text-[34px] leading-[1.18] font-medium tracking-tight text-zinc-900">
+          Kamu tulis isinya. Formatnya kami yang rapikan.
+        </h1>
+<p class="text-sm leading-relaxed text-zinc-500">
+          Hentikan frustrasi mengatur spasi rusak, margin lari, titik-titik daftar isi manual, dan nomor romawi di Microsoft Word. Rapi menyusun naskah akademik Anda siap cetak dalam hitungan detik.
+        </p>
+</div>
+<!-- CTA Buttons -->
+<div class="flex flex-col gap-2.5 pt-1">
+<a class="w-full h-11 flex items-center justify-center text-sm font-medium text-white bg-brand hover:bg-brand-hover rounded-lg shadow-sm active:scale-[0.99] transition-all" href="#">
+          Rapikan makalah
+        </a>
+<a class="w-full h-11 flex items-center justify-center text-sm font-medium text-zinc-800 bg-white border border-zinc-300 hover:bg-zinc-50 rounded-lg active:scale-[0.99] transition-all" href="#">
+          Lihat contoh hasil
+        </a>
+</div>
+<!-- Technical Spec Meta -->
+<p class="font-mono text-[11px] text-zinc-500 tracking-tight">
+        TNR 12 · spasi 1.5 · margin 4-3-3-3 · siap dibuka di Word
+      </p>
+</section>
+<!-- ARTIFACT VISUAL -->
+<section class="relative pt-2 pb-4">
+<div class="bg-zinc-50 border border-zinc-200/80 rounded-2xl p-4 shadow-sm space-y-3 overflow-hidden">
+<!-- Messy Pasted Text Card -->
+<div class="bg-zinc-100 border border-zinc-200 rounded-xl p-3 font-mono text-[11px] text-zinc-600 space-y-1.5 shadow-xs">
+<div class="flex items-center justify-between pb-1 border-b border-zinc-200/60">
+<span class="text-[10px] uppercase tracking-wider font-semibold text-zinc-400">Teks Mentah (Paste)</span>
+<span class="text-[10px] text-red-600 font-medium">Format acak</span>
+</div>
+<p class="text-zinc-800 font-medium">1. latar belakang masalah</p>
+<p class="text-zinc-500 text-[10px] leading-relaxed">
+            Perkembangan teknologi sangat pesat.. banyak mahasiswa kesulitan mengatur margin dan spasi   sesuai pedoman dikti...
+          </p>
+<div class="pt-1 flex items-center gap-2 text-[10px] text-zinc-400">
+<span>Font: Calibri 11</span>
+<span>·</span>
+<span>Spasi: Acak</span>
+</div>
+</div>
+<!-- Overlapping Generated A4 Preview Cards -->
+<div class="relative h-[210px] mt-2">
+<!-- Back Card: DAFTAR ISI -->
+<div class="absolute right-1 top-0 w-[240px] h-[195px] bg-white border border-zinc-300 rounded-lg shadow-md p-3.5 flex flex-col justify-between font-serif text-[9px] text-zinc-800 rotate-2 z-10 pointer-events-none">
+<div class="text-center font-bold tracking-wide pb-1 text-[10px] border-b border-zinc-200">
+              DAFTAR ISI
+            </div>
+<div class="space-y-1.5 font-mono text-[8px] text-zinc-700 py-1">
+<div class="flex justify-between items-baseline">
+<span>KATA PENGANTAR</span>
+<span class="flex-1 mx-1 border-b border-dotted border-zinc-400"></span>
+<span>ii</span>
+</div>
+<div class="flex justify-between items-baseline">
+<span>DAFTAR ISI</span>
+<span class="flex-1 mx-1 border-b border-dotted border-zinc-400"></span>
+<span>iii</span>
+</div>
+<div class="flex justify-between items-baseline font-semibold">
+<span>BAB I PENDAHULUAN</span>
+<span class="flex-1 mx-1 border-b border-dotted border-zinc-400"></span>
+<span>1</span>
+</div>
+<div class="flex justify-between items-baseline pl-2 text-zinc-600">
+<span>1.1 Latar Belakang</span>
+<span class="flex-1 mx-1 border-b border-dotted border-zinc-400"></span>
+<span>1</span>
+</div>
+<div class="flex justify-between items-baseline pl-2 text-zinc-600">
+<span>1.2 Rumusan Masalah</span>
+<span class="flex-1 mx-1 border-b border-dotted border-zinc-400"></span>
+<span>2</span>
+</div>
+</div>
+<div class="text-center text-[7px] text-zinc-400 font-sans">
+              Halaman Romawi &amp; Angka Otomatis
+            </div>
+</div>
+<!-- Front Card: COVER MAKALAH -->
+<div class="absolute left-1 top-4 w-[240px] h-[195px] bg-white border border-zinc-300 rounded-lg shadow-lg p-3.5 flex flex-col justify-between text-center -rotate-2 z-20">
+<div>
+<p class="text-[8px] font-bold tracking-widest text-zinc-700 uppercase">MAKALAH</p>
+<h2 class="text-[9px] font-bold uppercase mt-1 leading-tight text-zinc-900 px-2">
+                ANALISIS SISTEM CERDAS PADA MANAJEMEN SITASI
+              </h2>
+</div>
+<!-- Logo Placeholder Box -->
+<div class="my-auto py-1">
+<div class="w-8 h-8 mx-auto border border-dashed border-zinc-300 rounded flex items-center justify-center text-[7px] text-zinc-400 uppercase">
+                LOGO
+              </div>
+</div>
+<div class="text-[8px] text-zinc-600 space-y-0.5">
+<p class="font-medium text-zinc-800">BUDI SANTOSO</p>
+<p class="text-[7.5px] text-zinc-500">NIM 2201234567</p>
+<p class="text-[7.5px] font-medium text-zinc-700 pt-0.5">UNIVERSITAS PADJADJARAN</p>
+<p class="text-[7px] text-zinc-400">2026</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION: YANG BIASANYA BIKIN RIBET DI WORD -->
+<section class="space-y-4 pt-2">
+<div class="space-y-1">
+<h2 class="text-xl font-semibold tracking-tight text-zinc-900">
+          Yang biasanya bikin ribet di Word
+        </h2>
+<p class="text-xs text-zinc-500">
+          Perbandingan kendala umum naskah manual versus otomatisasi Rapi.
+        </p>
+</div>
+<!-- Stacked Comparison List -->
+<div class="divide-y divide-zinc-200 border border-zinc-200 rounded-xl bg-white overflow-hidden shadow-xs">
+<!-- Row 1 -->
+<div class="p-3.5 space-y-1.5">
+<p class="text-xs text-zinc-500">Format rusak setelah copy-paste</p>
+<div class="flex items-start gap-2">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-brand mt-1.5 shrink-0"></span>
+<p class="text-sm font-medium text-zinc-900">Konten dibersihkan lalu dirender ulang</p>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="p-3.5 space-y-1.5">
+<p class="text-xs text-zinc-500">Nomor bab diketik manual</p>
+<div class="flex items-start gap-2">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-brand mt-1.5 shrink-0"></span>
+<p class="text-sm font-medium text-zinc-900">BAB I, 1.1, 1.2 otomatis</p>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="p-3.5 space-y-1.5">
+<p class="text-xs text-zinc-500">Daftar isi manual</p>
+<div class="flex items-start gap-2">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-brand mt-1.5 shrink-0"></span>
+<p class="text-sm font-medium text-zinc-900">Field daftar isi asli Word</p>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="p-3.5 space-y-1.5">
+<p class="text-xs text-zinc-500">Halaman romawi lalu angka</p>
+<div class="flex items-start gap-2">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-brand mt-1.5 shrink-0"></span>
+<p class="text-sm font-medium text-zinc-900">Section break otomatis</p>
+</div>
+</div>
+<!-- Row 5 -->
+<div class="p-3.5 space-y-1.5">
+<p class="text-xs text-zinc-500">Margin dan font diatur ulang</p>
+<div class="flex items-start gap-2">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-brand mt-1.5 shrink-0"></span>
+<p class="text-sm font-medium text-zinc-900">Template umum 4-3-3-3</p>
+</div>
+</div>
+<!-- Row 6 -->
+<div class="p-3.5 space-y-1.5">
+<p class="text-xs text-zinc-500">Daftar pustaka berantakan</p>
+<div class="flex items-start gap-2">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-brand mt-1.5 shrink-0"></span>
+<p class="text-sm font-medium text-zinc-900">Hanging indent dan urutan alfabet</p>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION: CARA KERJA -->
+<section class="space-y-4 pt-2">
+<div class="space-y-1">
+<h2 class="text-xl font-semibold tracking-tight text-zinc-900">
+          Cara kerja
+        </h2>
+<p class="text-xs text-zinc-500">
+          Tiga tahapan sederhana menyusun dokumen akademik siap serah.
+        </p>
+</div>
+<!-- Vertical Numbered List with Left Border Line -->
+<div class="relative pl-6 border-l border-zinc-200 space-y-6 my-2">
+<!-- Step 01 -->
+<div class="relative space-y-1">
+<span class="absolute -left-[31px] top-0 w-3 h-3 rounded-full bg-white border-2 border-zinc-400"></span>
+<span class="font-mono text-xs font-semibold text-brand">01</span>
+<h3 class="text-sm font-semibold text-zinc-900">
+            Tempel teks atau tulis topik
+          </h3>
+<p class="text-xs text-zinc-500 leading-relaxed">
+            Masukkan naskah mentah, ringkasan riset, atau cukup masukkan judul topik tugas Anda.
+          </p>
+</div>
+<!-- Step 02 -->
+<div class="relative space-y-1">
+<span class="absolute -left-[31px] top-0 w-3 h-3 rounded-full bg-white border-2 border-zinc-400"></span>
+<span class="font-mono text-xs font-semibold text-brand">02</span>
+<h3 class="text-sm font-semibold text-zinc-900">
+            Tinjau struktur bab — ubah, tambah, atau urutkan bab sebelum isi ditulis
+          </h3>
+<p class="text-xs text-zinc-500 leading-relaxed">
+            Sistem memvalidasi hierarki bab dan subbab sesuai pedoman resmi perguruan tinggi.
+          </p>
+</div>
+<!-- Step 03 -->
+<div class="relative space-y-1">
+<span class="absolute -left-[31px] top-0 w-3 h-3 rounded-full bg-white border-2 border-zinc-400"></span>
+<span class="font-mono text-xs font-semibold text-brand">03</span>
+<h3 class="text-sm font-semibold text-zinc-900">
+            Unduh DOCX atau PDF
+          </h3>
+<p class="text-xs text-zinc-500 leading-relaxed">
+            Dapatkan file dokumen Word (.docx) murni dengan field TOC dan margin baku siap cetak.
+          </p>
+</div>
+</div>
+</section>
+<!-- BOTTOM CTA BANNER -->
+<section class="bg-zinc-50 border border-zinc-200 rounded-xl p-5 text-center space-y-3 shadow-xs">
+<h3 class="text-base font-semibold text-zinc-900">
+        Siap merapikan tugas kuliah Anda?
+      </h3>
+<p class="text-xs text-zinc-500 leading-relaxed">
+        Bebas repot penataan margin dan nomor halaman. Mulai gratis tanpa kartu kredit.
+      </p>
+<div class="pt-1">
+<a class="w-full h-10 flex items-center justify-center text-sm font-medium text-white bg-brand hover:bg-brand-hover rounded-lg shadow-sm active:scale-[0.99] transition-all" href="#">
+          Coba gratis sekarang
+        </a>
+</div>
+</section>
+</main>
+<!-- FOOTER -->
+<footer class="w-full border-t border-zinc-200 px-4 py-6 mt-6 space-y-4 text-xs text-zinc-500">
+<div class="flex items-center justify-between">
+<span class="font-bold tracking-tight text-zinc-900 text-sm">rapi<span class="text-brand">.</span></span>
+<span class="text-[11px] text-zinc-400">© 2026 Rapi</span>
+</div>
+<div class="flex items-center gap-4 text-xs text-zinc-500 pt-1">
+<a class="hover:text-zinc-900 transition-colors" href="#">Panduan</a>
+<span class="text-zinc-300">·</span>
+<a class="hover:text-zinc-900 transition-colors" href="#">Privasi</a>
+<span class="text-zinc-300">·</span>
+<a class="hover:text-zinc-900 transition-colors" href="#">Syarat</a>
+</div>
+</footer>
+</body></html>

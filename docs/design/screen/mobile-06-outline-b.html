@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tinjau outline - Rapi</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-secondary-container": "#700f0f",
+            "error": "#ba1a1a",
+            "on-surface": "#1a1b22",
+            "tertiary-fixed-dim": "#90cdff",
+            "outline-variant": "#e6bdb8",
+            "on-background": "#1a1b22",
+            "inverse-primary": "#ffb4ab",
+            "error-container": "#ffdad6",
+            "surface-container": "#eeedf7",
+            "secondary": "#a73831",
+            "primary-fixed": "#ffdad6",
+            "primary-fixed-dim": "#ffb4ab",
+            "on-tertiary-fixed-variant": "#004b71",
+            "on-tertiary-fixed": "#001e30",
+            "primary": "#dc2626",
+            "surface-dim": "#dad9e3",
+            "secondary-container": "#fd786c",
+            "on-secondary": "#ffffff",
+            "surface-container-highest": "#e3e1ec",
+            "on-primary": "#ffffff",
+            "surface-container-high": "#e8e7f1",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed": "#410002",
+            "surface-tint": "#dc2626",
+            "on-primary-fixed": "#410002",
+            "outline": "#916f6b",
+            "inverse-surface": "#2f3038",
+            "tertiary-fixed": "#cbe6ff",
+            "surface-container-low": "#f4f2fd",
+            "surface-bright": "#fbf8ff",
+            "on-primary-fixed-variant": "#93000b",
+            "tertiary": "#005e8d",
+            "on-secondary-fixed-variant": "#86211c",
+            "inverse-on-surface": "#f1effa",
+            "on-surface-variant": "#5c403c",
+            "on-error-container": "#93000a",
+            "on-error": "#ffffff",
+            "primary-container": "#dc2626",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-container": "#fff6f5",
+            "surface": "#fbf8ff",
+            "background": "#fbf8ff",
+            "on-tertiary-container": "#f3f8ff",
+            "surface-variant": "#e3e1ec",
+            "tertiary-container": "#0078b2",
+            "secondary-fixed": "#ffdad6",
+            "secondary-fixed-dim": "#ffb4ab",
+            zinc: {
+              50: '#fafafa',
+              100: '#f4f4f5',
+              200: '#e4e4e7',
+              300: '#d4d4d8',
+              400: '#a1a1aa',
+              500: '#71717a',
+              600: '#52525b',
+              700: '#3f3f46',
+              800: '#27272a',
+              900: '#18181b',
+              950: '#09090b',
+            }
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "label-md": ["Inter", "sans-serif"],
+            "label-sm": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "headline-md": ["Inter", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"],
+            "headline-lg": ["Inter", "sans-serif"]
+          },
+          fontSize: {
+            "label-md": ["0.875rem", { lineHeight: "1.25rem", fontWeight: "500" }],
+            "label-sm": ["0.75rem", { lineHeight: "1rem", fontWeight: "500" }],
+            "body-md": ["0.875rem", { lineHeight: "1.375rem", fontWeight: "400" }],
+            "headline-md": ["1.25rem", { lineHeight: "1.75rem", fontWeight: "600" }],
+            "body-sm": ["0.75rem", { lineHeight: "1rem", fontWeight: "400" }],
+            "headline-lg": ["1.75rem", { lineHeight: "2.25rem", fontWeight: "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    body {
+      background-color: #f4f4f5;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex items-center justify-center p-0 md:p-6 text-zinc-900 bg-zinc-100">
+<!-- Mobile Viewport Frame (390px) -->
+<main class="w-full max-w-[390px] h-screen sm:h-[844px] bg-white flex flex-col shadow-none sm:shadow-lg sm:rounded-2xl border border-zinc-200 overflow-hidden relative">
+<!-- Header Section -->
+<header class="bg-white px-4 pt-3 pb-2.5 border-b border-zinc-200 shrink-0">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<button aria-label="Kembali" class="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 transition-colors -ml-1" type="button">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-sm font-semibold tracking-tight text-zinc-900">Tinjau outline</h1>
+</div>
+<span class="bg-zinc-100 text-zinc-700 text-[11px] font-medium px-2 py-0.5 rounded border border-zinc-200">Mode topik</span>
+</div>
+<p class="font-body-sm text-zinc-500 text-xs mt-1 leading-relaxed">Ubah susunan bab sebelum isi ditulis. Nomor bab dibuat otomatis.</p>
+</header>
+<!-- Scrollable Canvas Content Area -->
+<div class="flex-1 overflow-y-auto px-4 py-3 bg-zinc-50/50 space-y-3">
+<!-- Outline List -->
+<section aria-label="Daftar Bab" class="space-y-3">
+<!-- BAB I -->
+<article class="border border-zinc-200 rounded-lg p-3 bg-white">
+<div class="flex items-center justify-between gap-1 pb-1">
+<div class="flex items-center gap-2 min-w-0">
+<span class="cursor-grab text-zinc-400 hover:text-zinc-600 shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="drag_indicator">drag_indicator</span>
+</span>
+<span class="font-mono text-xs text-red-600 font-semibold bg-red-50 border border-red-200 px-1.5 py-0.5 rounded shrink-0">BAB I</span>
+<h2 class="font-label-md text-sm font-medium text-zinc-900 truncate">Pendahuluan</h2>
+</div>
+<div class="flex items-center gap-0.5 shrink-0">
+<button aria-label="Sunting Bab" class="p-1 rounded text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span>
+</button>
+<button aria-label="Hapus Bab" class="p-1 rounded text-zinc-400 hover:text-red-600 hover:bg-zinc-100" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- Nested Subsections -->
+<div class="border-l-2 border-zinc-200 pl-3 ml-2 space-y-2 mt-2">
+<div>
+<p class="font-label-sm text-xs font-medium text-zinc-800">1.1 Latar belakang</p>
+<p class="font-body-sm text-[11px] text-zinc-500 leading-snug">Konteks pergeseran kebiasaan belajar dan intensitas gawai.</p>
+</div>
+<div>
+<p class="font-label-sm text-xs font-medium text-zinc-800">1.2 Rumusan masalah</p>
+<p class="font-body-sm text-[11px] text-zinc-500 leading-snug">Identifikasi signifikansi korelasi durasi layar dan indeks prestasi.</p>
+</div>
+<div>
+<p class="font-label-sm text-xs font-medium text-zinc-800">1.3 Tujuan</p>
+<p class="font-body-sm text-[11px] text-zinc-500 leading-snug">Mengukur besaran pengaruh psikologis distraksi media sosial.</p>
+</div>
+<button class="text-xs text-zinc-600 hover:text-zinc-900 flex items-center gap-1 py-1 font-medium transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]" data-icon="add">add</span>
+<span>Subbab</span>
+</button>
+</div>
+</article>
+<!-- BAB II -->
+<article class="border border-zinc-200 rounded-lg p-3 bg-white">
+<div class="flex items-center justify-between gap-1 pb-1">
+<div class="flex items-center gap-2 min-w-0">
+<span class="cursor-grab text-zinc-400 hover:text-zinc-600 shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="drag_indicator">drag_indicator</span>
+</span>
+<span class="font-mono text-xs text-red-600 font-semibold bg-red-50 border border-red-200 px-1.5 py-0.5 rounded shrink-0">BAB II</span>
+<h2 class="font-label-md text-sm font-medium text-zinc-900 truncate">Tinjauan pustaka</h2>
+</div>
+<div class="flex items-center gap-0.5 shrink-0">
+<button aria-label="Sunting Bab" class="p-1 rounded text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span>
+</button>
+<button aria-label="Hapus Bab" class="p-1 rounded text-zinc-400 hover:text-red-600 hover:bg-zinc-100" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<div class="border-l-2 border-zinc-200 pl-3 ml-2 space-y-2 mt-2">
+<div>
+<p class="font-label-sm text-xs font-medium text-zinc-800">2.1 Media sosial</p>
+<p class="font-body-sm text-[11px] text-zinc-500 leading-snug">Karakteristik platform video pendek dan siklus dopamin.</p>
+</div>
+<div>
+<p class="font-label-sm text-xs font-medium text-zinc-800">2.2 Prestasi belajar</p>
+<p class="font-body-sm text-[11px] text-zinc-500 leading-snug">Teori retensi kognitif dan pembagian beban kerja mental.</p>
+</div>
+<button class="text-xs text-zinc-600 hover:text-zinc-900 flex items-center gap-1 py-1 font-medium transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]" data-icon="add">add</span>
+<span>Subbab</span>
+</button>
+</div>
+</article>
+<!-- BAB III -->
+<article class="border border-zinc-200 rounded-lg p-3 bg-white">
+<div class="flex items-center justify-between gap-1 pb-1">
+<div class="flex items-center gap-2 min-w-0">
+<span class="cursor-grab text-zinc-400 hover:text-zinc-600 shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="drag_indicator">drag_indicator</span>
+</span>
+<span class="font-mono text-xs text-red-600 font-semibold bg-red-50 border border-red-200 px-1.5 py-0.5 rounded shrink-0">BAB III</span>
+<h2 class="font-label-md text-sm font-medium text-zinc-900 truncate">Pembahasan</h2>
+</div>
+<div class="flex items-center gap-0.5 shrink-0">
+<button aria-label="Sunting Bab" class="p-1 rounded text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span>
+</button>
+<button aria-label="Hapus Bab" class="p-1 rounded text-zinc-400 hover:text-red-600 hover:bg-zinc-100" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<div class="border-l-2 border-zinc-200 pl-3 ml-2 space-y-2 mt-2">
+<div>
+<p class="font-label-sm text-xs font-medium text-zinc-800">3.1 Pola penggunaan aplikasi</p>
+<p class="font-body-sm text-[11px] text-zinc-500 leading-snug">Durasi harian dan waktu aktif saat sesi belajar mandiri.</p>
+</div>
+<div>
+<p class="font-label-sm text-xs font-medium text-zinc-800">3.2 Dampak terhadap konsentrasi</p>
+<p class="font-body-sm text-[11px] text-zinc-500 leading-snug">Penurunan fokus serta frekuensi penundaan tugas akademik.</p>
+</div>
+<button class="text-xs text-zinc-600 hover:text-zinc-900 flex items-center gap-1 py-1 font-medium transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]" data-icon="add">add</span>
+<span>Subbab</span>
+</button>
+</div>
+</article>
+<!-- BAB IV -->
+<article class="border border-zinc-200 rounded-lg p-3 bg-white">
+<div class="flex items-center justify-between gap-1 pb-1">
+<div class="flex items-center gap-2 min-w-0">
+<span class="cursor-grab text-zinc-400 hover:text-zinc-600 shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="drag_indicator">drag_indicator</span>
+</span>
+<span class="font-mono text-xs text-red-600 font-semibold bg-red-50 border border-red-200 px-1.5 py-0.5 rounded shrink-0">BAB IV</span>
+<h2 class="font-label-md text-sm font-medium text-zinc-900 truncate">Penutup</h2>
+</div>
+<div class="flex items-center gap-0.5 shrink-0">
+<button aria-label="Sunting Bab" class="p-1 rounded text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span>
+</button>
+<button aria-label="Hapus Bab" class="p-1 rounded text-zinc-400 hover:text-red-600 hover:bg-zinc-100" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<div class="border-l-2 border-zinc-200 pl-3 ml-2 space-y-2 mt-2">
+<div>
+<p class="font-label-sm text-xs font-medium text-zinc-800">4.1 Kesimpulan</p>
+<p class="font-body-sm text-[11px] text-zinc-500 leading-snug">Rangkuman hasil kajian hubungan media sosial dan capaian nilai.</p>
+</div>
+<div>
+<p class="font-label-sm text-xs font-medium text-zinc-800">4.2 Saran</p>
+<p class="font-body-sm text-[11px] text-zinc-500 leading-snug">Rekomendasi pengelolaan durasi layar dan manajemen waktu.</p>
+</div>
+<button class="text-xs text-zinc-600 hover:text-zinc-900 flex items-center gap-1 py-1 font-medium transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]" data-icon="add">add</span>
+<span>Subbab</span>
+</button>
+</div>
+</article>
+<!-- Full width outline button -->
+<button class="border border-dashed border-zinc-300 text-zinc-700 text-xs py-2 w-full rounded-lg text-center font-medium hover:bg-zinc-50 transition-colors flex items-center justify-center gap-1" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="add">add</span>
+<span>Bab baru</span>
+</button>
+</section>
+<!-- Collapsible Section 'Sumber referensi (2)' -->
+<section class="border border-zinc-200 rounded-lg p-3 bg-white">
+<details class="group" open="">
+<summary class="flex items-center justify-between cursor-pointer list-none select-none">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-zinc-500" data-icon="menu_book">menu_book</span>
+<h3 class="font-label-md text-xs font-semibold text-zinc-900">Sumber referensi (2)</h3>
+</div>
+<span class="material-symbols-outlined text-zinc-400 group-open:rotate-180 transition-transform duration-200" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="pt-3 space-y-3">
+<!-- Zinc callout -->
+<div class="bg-zinc-50 border border-zinc-200 rounded p-2.5 text-xs text-zinc-600 flex items-start gap-2">
+<span class="material-symbols-outlined text-zinc-500 text-[16px] shrink-0 mt-0.5" data-icon="info">info</span>
+<p class="font-body-sm leading-tight text-[11px]">Rapi tidak mengarang referensi. Isi hanya dari sumber yang kamu tempel.</p>
+</div>
+<!-- Textarea input -->
+<div class="space-y-2">
+<textarea class="border border-zinc-200 rounded text-xs p-2 w-full focus:outline-none focus:ring-1 focus:ring-red-600 focus:border-red-600 resize-none font-body-sm placeholder:text-zinc-400 text-zinc-800 bg-white" placeholder="Tempel judul, link, atau DOI" rows="2"></textarea>
+<button class="border border-zinc-300 text-xs py-1.5 px-3 rounded text-zinc-700 hover:bg-zinc-50 font-medium inline-flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]" data-icon="add">add</span>
+<span>Tambah sumber</span>
+</button>
+</div>
+<!-- Source Cards -->
+<div class="space-y-2 pt-1">
+<!-- Source Card 1 -->
+<div class="border border-zinc-200 rounded-md p-2 bg-zinc-50/70 relative">
+<div class="flex items-start justify-between gap-2">
+<div class="min-w-0 pr-1">
+<p class="font-label-sm text-xs font-semibold text-zinc-900 truncate">Kaplan, A. M., &amp; Haenlein, M. (2010)</p>
+<p class="font-body-sm text-[11px] text-zinc-500 italic line-clamp-1 mt-0.5">Users of the world, unite! The challenges and...</p>
+<span class="font-body-sm text-[10px] text-zinc-400 mt-1 inline-block">Ditambahkan manual</span>
+</div>
+<button aria-label="Hapus Sumber" class="text-zinc-400 hover:text-zinc-700 p-0.5 rounded shrink-0" type="button">
+<span class="material-symbols-outlined text-[14px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+<!-- Source Card 2 -->
+<div class="border border-zinc-200 rounded-md p-2 bg-zinc-50/70 relative">
+<div class="flex items-start justify-between gap-2">
+<div class="min-w-0 pr-1">
+<p class="font-label-sm text-xs font-semibold text-zinc-900 truncate">Kirschner, P. A., &amp; Karpinski, A. C. (2010)</p>
+<p class="font-body-sm text-[11px] text-zinc-500 italic line-clamp-1 mt-0.5">Facebook® and study habits. Computers in Human...</p>
+<span class="font-body-sm text-[10px] text-zinc-400 mt-1 inline-block">Ditambahkan manual</span>
+</div>
+<button aria-label="Hapus Sumber" class="text-zinc-400 hover:text-zinc-700 p-0.5 rounded shrink-0" type="button">
+<span class="material-symbols-outlined text-[14px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</details>
+</section>
+<!-- Collapsible Section 'Pengaturan' -->
+<section class="border border-zinc-200 rounded-lg p-3 bg-white mb-2">
+<details class="group" open="">
+<summary class="flex items-center justify-between cursor-pointer list-none select-none">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-zinc-500" data-icon="tune">tune</span>
+<h3 class="font-label-md text-xs font-semibold text-zinc-900">Pengaturan</h3>
+</div>
+<span class="material-symbols-outlined text-zinc-400 group-open:rotate-180 transition-transform duration-200" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="pt-3 space-y-3">
+<!-- Native Select -->
+<div>
+<label class="block font-label-sm text-xs font-medium text-zinc-700 mb-1" for="gaya-bahasa">Gaya bahasa</label>
+<div class="relative">
+<select class="w-full border border-zinc-200 rounded text-xs p-2 pr-8 bg-white text-zinc-900 focus:outline-none focus:ring-1 focus:ring-red-600 focus:border-red-600 font-body-sm appearance-none cursor-pointer" id="gaya-bahasa">
+<option selected="">Formal akademik (Baku &amp; Objektif)</option>
+<option>Semi-formal</option>
+<option>Naratif ilmiah</option>
+</select>
+<span class="material-symbols-outlined text-zinc-400 text-[16px] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" data-icon="unfold_more">unfold_more</span>
+</div>
+</div>
+<!-- Radio Cards -->
+<div>
+<span class="block font-label-sm text-xs font-medium text-zinc-700 mb-1.5">Panjang per bab</span>
+<div class="grid grid-cols-3 gap-1.5" role="radiogroup">
+<!-- Option 1 -->
+<label class="border border-zinc-200 rounded p-2 text-center cursor-pointer hover:bg-zinc-50 flex flex-col items-center justify-center transition-colors">
+<input class="sr-only" name="chapter_length" type="radio" value="short"/>
+<span class="font-label-sm text-[11px] font-medium text-zinc-700">Ringkas</span>
+<span class="font-body-sm text-[9px] text-zinc-400 mt-0.5">~1-2 hal</span>
+</label>
+<!-- Option 2 (Selected) -->
+<label class="border border-red-600 bg-red-50/30 rounded p-2 text-center cursor-pointer flex flex-col items-center justify-center relative">
+<input checked="" class="sr-only" name="chapter_length" type="radio" value="medium"/>
+<div class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+<span class="font-label-sm text-[11px] font-semibold text-zinc-900">Sedang</span>
+</div>
+<span class="font-body-sm text-[9px] text-red-600 font-medium mt-0.5">~3-4 hal</span>
+</label>
+<!-- Option 3 -->
+<label class="border border-zinc-200 rounded p-2 text-center cursor-pointer hover:bg-zinc-50 flex flex-col items-center justify-center transition-colors">
+<input class="sr-only" name="chapter_length" type="radio" value="long"/>
+<span class="font-label-sm text-[11px] font-medium text-zinc-700">Panjang</span>
+<span class="font-body-sm text-[9px] text-zinc-400 mt-0.5">~5+ hal</span>
+</label>
+</div>
+</div>
+</div>
+</details>
+</section>
+</div>
+<!-- Sticky Bottom Bar -->
+<footer class="sticky bottom-0 border-t border-zinc-200 bg-white p-3 flex items-center gap-2 z-30 shrink-0">
+<button aria-label="Muat Ulang Outline" class="border border-zinc-200 p-2.5 rounded-lg text-zinc-700 hover:bg-zinc-100 flex items-center justify-center transition-colors shrink-0" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="refresh">refresh</span>
+</button>
+<button class="bg-[#DC2626] text-white flex-1 py-2.5 px-4 rounded-lg font-medium text-sm flex items-center justify-center gap-1.5 shadow-none hover:bg-red-700 active:scale-[0.99] transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="draw">draw</span>
+<span>Setujui dan tulis isi</span>
+</button>
+</footer>
+</main>
+</body></html>

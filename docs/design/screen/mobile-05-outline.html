@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tinjau Outline - Rapi</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#dc2626",
+            "primary-hover": "#b91c1c",
+            "primary-active": "#991b1b",
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+    details > summary::-webkit-details-marker {
+      display: none;
+    }
+  </style>
+</head>
+<body class="text-zinc-900 antialiased min-h-screen flex selection:bg-red-100 selection:text-red-900 font-sans bg-white">
+<!-- Mobile Viewport Container (390px) -->
+<div class="w-full bg-white min-h-screen flex flex-col relative border-zinc-200">
+<!-- Top Bar -->
+<header class="sticky top-0 z-40 bg-white border-b border-zinc-200 flex items-center justify-between h-14 select-none px-4">
+<div class="flex items-center gap-2">
+<button aria-label="Kembali" class="w-9 h-9 flex items-center justify-center rounded-lg text-zinc-700 hover:bg-zinc-100 active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+</button>
+<div class="flex items-center gap-2">
+<h1 class="text-sm font-semibold text-zinc-900 tracking-tight">Tinjau outline</h1>
+<span class="text-[10px] font-medium px-2 py-0.5 rounded bg-zinc-100 text-zinc-600 border border-zinc-200">Mode topik</span>
+</div>
+</div>
+<div class="text-[11px] font-mono text-zinc-400 font-medium">4 Bab · 9 Subbab</div>
+</header>
+<!-- Subtitle / Intro Description -->
+<div class="px-4 pt-3.5 pb-2 bg-white border-b border-zinc-100">
+<p class="text-xs text-zinc-500 leading-relaxed">
+        Ubah susunan bab sebelum isi ditulis. Nomor bab dibuat otomatis.
+      </p>
+</div>
+<!-- Main Content -->
+<main class="flex-1 space-y-4 pb-28 px-4">
+<!-- Outline Chapters Section -->
+<section class="space-y-3">
+<!-- BAB I -->
+<article class="border border-zinc-200 rounded-lg bg-white overflow-hidden shadow-sm">
+<div class="p-3 bg-zinc-50/60 border-b border-zinc-100 flex items-center justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-zinc-400 cursor-grab active:cursor-grabbing text-[18px]">drag_indicator</span>
+<span class="text-[10px] font-mono font-semibold text-red-600 bg-red-50 border border-red-200/60 px-1.5 py-0.5 rounded">BAB I</span>
+<h2 class="text-xs font-semibold text-zinc-900 truncate">Pendahuluan</h2>
+</div>
+<div class="flex items-center gap-0.5 shrink-0">
+<button aria-label="Edit Bab I" class="p-1 rounded text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+<button aria-label="Hapus Bab I" class="p-1 rounded text-zinc-400 hover:text-red-600 hover:bg-red-50 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Nested Subsections -->
+<div class="p-3 space-y-2.5">
+<!-- 1.1 -->
+<div class="flex items-start gap-2 pl-2 border-l-2 border-zinc-200">
+<span class="material-symbols-outlined text-zinc-300 mt-0.5 text-[15px] cursor-grab">drag_indicator</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="text-xs font-medium text-zinc-900">1.1 Latar belakang</span>
+<button class="text-zinc-300 hover:text-zinc-600 p-0.5"><span class="material-symbols-outlined text-[14px]">edit</span></button>
+</div>
+<p class="text-[11px] text-zinc-500 leading-normal">Konteks pergeseran kebiasaan belajar dan intensitas gawai.</p>
+</div>
+</div>
+<!-- 1.2 -->
+<div class="flex items-start gap-2 pl-2 border-l-2 border-zinc-200">
+<span class="material-symbols-outlined text-zinc-300 mt-0.5 text-[15px] cursor-grab">drag_indicator</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="text-xs font-medium text-zinc-900">1.2 Rumusan masalah</span>
+<button class="text-zinc-300 hover:text-zinc-600 p-0.5"><span class="material-symbols-outlined text-[14px]">edit</span></button>
+</div>
+<p class="text-[11px] text-zinc-500 leading-normal">Identifikasi signifikansi korelasi durasi layar dan indeks prestasi.</p>
+</div>
+</div>
+<!-- 1.3 -->
+<div class="flex items-start gap-2 pl-2 border-l-2 border-zinc-200">
+<span class="material-symbols-outlined text-zinc-300 mt-0.5 text-[15px] cursor-grab">drag_indicator</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="text-xs font-medium text-zinc-900">1.3 Tujuan</span>
+<button class="text-zinc-300 hover:text-zinc-600 p-0.5"><span class="material-symbols-outlined text-[14px]">edit</span></button>
+</div>
+<p class="text-[11px] text-zinc-500 leading-normal">Mengukur besaran pengaruh psikologis distraksi media sosial.</p>
+</div>
+</div>
+<!-- Ghost button + Subbab -->
+<button class="w-full mt-1.5 py-1.5 px-2 text-[11px] font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded border border-dashed border-zinc-200 flex items-center justify-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">add</span>
+<span>Subbab</span>
+</button>
+</div>
+</article>
+<!-- BAB II -->
+<article class="border border-zinc-200 rounded-lg bg-white overflow-hidden shadow-sm">
+<div class="p-3 bg-zinc-50/60 border-b border-zinc-100 flex items-center justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-zinc-400 cursor-grab active:cursor-grabbing text-[18px]">drag_indicator</span>
+<span class="text-[10px] font-mono font-semibold text-red-600 bg-red-50 border border-red-200/60 px-1.5 py-0.5 rounded">BAB II</span>
+<h2 class="text-xs font-semibold text-zinc-900 truncate">Tinjauan pustaka</h2>
+</div>
+<div class="flex items-center gap-0.5 shrink-0">
+<button aria-label="Edit Bab II" class="p-1 rounded text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+<button aria-label="Hapus Bab II" class="p-1 rounded text-zinc-400 hover:text-red-600 hover:bg-red-50 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Nested Subsections -->
+<div class="p-3 space-y-2.5">
+<!-- 2.1 -->
+<div class="flex items-start gap-2 pl-2 border-l-2 border-zinc-200">
+<span class="material-symbols-outlined text-zinc-300 mt-0.5 text-[15px] cursor-grab">drag_indicator</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="text-xs font-medium text-zinc-900">2.1 Media sosial</span>
+<button class="text-zinc-300 hover:text-zinc-600 p-0.5"><span class="material-symbols-outlined text-[14px]">edit</span></button>
+</div>
+<p class="text-[11px] text-zinc-500 leading-normal">Karakteristik platform video pendek dan siklus dopamin.</p>
+</div>
+</div>
+<!-- 2.2 -->
+<div class="flex items-start gap-2 pl-2 border-l-2 border-zinc-200">
+<span class="material-symbols-outlined text-zinc-300 mt-0.5 text-[15px] cursor-grab">drag_indicator</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="text-xs font-medium text-zinc-900">2.2 Prestasi belajar</span>
+<button class="text-zinc-300 hover:text-zinc-600 p-0.5"><span class="material-symbols-outlined text-[14px]">edit</span></button>
+</div>
+<p class="text-[11px] text-zinc-500 leading-normal">Teori retensi kognitif dan pembagian beban kerja mental.</p>
+</div>
+</div>
+<!-- Ghost button + Subbab -->
+<button class="w-full mt-1.5 py-1.5 px-2 text-[11px] font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded border border-dashed border-zinc-200 flex items-center justify-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">add</span>
+<span>Subbab</span>
+</button>
+</div>
+</article>
+<!-- BAB III -->
+<article class="border border-zinc-200 rounded-lg bg-white overflow-hidden shadow-sm">
+<div class="p-3 bg-zinc-50/60 border-b border-zinc-100 flex items-center justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-zinc-400 cursor-grab active:cursor-grabbing text-[18px]">drag_indicator</span>
+<span class="text-[10px] font-mono font-semibold text-red-600 bg-red-50 border border-red-200/60 px-1.5 py-0.5 rounded">BAB III</span>
+<h2 class="text-xs font-semibold text-zinc-900 truncate">Pembahasan</h2>
+</div>
+<div class="flex items-center gap-0.5 shrink-0">
+<button aria-label="Edit Bab III" class="p-1 rounded text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+<button aria-label="Hapus Bab III" class="p-1 rounded text-zinc-400 hover:text-red-600 hover:bg-red-50 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Nested Subsections -->
+<div class="p-3 space-y-2.5">
+<!-- 3.1 -->
+<div class="flex items-start gap-2 pl-2 border-l-2 border-zinc-200">
+<span class="material-symbols-outlined text-zinc-300 mt-0.5 text-[15px] cursor-grab">drag_indicator</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="text-xs font-medium text-zinc-900">3.1 Pola penggunaan aplikasi</span>
+<button class="text-zinc-300 hover:text-zinc-600 p-0.5"><span class="material-symbols-outlined text-[14px]">edit</span></button>
+</div>
+<p class="text-[11px] text-zinc-500 leading-normal">Durasi harian dan waktu aktif saat sesi belajar mandiri.</p>
+</div>
+</div>
+<!-- 3.2 -->
+<div class="flex items-start gap-2 pl-2 border-l-2 border-zinc-200">
+<span class="material-symbols-outlined text-zinc-300 mt-0.5 text-[15px] cursor-grab">drag_indicator</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="text-xs font-medium text-zinc-900">3.2 Dampak terhadap konsentrasi</span>
+<button class="text-zinc-300 hover:text-zinc-600 p-0.5"><span class="material-symbols-outlined text-[14px]">edit</span></button>
+</div>
+<p class="text-[11px] text-zinc-500 leading-normal">Penurunan fokus serta frekuensi penundaan tugas akademik.</p>
+</div>
+</div>
+<!-- Ghost button + Subbab -->
+<button class="w-full mt-1.5 py-1.5 px-2 text-[11px] font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded border border-dashed border-zinc-200 flex items-center justify-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">add</span>
+<span>Subbab</span>
+</button>
+</div>
+</article>
+<!-- BAB IV -->
+<article class="border border-zinc-200 rounded-lg bg-white overflow-hidden shadow-sm">
+<div class="p-3 bg-zinc-50/60 border-b border-zinc-100 flex items-center justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-zinc-400 cursor-grab active:cursor-grabbing text-[18px]">drag_indicator</span>
+<span class="text-[10px] font-mono font-semibold text-red-600 bg-red-50 border border-red-200/60 px-1.5 py-0.5 rounded">BAB IV</span>
+<h2 class="text-xs font-semibold text-zinc-900 truncate">Penutup</h2>
+</div>
+<div class="flex items-center gap-0.5 shrink-0">
+<button aria-label="Edit Bab IV" class="p-1 rounded text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+<button aria-label="Hapus Bab IV" class="p-1 rounded text-zinc-400 hover:text-red-600 hover:bg-red-50 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Nested Subsections -->
+<div class="p-3 space-y-2.5">
+<!-- 4.1 -->
+<div class="flex items-start gap-2 pl-2 border-l-2 border-zinc-200">
+<span class="material-symbols-outlined text-zinc-300 mt-0.5 text-[15px] cursor-grab">drag_indicator</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="text-xs font-medium text-zinc-900">4.1 Kesimpulan</span>
+<button class="text-zinc-300 hover:text-zinc-600 p-0.5"><span class="material-symbols-outlined text-[14px]">edit</span></button>
+</div>
+<p class="text-[11px] text-zinc-500 leading-normal">Rangkuman hasil kajian hubungan media sosial dan capaian nilai.</p>
+</div>
+</div>
+<!-- 4.2 -->
+<div class="flex items-start gap-2 pl-2 border-l-2 border-zinc-200">
+<span class="material-symbols-outlined text-zinc-300 mt-0.5 text-[15px] cursor-grab">drag_indicator</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="text-xs font-medium text-zinc-900">4.2 Saran</span>
+<button class="text-zinc-300 hover:text-zinc-600 p-0.5"><span class="material-symbols-outlined text-[14px]">edit</span></button>
+</div>
+<p class="text-[11px] text-zinc-500 leading-normal">Rekomendasi pengelolaan durasi layar dan manajemen waktu.</p>
+</div>
+</div>
+<!-- Ghost button + Subbab -->
+<button class="w-full mt-1.5 py-1.5 px-2 text-[11px] font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded border border-dashed border-zinc-200 flex items-center justify-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">add</span>
+<span>Subbab</span>
+</button>
+</div>
+</article>
+<!-- Outline Button + Bab at end -->
+<button class="w-full py-2.5 px-4 text-xs font-semibold text-zinc-700 bg-white hover:bg-zinc-50 active:bg-zinc-100 border border-zinc-300 rounded-lg flex items-center justify-center gap-1.5 shadow-sm transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>Bab baru</span>
+</button>
+</section>
+<!-- Collapsible Section: Sumber referensi (2) -->
+<details class="group border border-zinc-200 rounded-lg bg-white overflow-hidden shadow-sm" open="">
+<summary class="p-3 cursor-pointer select-none flex items-center justify-between bg-zinc-50/50 hover:bg-zinc-50 transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-zinc-500 text-[18px]">menu_book</span>
+<span class="text-xs font-semibold text-zinc-900">Sumber referensi (2)</span>
+</div>
+<span class="material-symbols-outlined text-zinc-400 group-open:rotate-180 transition-transform text-[18px]">expand_more</span>
+</summary>
+<div class="p-3 border-t border-zinc-100 space-y-3">
+<!-- Zinc Flux Callout -->
+<div class="p-2.5 rounded-lg bg-zinc-50 border border-zinc-200 flex items-start gap-2">
+<span class="material-symbols-outlined text-zinc-500 text-[16px] mt-0.5 shrink-0">info</span>
+<p class="text-[11px] text-zinc-600 leading-relaxed">
+              Rapi tidak mengarang referensi. Isi hanya dari sumber yang kamu tempel.
+            </p>
+</div>
+<!-- Textarea Input -->
+<div class="space-y-1.5">
+<textarea class="w-full text-xs text-zinc-900 placeholder:text-zinc-400 bg-white border border-zinc-200 rounded-lg p-2.5 leading-relaxed focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors resize-none" placeholder="Tempel judul, link, atau DOI" rows="2"></textarea>
+<div class="flex justify-end">
+<button class="border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50 text-[11px] font-medium py-1.5 px-3 rounded-lg flex items-center gap-1 shadow-sm transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">add</span>
+<span>Tambah sumber</span>
+</button>
+</div>
+</div>
+<!-- 2 Source Items -->
+<div class="space-y-2 pt-1">
+<!-- Source 1 -->
+<div class="p-2.5 border border-zinc-200 rounded-lg bg-zinc-50/40 relative">
+<button aria-label="Hapus sumber" class="absolute top-2 right-2 text-zinc-400 hover:text-zinc-700 p-0.5 rounded transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">close</span>
+</button>
+<div class="pr-5 space-y-1">
+<p class="text-xs font-medium text-zinc-900 leading-tight">Kaplan, A. M., &amp; Haenlein, M. (2010)</p>
+<p class="text-[11px] text-zinc-500 line-clamp-1 italic">Users of the world, unite! The challenges and opportunities of Social Media. Business Horizons.</p>
+<span class="inline-block text-[10px] text-zinc-400 font-normal">Ditambahkan manual</span>
+</div>
+</div>
+<!-- Source 2 -->
+<div class="p-2.5 border border-zinc-200 rounded-lg bg-zinc-50/40 relative">
+<button aria-label="Hapus sumber" class="absolute top-2 right-2 text-zinc-400 hover:text-zinc-700 p-0.5 rounded transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">close</span>
+</button>
+<div class="pr-5 space-y-1">
+<p class="text-xs font-medium text-zinc-900 leading-tight">Kirschner, P. A., &amp; Karpinski, A. C. (2010)</p>
+<p class="text-[11px] text-zinc-500 line-clamp-1 italic">Facebook® and study habits. Computers in Human Behavior, 26(6).</p>
+<span class="inline-block text-[10px] text-zinc-400 font-normal">Ditambahkan manual</span>
+</div>
+</div>
+</div>
+</div>
+</details>
+<!-- Collapsible Section: Pengaturan -->
+<details class="group border border-zinc-200 rounded-lg bg-white overflow-hidden shadow-sm" open="">
+<summary class="p-3 cursor-pointer select-none flex items-center justify-between bg-zinc-50/50 hover:bg-zinc-50 transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-zinc-500 text-[18px]">tune</span>
+<span class="text-xs font-semibold text-zinc-900">Pengaturan</span>
+</div>
+<span class="material-symbols-outlined text-zinc-400 group-open:rotate-180 transition-transform text-[18px]">expand_more</span>
+</summary>
+<div class="p-3.5 border-t border-zinc-100 space-y-3.5">
+<!-- Native Select Gaya Bahasa -->
+<div>
+<label class="block text-xs font-medium text-zinc-700 mb-1" for="select-gaya">Gaya bahasa</label>
+<div class="relative">
+<select class="w-full appearance-none bg-white border border-zinc-200 text-xs font-medium text-zinc-900 rounded-lg py-2 pl-3 pr-8 focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors" id="select-gaya">
+<option selected="" value="formal">Formal akademik (Baku &amp; Objektif)</option>
+<option value="deskriptif">Baku deskriptif</option>
+<option value="populer">Ilmiah populer</option>
+</select>
+<span class="material-symbols-outlined text-[18px] text-zinc-400 absolute right-2.5 top-2 pointer-events-none">unfold_more</span>
+</div>
+</div>
+<!-- Radio Group: Panjang per bab -->
+<div>
+<label class="block text-xs font-medium text-zinc-700 mb-1.5">Panjang per bab</label>
+<div class="grid grid-cols-3 gap-2">
+<!-- Ringkas -->
+<label class="flex flex-col items-center justify-center py-2 px-1 border border-zinc-200 rounded-lg cursor-pointer hover:border-zinc-300 transition-colors select-none text-center">
+<input class="sr-only" name="chapter_length" type="radio" value="ringkas"/>
+<span class="text-xs font-medium text-zinc-700">Ringkas</span>
+<span class="text-[10px] text-zinc-400 mt-0.5">~1-2 hal</span>
+</label>
+<!-- Sedang (Selected) -->
+<label class="flex flex-col items-center justify-center py-2 px-1 border-2 border-red-600 bg-red-50/20 rounded-lg cursor-pointer transition-colors select-none text-center">
+<input checked="" class="sr-only" name="chapter_length" type="radio" value="sedang"/>
+<span class="text-xs font-semibold text-zinc-900">Sedang</span>
+<span class="text-[10px] text-zinc-500 mt-0.5">~3-4 hal</span>
+</label>
+<!-- Panjang -->
+<label class="flex flex-col items-center justify-center py-2 px-1 border border-zinc-200 rounded-lg cursor-pointer hover:border-zinc-300 transition-colors select-none text-center">
+<input class="sr-only" name="chapter_length" type="radio" value="panjang"/>
+<span class="text-xs font-medium text-zinc-700">Panjang</span>
+<span class="text-[10px] text-zinc-400 mt-0.5">~5+ hal</span>
+</label>
+</div>
+</div>
+</div>
+</details>
+</main>
+<!-- Sticky Bottom Bar -->
+<footer class="sticky bottom-0 bg-white border-t border-zinc-200 flex items-center gap-2.5 z-40 shadow-[0_-2px_8px_rgba(0,0,0,0.04)] px-4">
+<!-- Refresh Icon Button with Tooltip -->
+<div class="relative group">
+<button aria-label="Buat ulang outline" class="w-10 h-10 border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50 active:bg-zinc-100 rounded-lg flex items-center justify-center transition-colors" title="Buat ulang outline" type="button">
+<span class="material-symbols-outlined text-[19px]">refresh</span>
+</button>
+<!-- Tooltip -->
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 hidden group-hover:block whitespace-nowrap bg-zinc-800 text-white text-[10px] font-medium px-2 py-1 rounded shadow pointer-events-none">
+          Buat ulang outline
+        </div>
+</div>
+<!-- Primary Red CTA -->
+<button class="flex-1 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-medium text-xs h-10 px-4 rounded-lg flex items-center justify-center gap-1.5 shadow-sm transition-colors active:scale-[0.99]" type="button">
+<span>Setujui dan tulis isi</span>
+<span class="material-symbols-outlined text-[17px]">arrow_forward</span>
+</button>
+</footer>
+</div>
+</body>
+</html>

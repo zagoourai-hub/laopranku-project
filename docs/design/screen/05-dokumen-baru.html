@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-zinc-100" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rapi Academic — Formulir Dokumen Baru</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Merriweather:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary-container": "#dc2626",
+            "outline": "#916f6b",
+            "on-primary-fixed": "#410002",
+            "secondary-fixed": "#ffdad6",
+            "tertiary-container": "#0078b2",
+            "tertiary-fixed": "#cbe6ff",
+            "inverse-surface": "#2f3038",
+            "on-secondary-fixed": "#410002",
+            "on-primary-fixed-variant": "#93000b",
+            "on-error-container": "#93000a",
+            "error-container": "#ffdad6",
+            "primary": "#b70011",
+            "secondary-container": "#fd786c",
+            "surface": "#fbf8ff",
+            "on-tertiary-fixed-variant": "#004b71",
+            "on-error": "#ffffff",
+            "inverse-on-surface": "#f1effa",
+            "background": "#fbf8ff",
+            "surface-tint": "#bf0715",
+            "on-tertiary-container": "#f3f8ff",
+            "on-surface-variant": "#5c403c",
+            "tertiary-fixed-dim": "#90cdff",
+            "surface-container-lowest": "#ffffff",
+            "primary-fixed-dim": "#ffb4ab",
+            "secondary": "#a73831",
+            "surface-container-high": "#e8e7f1",
+            "surface-dim": "#dad9e3",
+            "on-surface": "#1a1b22",
+            "on-primary-container": "#fff6f5",
+            "surface-bright": "#fbf8ff",
+            "outline-variant": "#e6bdb8",
+            "primary-fixed": "#ffdad6",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed-variant": "#86211c",
+            "surface-variant": "#e3e1ec",
+            "surface-container-highest": "#e3e1ec",
+            "on-tertiary-fixed": "#001e30",
+            "error": "#ba1a1a",
+            "surface-container": "#eeedf7",
+            "inverse-primary": "#ffb4ab",
+            "on-secondary": "#ffffff",
+            "on-background": "#1a1b22",
+            "tertiary": "#005e8d",
+            "surface-container-low": "#f4f2fd",
+            "on-primary": "#ffffff",
+            "secondary-fixed-dim": "#ffb4ab",
+            "on-secondary-container": "#700f0f"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "body-sm": ["Inter"],
+            "label-md": ["Inter"],
+            "body-md": ["Inter"],
+            "headline-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "label-sm": ["Inter"],
+            serif: ["'Merriweather'", "Times New Roman", "serif"]
+          },
+          fontSize: {
+            "body-sm": ["0.75rem", { lineHeight: "1rem", fontWeight: "400" }],
+            "label-md": ["0.875rem", { lineHeight: "1.25rem", fontWeight: "500" }],
+            "body-md": ["0.875rem", { lineHeight: "1.375rem", fontWeight: "400" }],
+            "headline-md": ["1.25rem", { lineHeight: "1.75rem", fontWeight: "600" }],
+            "headline-lg": ["1.75rem", { lineHeight: "2.25rem", fontWeight: "600" }],
+            "label-sm": ["0.75rem", { lineHeight: "1rem", fontWeight: "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 1.125rem;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /* Custom Flux focus styling */
+    input:focus, textarea:focus, select:focus {
+      outline: none !important;
+      border-color: #dc2626 !important;
+      box-shadow: 0 0 0 1px #dc2626 !important;
+    }
+  </style>
+</head>
+<body class="h-full bg-zinc-100/70 text-zinc-900 font-body-md antialiased flex flex-col md:flex-row overflow-hidden">
+<!-- ================= SIDEBAR (Flux UI Shell) ================= -->
+<aside class="w-64 h-screen bg-zinc-50 border-r border-zinc-200 flex flex-col justify-between shrink-0 select-none">
+<div class="flex flex-col">
+<!-- Wordmark Header -->
+<div class="h-16 px-5 flex items-center justify-between border-b border-zinc-100">
+<div class="flex items-center gap-2">
+<span class="font-headline-md tracking-tight font-bold text-zinc-900">rapi<span class="text-primary-container">.</span></span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-medium tracking-tight bg-zinc-200/70 text-zinc-600">v2</span>
+</div>
+<span class="text-[11px] font-medium text-zinc-400">Akademik</span>
+</div>
+<!-- Quick Action / CTA -->
+<div class="px-3 pt-4 pb-2">
+<button class="w-full flex items-center justify-center gap-2 px-3 py-2 bg-primary-container hover:bg-primary text-white rounded-lg text-sm font-medium transition-colors shadow-xs active:scale-[0.99]">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span>Buat Dokumen</span>
+</button>
+</div>
+<!-- Primary Navigation -->
+<nav class="px-3 py-2 space-y-1">
+<!-- Dokumen (ACTIVE: Maps to Intent) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-zinc-200/60 text-zinc-900 font-medium text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-zinc-900" data-icon="description">description</span>
+<span>Dokumen</span>
+</a>
+<!-- Template -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined text-zinc-500" data-icon="style">style</span>
+<span>Template</span>
+</a>
+<!-- Riwayat Export -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined text-zinc-500" data-icon="history">history</span>
+<span>Riwayat export</span>
+</a>
+<!-- Panduan Format -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined text-zinc-500" data-icon="menu_book">menu_book</span>
+<span>Panduan format</span>
+</a>
+<!-- Pengaturan -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined text-zinc-500" data-icon="settings">settings</span>
+<span>Pengaturan</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Profile & Quota Section -->
+<div class="p-3 border-t border-zinc-200 flex flex-col gap-3">
+<!-- Quota Meter Widget -->
+<div class="p-2.5 rounded-lg bg-zinc-100 border border-zinc-200/80">
+<div class="flex items-center justify-between text-xs mb-1.5">
+<span class="text-zinc-600 font-medium">Kuota Format AI</span>
+<span class="font-semibold text-zinc-900">4 / 5</span>
+</div>
+<div class="w-full bg-zinc-200 rounded-full h-1.5 overflow-hidden">
+<div class="bg-primary-container h-1.5 rounded-full" style="width: 80%"></div>
+</div>
+<p class="text-[11px] text-zinc-500 mt-1.5">Reset bulanan: 1 Mei 2026</p>
+</div>
+<!-- Help Center Link -->
+<a class="flex items-center gap-3 px-2 py-1.5 text-xs text-zinc-600 hover:text-zinc-900 rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined text-zinc-400" data-icon="help_outline">help_outline</span>
+<span>Pusat bantuan</span>
+</a>
+<!-- User Card -->
+<div class="flex items-center gap-3 pt-2 border-t border-zinc-200/60 px-1">
+<div class="w-8 h-8 rounded-full bg-zinc-200 border border-zinc-300 flex items-center justify-center text-xs font-semibold text-zinc-700">
+          BS
+        </div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="text-xs font-semibold text-zinc-900 truncate leading-tight">Budi Santoso</span>
+<span class="text-[11px] text-zinc-500 truncate leading-tight">Mahasiswa Reguler</span>
+</div>
+<button class="text-zinc-400 hover:text-zinc-700 transition-colors" title="Keluar" type="button">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- ================= MAIN WORKSPACE AREA ================= -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden">
+<!-- Top Thin Bar for Search / Quick Info -->
+<header class="h-14 bg-white border-b border-zinc-200 px-8 flex items-center justify-between shrink-0">
+<div class="flex items-center gap-2 text-xs text-zinc-500">
+<a class="hover:text-zinc-800 transition-colors" href="#">Dokumen</a>
+<span class="text-zinc-400">/</span>
+<span class="text-zinc-900 font-medium">Baru</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-xs text-zinc-500 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          Server Rapi siap
+        </span>
+<div class="h-4 w-px bg-zinc-200"></div>
+<button class="text-xs text-zinc-600 hover:text-zinc-900 font-medium flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="help_outline">help_outline</span>
+          Panduan
+        </button>
+</div>
+</header>
+<!-- Content Workspace: 2 Columns Grid -->
+<div class="flex-1 overflow-y-auto px-6 py-6 md:px-10 md:py-8">
+<div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-10 items-start">
+<!-- ================= KOLOM KIRI FORMULIR (Max 640px) ================= -->
+<div class="w-full lg:max-w-[640px] flex flex-col pb-16">
+<!-- Page Header -->
+<div class="mb-6">
+<h1 class="font-headline-lg text-2xl font-semibold text-zinc-900 tracking-tight">Dokumen baru</h1>
+<p class="text-sm text-zinc-500 mt-1">Konfigurasikan lembar identitas dan masukkan naskah mentah untuk dirapikan secara otomatis.</p>
+</div>
+<form class="space-y-8" id="document-form" onsubmit="event.preventDefault();">
+<!-- FIELDSET 1: JENIS DOKUMEN -->
+<fieldset class="space-y-3">
+<div class="flex items-center justify-between">
+<legend class="text-sm font-semibold text-zinc-900">Jenis dokumen</legend>
+<span class="text-[11px] text-zinc-500">Pilih salah satu format struktur</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+<!-- Option 1 (Selected) -->
+<label class="relative flex flex-col p-3 rounded-lg border border-red-600 ring-1 ring-red-600 bg-red-50/20 cursor-pointer transition-all">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-semibold text-zinc-900">Makalah</span>
+<input checked="" class="h-3.5 w-3.5 text-red-600 focus:ring-red-600 border-zinc-300" name="doc_type" type="radio" value="makalah"/>
+</div>
+<span class="text-[11px] text-zinc-500 leading-snug">Format standar BAB I–V, daftar pustaka</span>
+</label>
+<!-- Option 2 -->
+<label class="relative flex flex-col p-3 rounded-lg border border-zinc-200 bg-white hover:border-zinc-300 cursor-pointer transition-all">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-medium text-zinc-900">Laporan praktikum</span>
+<input class="h-3.5 w-3.5 text-red-600 focus:ring-red-600 border-zinc-300" name="doc_type" type="radio" value="praktikum"/>
+</div>
+<span class="text-[11px] text-zinc-500 leading-snug">Metodologi, data pengamatan, grafik</span>
+</label>
+<!-- Option 3 -->
+<label class="relative flex flex-col p-3 rounded-lg border border-zinc-200 bg-white hover:border-zinc-300 cursor-pointer transition-all">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-medium text-zinc-900">Laporan PKL</span>
+<input class="h-3.5 w-3.5 text-red-600 focus:ring-red-600 border-zinc-300" name="doc_type" type="radio" value="pkl"/>
+</div>
+<span class="text-[11px] text-zinc-500 leading-snug">Profil instansi, pelaksanaan magang</span>
+</label>
+<!-- Option 4 -->
+<label class="relative flex flex-col p-3 rounded-lg border border-zinc-200 bg-white hover:border-zinc-300 cursor-pointer transition-all">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-medium text-zinc-900">Proposal</span>
+<input class="h-3.5 w-3.5 text-red-600 focus:ring-red-600 border-zinc-300" name="doc_type" type="radio" value="proposal"/>
+</div>
+<span class="text-[11px] text-zinc-500 leading-snug">Usulan penelitian, RAB, dan jadwal</span>
+</label>
+</div>
+</fieldset>
+<!-- FIELDSET 2: DATA COVER -->
+<fieldset class="space-y-4 pt-2 border-t border-zinc-200/80">
+<div class="flex items-center justify-between">
+<legend class="text-sm font-semibold text-zinc-900">Data cover</legend>
+<span class="text-[11px] text-zinc-500">Sinkron otomatis ke pratinjau</span>
+</div>
+<!-- Judul (Full width) -->
+<div>
+<label class="block text-xs font-medium text-zinc-700 mb-1" for="input-judul">Judul dokumen</label>
+<input class="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm bg-white text-zinc-900 focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors shadow-2xs" id="input-judul" type="text" value="Pengaruh Media Sosial terhadap Prestasi Belajar Mahasiswa"/>
+</div>
+<!-- Row 2 Kolom: Nama & NIM -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div>
+<label class="block text-xs font-medium text-zinc-700 mb-1" for="input-nama">Nama lengkap</label>
+<input class="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm bg-white text-zinc-900 focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors shadow-2xs" id="input-nama" type="text" value="Budi Santoso"/>
+</div>
+<div>
+<label class="block text-xs font-medium text-zinc-700 mb-1" for="input-nim">Nomor Induk Mahasiswa (NIM)</label>
+<input class="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm bg-white text-zinc-900 focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors shadow-2xs" id="input-nim" type="text" value="2201234567"/>
+</div>
+</div>
+<!-- Row 2 Kolom: Program Studi & Kampus -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div>
+<label class="block text-xs font-medium text-zinc-700 mb-1" for="input-prodi">Program studi</label>
+<input class="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm bg-white text-zinc-900 focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors shadow-2xs" id="input-prodi" type="text" value="Teknik Informatika"/>
+</div>
+<div>
+<label class="block text-xs font-medium text-zinc-700 mb-1" for="input-kampus">Perguruan tinggi / Kampus</label>
+<input class="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm bg-white text-zinc-900 focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors shadow-2xs" id="input-kampus" type="text" value="Universitas Padjadjaran"/>
+</div>
+</div>
+<!-- Row 3 Kolom: Mata Kuliah, Dosen, Tahun -->
+<div class="grid grid-cols-1 sm:grid-cols-6 gap-3">
+<div class="sm:col-span-3">
+<label class="block text-xs font-medium text-zinc-700 mb-1" for="input-matkul">Mata kuliah</label>
+<input class="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm bg-white text-zinc-900 focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors shadow-2xs" id="input-matkul" type="text" value="Pengantar Teknologi Informasi"/>
+</div>
+<div class="sm:col-span-2">
+<label class="block text-xs font-medium text-zinc-700 mb-1" for="input-dosen">Dosen pengampu</label>
+<input class="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm bg-white text-zinc-900 focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors shadow-2xs" id="input-dosen" type="text" value="Dr. Siti Rahma, M.Kom."/>
+</div>
+<div class="sm:col-span-1">
+<label class="block text-xs font-medium text-zinc-700 mb-1" for="input-tahun">Tahun</label>
+<input class="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm bg-white text-zinc-900 focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors shadow-2xs" id="input-tahun" type="text" value="2026"/>
+</div>
+</div>
+</fieldset>
+<!-- FIELDSET 3: KONTEN NASKAH -->
+<fieldset class="space-y-3 pt-2 border-t border-zinc-200/80">
+<div class="flex items-center justify-between">
+<legend class="text-sm font-semibold text-zinc-900">Konten</legend>
+<span class="text-[11px] text-zinc-500">Mendukung teks kasar / draft cepat</span>
+</div>
+<!-- Segmented Tabs Flux -->
+<div class="flex p-1 bg-zinc-200/60 rounded-lg max-w-xs text-xs font-medium text-zinc-600">
+<button class="flex-1 py-1 px-3 bg-white text-zinc-900 rounded-md shadow-xs transition-all" type="button">Tempel teks</button>
+<button class="flex-1 py-1 px-3 hover:text-zinc-900 transition-colors" type="button">Tulis topik</button>
+<button class="flex-1 py-1 px-3 hover:text-zinc-900 transition-colors" type="button">Upload file</button>
+</div>
+<!-- Flux Textarea 10 rows -->
+<div class="relative">
+<textarea class="w-full rounded-lg border border-zinc-200 p-3.5 text-sm bg-white text-zinc-800 leading-relaxed font-mono focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors shadow-2xs resize-none" id="raw-content" placeholder="Tempel naskah Anda di sini..." rows="10">BAB 1 pendahuluan
+1.1 latar belakang
+Perkembangan teknologi dan media sosial seperti instagram dan tiktok sangat pesat mempengaruhi gaya belajar mahasiswa saat ini. Banyak mahasiswa yang mengandalkan perangkat pintar baik untuk referensi belajar maupun hiburan, namun seringkali waktu belajar terbagi dengan scrolling media sosial berjam-jam.
+
+1.2 rumusan masalah
+bagaimana korelasi durasi screen time terhadap indeks prestasi kumulatif mahasiswa tingkat satu? Apakah ada pola penurunan konsentrasi saat mengerjakan tugas mandiri?</textarea>
+</div>
+<!-- Textarea Subtext & Counter -->
+<div class="flex items-center justify-between text-xs text-zinc-500 pt-1">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-zinc-400 text-sm" data-icon="auto_fix_high">auto_fix_high</span>
+                  Bebas berantakan. Nomor bab dan format akan dibuat ulang.
+                </span>
+<span class="font-mono text-zinc-600 font-medium bg-zinc-200/70 px-2 py-0.5 rounded text-[11px]" id="word-counter">1.248 kata</span>
+</div>
+</fieldset>
+<!-- ROW PENGATURAN FORMAT -->
+<div class="pt-2 border-t border-zinc-200/80 grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div>
+<label class="block text-xs font-medium text-zinc-700 mb-1" for="select-gaya">Gaya bahasa</label>
+<select class="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm bg-white text-zinc-900 focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors shadow-2xs" id="select-gaya">
+<option selected="">Formal akademik (Baku KBBI)</option>
+<option>Santai &amp; Reflektif</option>
+<option>Teknis &amp; Ringkas</option>
+</select>
+</div>
+<div>
+<label class="block text-xs font-medium text-zinc-700 mb-1" for="select-template">Template tata letak</label>
+<select class="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm bg-white text-zinc-900 focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors shadow-2xs" id="select-template">
+<option selected="">Umum (TNR 12, 1.5 spasi, 4-3-3-3)</option>
+<option>Format IEEE (2 Kolom)</option>
+<option>Format APA 7th Edition</option>
+</select>
+</div>
+</div>
+<!-- BOTTOM ACTION BAR -->
+<div class="sticky bottom-4 z-20 border border-zinc-200 bg-white/95 backdrop-blur-md px-6 py-3.5 flex justify-between items-center rounded-lg shadow-sm mt-8">
+<button class="text-xs font-medium text-zinc-600 hover:text-zinc-900 transition-colors px-3 py-2 rounded-md hover:bg-zinc-100" type="button">
+                Batal
+              </button>
+<div class="flex items-center gap-3">
+<span class="text-xs text-zinc-400 hidden sm:inline">Estimasi waktu: 4 detik</span>
+<button class="bg-primary-container hover:bg-primary text-white text-sm font-medium px-5 py-2.5 rounded-lg flex items-center gap-2 transition-all shadow-xs active:scale-[0.98]" type="submit">
+<span class="material-symbols-outlined text-[18px]" data-icon="magic_button">magic_button</span>
+<span>Rapikan sekarang</span>
+</button>
+</div>
+</div>
+</form>
+</div>
+<!-- ================= KOLOM KANAN STICKY LIVE PREVIEW ================= -->
+<div class="w-full lg:flex-1 sticky top-6 self-start flex flex-col items-center">
+<div class="w-full flex items-center justify-between max-w-[340px] mb-2 px-1">
+<span class="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">Pratinjau cover</span>
+<span class="text-[11px] text-zinc-400 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="visibility">visibility</span>
+              Live Sync
+            </span>
+</div>
+<!-- A4 Paper Simulator Sheet -->
+<div class="relative w-[340px] min-h-[480px] bg-white border border-zinc-300/80 rounded-sm shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.05)] p-8 text-zinc-900 font-serif flex flex-col justify-between select-none">
+<!-- Top Section: Document Type and Title -->
+<div class="text-center pt-2">
+<div class="text-xs font-bold tracking-widest text-zinc-900 mb-6 uppercase" id="preview-tipe">
+                MAKALAH
+              </div>
+<div class="text-[11px] font-bold leading-snug uppercase max-w-[250px] mx-auto text-zinc-900" id="preview-judul">
+                PENGARUH MEDIA SOSIAL TERHADAP PRESTASI BELAJAR MAHASISWA
+              </div>
+</div>
+<!-- Middle Section: Logo Placeholder -->
+<div class="my-6 flex flex-col items-center">
+<div class="w-14 h-14 border border-zinc-200 rounded flex flex-col items-center justify-center bg-zinc-50/50">
+<span class="material-symbols-outlined text-zinc-300 text-xl" data-icon="school">school</span>
+<span class="text-[8px] text-zinc-400 mt-0.5 tracking-tighter">LOGO KAMPUS</span>
+</div>
+</div>
+<!-- Bottom Section: Authorship & Academic Institution -->
+<div class="text-center pb-2 flex flex-col items-center">
+<p class="text-[9px] text-zinc-600 mb-0.5">Disusun oleh:</p>
+<p class="text-[10px] font-bold text-zinc-900" id="preview-nama">Budi Santoso</p>
+<p class="text-[9px] text-zinc-600 mb-6" id="preview-nim">NIM 2201234567</p>
+<p class="text-[9px] font-bold uppercase text-zinc-900" id="preview-prodi">PROGRAM STUDI TEKNIK INFORMATIKA</p>
+<p class="text-[9px] font-bold uppercase text-zinc-900" id="preview-kampus">UNIVERSITAS PADJADJARAN</p>
+<p class="text-[9px] font-bold text-zinc-900 mt-0.5" id="preview-tahun">2026</p>
+</div>
+<!-- Subtle A4 Margin Indicator Line (Decorative) -->
+<div class="absolute inset-x-4 top-4 bottom-4 pointer-events-none border border-zinc-100/60 rounded-[1px]"></div>
+</div>
+<!-- Micro Legend Below Preview -->
+<p class="text-[11px] text-zinc-400 mt-3 text-center">
+            Margin 4-3-3-3 • Pratinjau otomatis terisi dari form
+          </p>
+<!-- Format Specifications Card Flux -->
+<div class="mt-4 w-[340px] p-3 rounded-lg bg-zinc-50 border border-zinc-200 text-xs text-zinc-600 flex flex-col gap-1.5">
+<div class="flex items-center justify-between font-medium text-zinc-900 text-[11px]">
+<span>Standar Otomasi Aktif</span>
+<span class="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded text-[10px]">Siap Export</span>
+</div>
+<div class="grid grid-cols-2 gap-y-1 text-[11px] text-zinc-500 pt-1">
+<span>Font: Times New Roman</span>
+<span>Spasi: 1.5 Lines</span>
+<span>Kertas: A4 (210 × 297 mm)</span>
+<span>Daftar Pustaka: IEEE / APA</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- ================= CLIENT REACTIVITY SCRIPT ================= -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Inputs
+      const inputJudul = document.getElementById('input-judul');
+      const inputNama = document.getElementById('input-nama');
+      const inputNim = document.getElementById('input-nim');
+      const inputProdi = document.getElementById('input-prodi');
+      const inputKampus = document.getElementById('input-kampus');
+      const inputTahun = document.getElementById('input-tahun');
+      const docTypeRadios = document.querySelectorAll('input[name="doc_type"]');
+      const rawContent = document.getElementById('raw-content');
+      const wordCounter = document.getElementById('word-counter');
+
+      // Live Previews
+      const previewJudul = document.getElementById('preview-judul');
+      const previewNama = document.getElementById('preview-nama');
+      const previewNim = document.getElementById('preview-nim');
+      const previewProdi = document.getElementById('preview-prodi');
+      const previewKampus = document.getElementById('preview-kampus');
+      const previewTahun = document.getElementById('preview-tahun');
+      const previewTipe = document.getElementById('preview-tipe');
+
+      // Sync Field to Preview Handlers
+      if (inputJudul) {
+        inputJudul.addEventListener('input', (e) => {
+          previewJudul.textContent = e.target.value.trim().toUpperCase() || 'JUDUL DOKUMEN BELUM DIISI';
+        });
+      }
+
+      if (inputNama) {
+        inputNama.addEventListener('input', (e) => {
+          previewNama.textContent = e.target.value.trim() || 'Nama Mahasiswa';
+        });
+      }
+
+      if (inputNim) {
+        inputNim.addEventListener('input', (e) => {
+          previewNim.textContent = e.target.value.trim() ? `NIM ${e.target.value.trim()}` : 'NIM -';
+        });
+      }
+
+      if (inputProdi) {
+        inputProdi.addEventListener('input', (e) => {
+          previewProdi.textContent = e.target.value.trim() ? `PROGRAM STUDI ${e.target.value.trim().toUpperCase()}` : 'PROGRAM STUDI';
+        });
+      }
+
+      if (inputKampus) {
+        inputKampus.addEventListener('input', (e) => {
+          previewKampus.textContent = e.target.value.trim().toUpperCase() || 'UNIVERSITAS';
+        });
+      }
+
+      if (inputTahun) {
+        inputTahun.addEventListener('input', (e) => {
+          previewTahun.textContent = e.target.value.trim() || '2026';
+        });
+      }
+
+      // Sync Document Type radio selection
+      docTypeRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          if (e.target.checked) {
+            let labelText = 'MAKALAH';
+            if (e.target.value === 'praktikum') labelText = 'LAPORAN PRAKTIKUM';
+            if (e.target.value === 'pkl') labelText = 'LAPORAN PRAKTIK KERJA LAPANGAN';
+            if (e.target.value === 'proposal') labelText = 'PROPOSAL PENELITIAN';
+            previewTipe.textContent = labelText;
+          }
+        });
+      });
+
+      // Word Counter for Textarea
+      if (rawContent && wordCounter) {
+        const updateCount = () => {
+          const text = rawContent.value.trim();
+          const words = text ? text.split(/\s+/).length : 0;
+          wordCounter.textContent = `${words.toLocaleString('id-ID')} kata`;
+        };
+        rawContent.addEventListener('input', updateCount);
+      }
+    });
+  </script>
+</body></html>

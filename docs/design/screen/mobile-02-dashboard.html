@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>rapi. — Dokumen Akademik</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-dim": "#dad9e3",
+            "on-error-container": "#93000a",
+            "tertiary-fixed-dim": "#90cdff",
+            "outline": "#916f6b",
+            "surface-tint": "#bf0715",
+            "on-primary": "#ffffff",
+            "tertiary-container": "#0078b2",
+            "on-surface": "#1a1b22",
+            "on-secondary-container": "#700f0f",
+            "on-tertiary-fixed-variant": "#004b71",
+            "on-secondary": "#ffffff",
+            "on-primary-container": "#fff6f5",
+            "secondary": "#a73831",
+            "on-background": "#1a1b22",
+            "primary-container": "#dc2626",
+            "error": "#ba1a1a",
+            "tertiary": "#005e8d",
+            "on-primary-fixed": "#410002",
+            "surface-container-highest": "#e3e1ec",
+            "background": "#fbf8ff",
+            "on-error": "#ffffff",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed-variant": "#86211c",
+            "primary": "#b70011",
+            "secondary-fixed": "#ffdad6",
+            "secondary-container": "#fd786c",
+            "on-tertiary-fixed": "#001e30",
+            "inverse-surface": "#2f3038",
+            "inverse-primary": "#ffb4ab",
+            "secondary-fixed-dim": "#ffb4ab",
+            "surface-container-low": "#f4f2fd",
+            "surface-container": "#eeedf7",
+            "on-surface-variant": "#5c403c",
+            "outline-variant": "#e6bdb8",
+            "primary-fixed-dim": "#ffb4ab",
+            "primary-fixed": "#ffdad6",
+            "error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#93000b",
+            "on-tertiary-container": "#f3f8ff",
+            "surface-bright": "#fbf8ff",
+            "on-secondary-fixed": "#410002",
+            "surface-container-high": "#e8e7f1",
+            "tertiary-fixed": "#cbe6ff",
+            "surface-variant": "#e3e1ec",
+            "surface-container-lowest": "#ffffff",
+            "surface": "#fbf8ff",
+            "inverse-on-surface": "#f1effa"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "gutter": "1rem",
+            "space-md": "1rem",
+            "margin": "1.5rem",
+            "space-xl": "2rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "label-sm": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-md": ["Inter"],
+            "body-md": ["Inter"]
+          },
+          "fontSize": {
+            "label-sm": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "500" }],
+            "headline-lg": ["1.75rem", { "lineHeight": "2.25rem", "fontWeight": "600" }],
+            "body-sm": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "400" }],
+            "headline-md": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "600" }],
+            "label-md": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "500" }],
+            "body-md": ["0.875rem", { "lineHeight": "1.375rem", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #ffffff;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 20px;
+      line-height: 1;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-white text-zinc-900 antialiased min-h-screen selection:bg-red-500 selection:text-white">
+<!-- Off-canvas Flux Sidebar Drawer (Interactive) -->
+<div class="fixed inset-0 bg-zinc-900/40 z-50 transition-opacity duration-200 opacity-0 pointer-events-none" id="drawer-overlay"></div>
+<aside class="fixed inset-y-0 left-0 w-72 bg-white z-50 transform -translate-x-full transition-transform duration-200 ease-out flex flex-col justify-between p-4 border-r border-zinc-200 shadow-xl" id="sidebar-drawer">
+<div class="flex flex-col space-y-6">
+<div class="flex items-center justify-between pb-3 border-b border-zinc-100">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-lg bg-zinc-900 flex items-center justify-center text-white font-bold text-xs">R</div>
+<span class="text-base font-bold tracking-tight text-zinc-900">Rapi</span>
+</div>
+<button class="p-1 rounded-md text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 transition-colors" id="close-drawer">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<nav class="space-y-1">
+<!-- Tab: Dokumen (Active) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-zinc-100 text-blue-700 font-medium text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-blue-700">description</span>
+<span>Dokumen</span>
+</a>
+<!-- Tab: Template -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined">style</span>
+<span>Template</span>
+</a>
+<!-- Tab: Pengaturan -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Pengaturan</span>
+</a>
+</nav>
+</div>
+<!-- Drawer Footer -->
+<div class="pt-4 border-t border-zinc-100 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span>Bantuan</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Keluar</span>
+</a>
+</div>
+</aside>
+<!-- Mobile Viewport Container (Fixed width 390px centered) -->
+<div class="w-full max-w-[390px] mx-auto min-h-screen bg-white relative flex flex-col border-x border-zinc-100">
+<!-- Top Bar -->
+<header class="sticky top-0 z-40 bg-white border-b border-zinc-200 px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<button aria-label="Buka menu" class="p-1 rounded-md text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 transition-colors" id="open-drawer">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="font-headline-md text-headline-md tracking-tight text-zinc-900 font-bold flex items-center">
+          rapi<span class="text-[#DC2626] font-bold">.</span>
+</span>
+</div>
+<!-- Profile Avatar -->
+<div class="w-8 h-8 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-800 text-xs font-semibold select-none cursor-pointer hover:bg-zinc-200 transition-colors" title="Budi Santoso">
+        BS
+      </div>
+</header>
+<!-- Page Content -->
+<main class="px-4 py-5 space-y-4 flex-1 pb-24">
+<!-- 1. Heading Section -->
+<section class="space-y-0.5">
+<h1 class="text-2xl font-bold tracking-tight text-zinc-900 font-headline-lg">Dokumen</h1>
+<p class="font-body-md text-body-md text-zinc-500">Semua makalah dan laporanmu</p>
+</section>
+<!-- 2. Search and Filters -->
+<section class="space-y-2.5">
+<!-- Search Input -->
+<div class="relative w-full">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400">
+<span class="material-symbols-outlined text-[18px]">search</span>
+</div>
+<input class="w-full pl-9 pr-3 py-2 rounded-lg border border-zinc-200 bg-white font-body-md text-body-md text-zinc-900 placeholder-zinc-400 shadow-sm focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all outline-none" placeholder="Cari judul..." type="text"/>
+</div>
+<!-- Filter Row -->
+<div class="flex items-center gap-2">
+<!-- Filter 1: Jenis Dokumen -->
+<div class="relative flex-1">
+<select class="w-full appearance-none rounded-md border border-zinc-200 bg-white py-1.5 pl-2.5 pr-7 font-label-sm text-label-sm text-zinc-700 hover:border-zinc-300 focus:border-red-600 focus:ring-0 outline-none cursor-pointer">
+<option value="all">Semua jenis</option>
+<option value="makalah">Makalah</option>
+<option value="praktikum">Laporan Praktikum</option>
+<option value="pkl">Laporan PKL</option>
+<option value="proposal">Proposal Skripsi</option>
+</select>
+<div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-zinc-500">
+<span class="material-symbols-outlined text-[16px]">expand_more</span>
+</div>
+</div>
+<!-- Filter 2: Urutan -->
+<div class="relative flex-1">
+<select class="w-full appearance-none rounded-md border border-zinc-200 bg-white py-1.5 pl-2.5 pr-7 font-label-sm text-label-sm text-zinc-700 hover:border-zinc-300 focus:border-red-600 focus:ring-0 outline-none cursor-pointer">
+<option value="newest">Terbaru</option>
+<option value="oldest">Terlama</option>
+<option value="alphabetical">Judul A-Z</option>
+</select>
+<div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-zinc-500">
+<span class="material-symbols-outlined text-[16px]">expand_more</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. Document List (Stacked Rows) -->
+<section class="bg-white rounded-xl border border-zinc-200 divide-y divide-zinc-200 overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+<!-- Item 1 -->
+<div class="p-3.5 hover:bg-zinc-50 transition-colors flex items-start justify-between gap-3 group">
+<div class="space-y-1.5 flex-1 min-w-0">
+<h2 class="font-label-md text-label-md text-zinc-900 leading-snug line-clamp-2 font-medium">
+              Pengaruh Media Sosial terhadap Prestasi Belajar Mahasiswa
+            </h2>
+<div class="flex items-center gap-1.5 font-body-sm text-body-sm text-zinc-500">
+<span>Makalah</span>
+<span>·</span>
+<span>14 halaman</span>
+<span>·</span>
+<span>12 menit lalu</span>
+</div>
+<div class="pt-0.5">
+<span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 border border-amber-200 text-[11px] font-medium px-2 py-0.5 rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                Menulis bab 3/5
+              </span>
+</div>
+</div>
+<button aria-label="Opsi dokumen" class="text-zinc-400 hover:text-zinc-700 p-1 rounded-md hover:bg-zinc-100 transition-colors mt-0.5">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+<!-- Item 2 -->
+<div class="p-3.5 hover:bg-zinc-50 transition-colors flex items-start justify-between gap-3 group">
+<div class="space-y-1.5 flex-1 min-w-0">
+<h2 class="font-label-md text-label-md text-zinc-900 leading-snug line-clamp-2 font-medium">
+              Laporan Praktikum Kimia Dasar: Titrasi Asam Basa
+            </h2>
+<div class="flex items-center gap-1.5 font-body-sm text-body-sm text-zinc-500">
+<span>Laporan Praktikum</span>
+<span>·</span>
+<span>8 halaman</span>
+<span>·</span>
+<span>Kemarin</span>
+</div>
+<div class="pt-0.5">
+<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-medium px-2 py-0.5 rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Siap
+              </span>
+</div>
+</div>
+<button aria-label="Opsi dokumen" class="text-zinc-400 hover:text-zinc-700 p-1 rounded-md hover:bg-zinc-100 transition-colors mt-0.5">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+<!-- Item 3 -->
+<div class="p-3.5 hover:bg-zinc-50 transition-colors flex items-start justify-between gap-3 group">
+<div class="space-y-1.5 flex-1 min-w-0">
+<h2 class="font-label-md text-label-md text-zinc-900 leading-snug line-clamp-2 font-medium">
+              Laporan PKL di Dinas Kominfo Kota Bandung
+            </h2>
+<div class="flex items-center gap-1.5 font-body-sm text-body-sm text-zinc-500">
+<span>Laporan PKL</span>
+<span>·</span>
+<span>36 halaman</span>
+<span>·</span>
+<span>3 hari lalu</span>
+</div>
+<div class="pt-0.5">
+<span class="inline-flex items-center gap-1 bg-zinc-100 text-zinc-700 border border-zinc-200 text-[11px] font-medium px-2 py-0.5 rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-zinc-400"></span>
+                Draft
+              </span>
+</div>
+</div>
+<button aria-label="Opsi dokumen" class="text-zinc-400 hover:text-zinc-700 p-1 rounded-md hover:bg-zinc-100 transition-colors mt-0.5">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+<!-- Item 4 -->
+<div class="p-3.5 hover:bg-zinc-50 transition-colors flex items-start justify-between gap-3 group">
+<div class="space-y-1.5 flex-1 min-w-0">
+<h2 class="font-label-md text-label-md text-zinc-900 leading-snug line-clamp-2 font-medium">
+              Proposal Skripsi: Sistem Rekomendasi Buku Perpustakaan
+            </h2>
+<div class="flex items-center gap-1.5 font-body-sm text-body-sm text-zinc-500">
+<span>Proposal</span>
+<span>·</span>
+<span>22 halaman</span>
+<span>·</span>
+<span>5 hari lalu</span>
+</div>
+<div class="pt-0.5">
+<span class="inline-flex items-center gap-1 bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-medium px-2 py-0.5 rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                Gagal di bab 2
+              </span>
+</div>
+</div>
+<button aria-label="Opsi dokumen" class="text-zinc-400 hover:text-zinc-700 p-1 rounded-md hover:bg-zinc-100 transition-colors mt-0.5">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+<!-- Item 5 -->
+<div class="p-3.5 hover:bg-zinc-50 transition-colors flex items-start justify-between gap-3 group">
+<div class="space-y-1.5 flex-1 min-w-0">
+<h2 class="font-label-md text-label-md text-zinc-900 leading-snug line-clamp-2 font-medium">
+              Makalah Etika Profesi Teknologi Informasi
+            </h2>
+<div class="flex items-center gap-1.5 font-body-sm text-body-sm text-zinc-500">
+<span>Makalah</span>
+<span>·</span>
+<span>11 halaman</span>
+<span>·</span>
+<span>1 minggu lalu</span>
+</div>
+<div class="pt-0.5">
+<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-medium px-2 py-0.5 rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Siap
+              </span>
+</div>
+</div>
+<button aria-label="Opsi dokumen" class="text-zinc-400 hover:text-zinc-700 p-1 rounded-md hover:bg-zinc-100 transition-colors mt-0.5">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</section>
+<!-- 4. Free Plan Quota Card -->
+<section class="rounded-lg border border-zinc-200 bg-zinc-50 p-3 mt-4">
+<div class="flex items-center justify-between font-label-sm text-label-sm text-zinc-700">
+<span>Paket Free · 2 dari 3 dokumen bulan ini</span>
+<span class="text-zinc-500 text-[11px]">66%</span>
+</div>
+<!-- Progress Bar (No gradient, exact red) -->
+<div class="w-full bg-zinc-200 h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-[#DC2626] h-full rounded-full w-[66%]"></div>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<a class="font-label-sm text-label-sm font-semibold text-red-600 hover:text-red-700 inline-flex items-center gap-0.5 transition-colors" href="#">
+<span>Upgrade ke Pro</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+<span class="text-zinc-400 text-[11px]">Reset 1 Apr</span>
+</div>
+</section>
+</main>
+<!-- 5. Floating Action Button (Dokumen Baru) -->
+<div class="fixed bottom-6 right-4 z-40 max-w-[390px] mx-auto pointer-events-none">
+<button class="pointer-events-auto bg-[#DC2626] hover:bg-red-700 text-white font-medium text-sm py-2.5 px-4 rounded-lg shadow-lg shadow-red-600/20 flex items-center gap-1.5 transition-transform active:scale-95 duration-150">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>Dokumen baru</span>
+</button>
+</div>
+</div>
+<!-- Interactive script for opening/closing drawer -->
+<script>
+    const openBtn = document.getElementById('open-drawer');
+    const closeBtn = document.getElementById('close-drawer');
+    const drawer = document.getElementById('sidebar-drawer');
+    const overlay = document.getElementById('drawer-overlay');
+
+    function toggleDrawer(open) {
+      if (open) {
+        drawer.classList.remove('-translate-x-full');
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        overlay.classList.add('opacity-100');
+      } else {
+        drawer.classList.add('-translate-x-full');
+        overlay.classList.remove('opacity-100');
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+      }
+    }
+
+    openBtn?.addEventListener('click', () => toggleDrawer(true));
+    closeBtn?.addEventListener('click', () => toggleDrawer(false));
+    overlay?.addEventListener('click', () => toggleDrawer(false));
+  </script>
+</body></html>

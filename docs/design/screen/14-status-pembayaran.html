@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-white" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Status Pembayaran - Rapi Academic</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-tint": "#bf0715",
+            "on-tertiary": "#ffffff",
+            "surface-container-highest": "#e3e1ec",
+            "primary-fixed": "#ffdad6",
+            "on-tertiary-fixed-variant": "#004b71",
+            "primary-fixed-dim": "#ffb4ab",
+            "outline-variant": "#e6bdb8",
+            "on-error": "#ffffff",
+            "inverse-primary": "#ffb4ab",
+            "tertiary-fixed-dim": "#90cdff",
+            "on-secondary-fixed-variant": "#86211c",
+            "secondary-container": "#fd786c",
+            "on-primary-fixed-variant": "#93000b",
+            "tertiary-container": "#0078b2",
+            "on-surface-variant": "#5c403c",
+            "on-surface": "#1a1b22",
+            "on-primary": "#ffffff",
+            "background": "#fbf8ff",
+            "surface-container-low": "#f4f2fd",
+            "error": "#ba1a1a",
+            "outline": "#916f6b",
+            "surface-variant": "#e3e1ec",
+            "secondary-fixed": "#ffdad6",
+            "on-background": "#1a1b22",
+            "tertiary": "#005e8d",
+            "on-primary-container": "#fff6f5",
+            "surface-container": "#eeedf7",
+            "surface-bright": "#fbf8ff",
+            "on-tertiary-fixed": "#001e30",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary": "#ffffff",
+            "surface": "#fbf8ff",
+            "on-tertiary-container": "#f3f8ff",
+            "on-secondary-container": "#700f0f",
+            "error-container": "#ffdad6",
+            "secondary-fixed-dim": "#ffb4ab",
+            "on-secondary-fixed": "#410002",
+            "surface-dim": "#dad9e3",
+            "surface-container-high": "#e8e7f1",
+            "primary-container": "#dc2626",
+            "inverse-on-surface": "#f1effa",
+            "inverse-surface": "#2f3038",
+            "on-error-container": "#93000a",
+            "tertiary-fixed": "#cbe6ff",
+            "primary": "#b70011",
+            "secondary": "#a73831",
+            "on-primary-fixed": "#410002"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "body-md": ["Inter"],
+            "label-sm": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-md": ["Inter"],
+            "headline-lg": ["Inter"]
+          },
+          fontSize: {
+            "body-md": ["0.875rem", { lineHeight: "1.375rem", fontWeight: "400" }],
+            "label-sm": ["0.75rem", { lineHeight: "1rem", fontWeight: "500" }],
+            "body-sm": ["0.75rem", { lineHeight: "1rem", fontWeight: "400" }],
+            "headline-md": ["1.25rem", { lineHeight: "1.75rem", fontWeight: "600" }],
+            "label-md": ["0.875rem", { lineHeight: "1.25rem", fontWeight: "500" }],
+            "headline-lg": ["1.75rem", { lineHeight: "2.25rem", fontWeight: "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body class="h-full bg-zinc-50 font-body-md text-zinc-900 antialiased flex">
+<!-- FLUX SIDEBAR NAVIGATION -->
+<aside class="docked left top-0 bottom-0 w-64 h-screen fixed bg-white border-r border-zinc-200 z-30 flex flex-col justify-between p-4">
+<div class="flex flex-col gap-6">
+<!-- Brand & Version Anchor -->
+<div class="flex items-center justify-between px-2 pt-1">
+<div class="flex items-center gap-2">
+<span class="text-xl font-bold tracking-tight text-zinc-900">rapi.</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-medium bg-zinc-100 text-zinc-600 border border-zinc-200">Akademik</span>
+</div>
+</div>
+<!-- Main Action -->
+<button class="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium text-sm transition-all duration-150 active:scale-[0.99] shadow-sm" type="button">
+<span class="material-symbols-outlined text-sm leading-none" data-icon="add">add</span>
+<span>Buat Dokumen</span>
+</button>
+<!-- Navigation Tabs -->
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] text-zinc-500" data-icon="description">description</span>
+<span>Dokumen</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] text-zinc-500" data-icon="style">style</span>
+<span>Template</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] text-zinc-500" data-icon="history">history</span>
+<span>Riwayat export</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-zinc-100 text-zinc-900 font-medium text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] text-red-600" data-icon="payments">payments</span>
+<span>Status pembayaran</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] text-zinc-500" data-icon="settings">settings</span>
+<span>Pengaturan</span>
+</a>
+</nav>
+</div>
+<!-- Sidebar Footer -->
+<div class="flex flex-col gap-4 border-t border-zinc-200 pt-4">
+<!-- Kuota/Paket info card -->
+<div class="rounded-lg bg-zinc-50 border border-zinc-200/80 p-3">
+<div class="flex items-center justify-between text-xs text-zinc-500 mb-1.5 font-medium">
+<span>Paket Pro</span>
+<span class="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded text-[10px] border border-emerald-200">Aktif</span>
+</div>
+<div class="w-full bg-zinc-200 h-1.5 rounded-full overflow-hidden mb-1.5">
+<div class="bg-red-600 h-1.5 rounded-full" style="width: 75%"></div>
+</div>
+<p class="text-[11px] text-zinc-500">24 dari 30 hari tersisa</p>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-2.5 px-2 py-1.5 rounded-md text-xs font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px] text-zinc-400" data-icon="help_outline">help_outline</span>
+<span>Bantuan</span>
+</a>
+</nav>
+<!-- User Profile Row -->
+<div class="flex items-center gap-3 pt-2 border-t border-zinc-100 px-1">
+<div class="w-8 h-8 rounded-full bg-zinc-200 flex items-center justify-center font-semibold text-xs text-zinc-700">
+          BS
+        </div>
+<div class="flex flex-col min-w-0">
+<span class="text-xs font-semibold text-zinc-900 truncate">Budi Santoso</span>
+<span class="text-[11px] text-zinc-500 truncate">budi@mhs.ac.id</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- MAIN WORKSPACE CANVAS -->
+<div class="ml-64 flex-1 flex flex-col min-h-screen">
+<!-- TOP BREADCRUMBS BAR -->
+<header class="sticky top-0 z-20 h-14 bg-white/95 backdrop-blur-sm border-b border-zinc-200 flex items-center justify-between px-8">
+<div class="flex items-center gap-2 text-xs font-medium text-zinc-500">
+<a class="hover:text-zinc-900 transition-colors" href="#">Dashboard</a>
+<span class="text-zinc-300">/</span>
+<span class="text-zinc-900 font-semibold">Status pembayaran</span>
+</div>
+<div class="flex items-center gap-4 text-xs font-medium">
+<div class="flex items-center gap-2 text-zinc-600">
+<span class="inline-block w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-emerald-100 animate-pulse"></span>
+<span>Server Rapi siap</span>
+</div>
+<span class="text-zinc-200">|</span>
+<a class="text-zinc-600 hover:text-zinc-900 flex items-center gap-1 transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px] text-zinc-400" data-icon="menu_book">menu_book</span>
+<span>Panduan</span>
+</a>
+</div>
+</header>
+<!-- CONTENT WRAPPER -->
+<main class="flex-1 py-10 px-8">
+<div class="max-w-[560px] mx-auto">
+<!-- Page Header -->
+<div class="mb-8">
+<h1 class="text-xl font-bold tracking-tight text-zinc-900 mb-1">Status Pembayaran</h1>
+<p class="text-sm text-zinc-500">
+            Pantau status transaksi paket Rapi Pro Anda setelah pembayaran via Midtrans.
+          </p>
+</div>
+<!-- STATE 1: MENUNGGU -->
+<div class="mb-10">
+<div class="font-mono text-xs uppercase tracking-wider text-zinc-500 mb-2 flex items-center gap-1.5">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+            State: menunggu
+          </div>
+<div class="border border-zinc-200 bg-white rounded-xl p-6 shadow-sm">
+<div class="flex items-start gap-4 mb-4">
+<div class="p-2 rounded-lg bg-red-50 text-red-600 flex-shrink-0">
+<svg class="animate-spin w-5 h-5 text-red-600" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+</svg>
+</div>
+<div>
+<h2 class="text-lg font-semibold text-zinc-900">Menunggu konfirmasi pembayaran</h2>
+<p class="text-sm text-zinc-500 mt-0.5">Kami cek otomatis. Halaman ini diperbarui sendiri setelah Midtrans mengonfirmasi.</p>
+</div>
+</div>
+<!-- Transaction Detail Key-Value List -->
+<div class="border-t border-b border-zinc-100 py-3 my-4 space-y-2 text-sm">
+<div class="flex justify-between items-center">
+<span class="text-zinc-500">Order ID</span>
+<span class="font-mono text-xs text-zinc-800 bg-zinc-50 border border-zinc-200/60 px-1.5 py-0.5 rounded">RAPI-20261007-0042</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-zinc-500">Paket</span>
+<span class="text-zinc-800 font-medium">Pro 30 hari</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-zinc-500">Total</span>
+<span class="font-semibold text-zinc-900">Rp25.000</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-zinc-500">Metode</span>
+<span class="text-zinc-800">QRIS</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-3 pt-1">
+<button class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium border border-zinc-300 rounded-lg text-zinc-800 hover:bg-zinc-50 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-zinc-400" type="button">
+                Buka lagi pembayaran
+              </button>
+<button class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors focus:outline-none" type="button">
+                Kembali ke dokumen
+              </button>
+</div>
+</div>
+</div>
+<!-- STATE 2: BERHASIL -->
+<div class="mb-10">
+<div class="font-mono text-xs uppercase tracking-wider text-zinc-500 mb-2 flex items-center gap-1.5">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            State: berhasil
+          </div>
+<div class="border border-zinc-200 bg-white rounded-xl p-6 shadow-sm">
+<div class="flex items-start gap-3.5 mb-4">
+<div class="p-1 rounded-full text-emerald-600 flex-shrink-0">
+<svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+<polyline points="22 4 12 14.01 9 11.01"></polyline>
+</svg>
+</div>
+<div>
+<h2 class="text-lg font-semibold text-zinc-900">Pembayaran berhasil</h2>
+<p class="text-sm text-zinc-500 mt-0.5">Paket Pro aktif sampai 6 Nov 2026.</p>
+</div>
+</div>
+<!-- Transaction Detail Key-Value List -->
+<div class="border-t border-b border-zinc-100 py-3 my-4 space-y-2 text-sm">
+<div class="flex justify-between items-center">
+<span class="text-zinc-500">Order ID</span>
+<span class="font-mono text-xs text-zinc-800 bg-zinc-50 border border-zinc-200/60 px-1.5 py-0.5 rounded">RAPI-20261007-0042</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-zinc-500">Paket</span>
+<span class="text-zinc-800 font-medium">Pro 30 hari</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-zinc-500">Total</span>
+<span class="font-semibold text-zinc-900">Rp25.000</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-zinc-500">Metode</span>
+<span class="text-zinc-800">QRIS</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-zinc-500">Waktu bayar</span>
+<span class="text-zinc-800 font-medium">Dibayar 7 Okt 2026, 10.42</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-3 pt-1">
+<button class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-red-600" type="button">
+                Lanjut ke dokumen
+              </button>
+<button class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium border border-zinc-300 rounded-lg text-zinc-800 hover:bg-zinc-50 transition-colors focus:outline-none" type="button">
+                Unduh bukti (PDF)
+              </button>
+</div>
+</div>
+</div>
+<!-- STATE 3: GAGAL / KEDALUWARSA -->
+<div class="mb-8">
+<div class="font-mono text-xs uppercase tracking-wider text-zinc-500 mb-2 flex items-center gap-1.5">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-red-500"></span>
+            State: gagal / kedaluwarsa
+          </div>
+<div class="border border-zinc-200 bg-white rounded-xl p-6 shadow-sm">
+<div class="flex items-start gap-3.5 mb-4">
+<div class="p-1 rounded-full text-red-600 flex-shrink-0">
+<svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<line x1="15" x2="9" y1="9" y2="15"></line>
+<line x1="9" x2="15" y1="9" y2="15"></line>
+</svg>
+</div>
+<div>
+<h2 class="text-lg font-semibold text-zinc-900">Pembayaran tidak selesai</h2>
+<p class="text-sm text-zinc-500 mt-0.5">Waktu pembayaran habis atau dibatalkan. Tidak ada dana yang ditarik.</p>
+</div>
+</div>
+<!-- Transaction Detail Key-Value List -->
+<div class="border-t border-b border-zinc-100 py-3 my-4 space-y-2 text-sm">
+<div class="flex justify-between items-center">
+<span class="text-zinc-500">Order ID</span>
+<span class="font-mono text-xs text-zinc-800 bg-zinc-50 border border-zinc-200/60 px-1.5 py-0.5 rounded">RAPI-20261007-0042</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-zinc-500">Paket</span>
+<span class="text-zinc-800 font-medium">Pro 30 hari</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-zinc-500">Total</span>
+<span class="font-semibold text-zinc-900">Rp25.000</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-zinc-500">Metode</span>
+<span class="text-zinc-800">QRIS</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-3 pt-1">
+<button class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-red-600" type="button">
+                Coba bayar lagi
+              </button>
+<button class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors focus:outline-none" type="button">
+                Kembali ke paket
+              </button>
+</div>
+</div>
+</div>
+<!-- Footer Guidance Note -->
+<p class="text-center text-xs text-zinc-400 mt-8 mb-4">
+          Mengalami kendala sinkronisasi dengan Midtrans? Silakan hubungi <a class="text-zinc-600 underline hover:text-zinc-800" href="#">Pusat Bantuan Mahasiswa</a>.
+        </p>
+</div>
+</main>
+</div>
+</body></html>

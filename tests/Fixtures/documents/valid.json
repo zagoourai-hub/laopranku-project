@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "type": "makalah",
+  "cover": {
+    "title": "Dampak Media Sosial terhadap Prestasi Belajar",
+    "name": "Rina Putri",
+    "nim": "2301001",
+    "prodi": "Pendidikan Informatika",
+    "campus": "Universitas Contoh",
+    "year": "2026"
+  },
+  "style": "formal",
+  "chapters": [
+    {
+      "id": "6f1b7c2e-0a52-4a55-9d3e-1c7b6d6f0001",
+      "title": "Pendahuluan",
+      "sections": [
+        {
+          "id": "6f1b7c2e-0a52-4a55-9d3e-1c7b6d6f0002",
+          "title": "Latar Belakang",
+          "blocks": [
+            { "id": "6f1b7c2e-0a52-4a55-9d3e-1c7b6d6f0003", "type": "paragraph", "text": "Media sosial dipakai mahasiswa setiap hari & memengaruhi waktu belajar." },
+            { "id": "6f1b7c2e-0a52-4a55-9d3e-1c7b6d6f0004", "type": "list", "ordered": true, "items": ["Waktu layar", "Gangguan notifikasi"] }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    { "id": "6f1b7c2e-0a52-4a55-9d3e-1c7b6d6f0005", "text": "Sari, A. (2024). Media Sosial dan Belajar. Jakarta: Contoh Press." }
+  ],
+  "sources": [
+    { "id": "6f1b7c2e-0a52-4a55-9d3e-1c7b6d6f0006", "text": "Catatan wawancara", "url": null, "doi": null }
+  ],
+  "brief": { "topic": "Media sosial dan prestasi belajar", "chapter_count": 4, "length": "sedang", "instructions": "", "facts": {} }
+}

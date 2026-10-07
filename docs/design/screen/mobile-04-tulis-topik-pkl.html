@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rapi - Mobile Tulis Topik Laporan PKL</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            rapi: {
+              primary: '#DC2626',
+              primaryHover: '#B91C1C',
+              surface: '#FFFFFF',
+              subtle: '#F4F4F5',
+              border: '#E4E4E7',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    /* Hide scrollbar for clean mobile view */
+    ::-webkit-scrollbar {
+      width: 0px;
+      background: transparent;
+    }
+  </style>
+</head>
+<body class="bg-white min-h-screen text-zinc-900">
+<!-- Mobile Device Container (390px viewport standard) -->
+<div class="w-full min-h-screen bg-white flex flex-col relative">
+<!-- Top Navigation Bar (Sticky) -->
+<header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-zinc-200 px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<button aria-label="Kembali" class="w-8 h-8 -ml-1 rounded-lg flex items-center justify-center text-zinc-700 hover:bg-zinc-100 active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[22px]">arrow_back</span>
+</button>
+<div>
+<h1 class="text-base font-semibold leading-tight text-zinc-900">Dokumen baru</h1>
+<p class="text-xs font-medium text-zinc-500 leading-tight">Langkah 2 dari 2</p>
+</div>
+</div>
+<button class="text-xs font-medium text-zinc-500 hover:text-zinc-800 px-2 py-1 rounded transition-colors" type="button">
+        Batal
+      </button>
+</header>
+<!-- Scrollable Form Body -->
+<main class="flex-1 px-4 pt-3.5 pb-32 space-y-6">
+<!-- Summary Badges / Selected Step Info -->
+<section class="bg-zinc-50 border border-zinc-200 rounded-xl p-3 flex items-center justify-between gap-2">
+<div class="flex flex-wrap items-center gap-1.5">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white border border-zinc-300 text-xs font-medium text-zinc-800 shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-zinc-400"></span>
+            Laporan PKL
+          </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white border border-zinc-300 text-xs font-medium text-zinc-800 shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+            Tulis topik
+          </span>
+</div>
+<button class="text-xs font-medium text-red-600 hover:text-red-700 active:underline shrink-0 px-1 py-0.5" type="button">
+          Ubah
+        </button>
+</section>
+<!-- Section: Topik -->
+<section class="space-y-4">
+<div class="flex items-center justify-between pb-1 border-b border-zinc-100">
+<h2 class="text-sm font-bold uppercase tracking-wider text-zinc-800">Topik</h2>
+<span class="text-[11px] font-medium text-zinc-400">Wajib diisi</span>
+</div>
+<!-- Input: Topik / Judul -->
+<div class="space-y-1.5">
+<label class="block text-xs font-semibold text-zinc-700" for="topik-judul">Topik / judul</label>
+<input class="w-full px-3 py-2 text-sm bg-white border border-zinc-300 rounded-lg focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors text-zinc-900" id="topik-judul" type="text" value="Laporan PKL di Dinas Kominfo Kota Bandung"/>
+</div>
+<!-- Native Select: Jumlah bab -->
+<div class="space-y-1.5">
+<label class="block text-xs font-semibold text-zinc-700" for="jumlah-bab">Jumlah bab</label>
+<div class="relative">
+<select class="w-full px-3 py-2 pr-9 text-sm bg-white border border-zinc-300 rounded-lg focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors text-zinc-900 appearance-none" id="jumlah-bab">
+<option value="3">3 Bab (Pendahuluan, Isi, Penutup)</option>
+<option value="4">4 Bab</option>
+<option selected="" value="5">5 Bab (Format Baku PKL / Magang)</option>
+<option value="6">6 Bab</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none text-[20px]">
+              expand_more
+            </span>
+</div>
+</div>
+<!-- Radio Group: Panjang per bab -->
+<div class="space-y-1.5">
+<label class="block text-xs font-semibold text-zinc-700">Panjang per bab</label>
+<div class="grid grid-cols-3 gap-2">
+<!-- Option: Ringkas -->
+<label class="relative flex flex-col items-center justify-center p-2.5 rounded-lg border border-zinc-200 bg-white cursor-pointer hover:bg-zinc-50 transition-colors text-center">
+<input class="sr-only" name="panjang_bab" type="radio" value="ringkas"/>
+<span class="text-xs font-medium text-zinc-700">Ringkas</span>
+<span class="text-[10px] text-zinc-400 mt-0.5">~1-2 hal</span>
+</label>
+<!-- Option: Sedang (Selected) -->
+<label class="relative flex flex-col items-center justify-center p-2.5 rounded-lg border-2 border-red-600 bg-red-50/30 cursor-pointer text-center">
+<input checked="" class="sr-only" name="panjang_bab" type="radio" value="sedang"/>
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-red-600"></span>
+<span class="text-xs font-semibold text-red-700">Sedang</span>
+</div>
+<span class="text-[10px] font-medium text-red-600 mt-0.5">~3-4 hal</span>
+</label>
+<!-- Option: Panjang -->
+<label class="relative flex flex-col items-center justify-center p-2.5 rounded-lg border border-zinc-200 bg-white cursor-pointer hover:bg-zinc-50 transition-colors text-center">
+<input class="sr-only" name="panjang_bab" type="radio" value="panjang"/>
+<span class="text-xs font-medium text-zinc-700">Panjang</span>
+<span class="text-[10px] text-zinc-400 mt-0.5">~5+ hal</span>
+</label>
+</div>
+</div>
+<!-- Native Select: Gaya bahasa -->
+<div class="space-y-1.5">
+<label class="block text-xs font-semibold text-zinc-700" for="gaya-bahasa">Gaya bahasa</label>
+<div class="relative">
+<select class="w-full px-3 py-2 pr-9 text-sm bg-white border border-zinc-300 rounded-lg focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors text-zinc-900 appearance-none" id="gaya-bahasa">
+<option selected="" value="formal">Formal akademik (Baku &amp; Objektif)</option>
+<option value="deskriptif">Laporan naratif / Pengalaman kerja</option>
+<option value="teknis">Teknis mendalam (Sistem &amp; Rekayasa)</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none text-[20px]">
+              expand_more
+            </span>
+</div>
+</div>
+<!-- Textarea: Instruksi tambahan (opsional) -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center">
+<label class="block text-xs font-semibold text-zinc-700" for="instruksi-tambahan">Instruksi tambahan (opsional)</label>
+<span class="text-[10px] text-zinc-400">Opsional</span>
+</div>
+<textarea class="w-full px-3 py-2 text-sm bg-white border border-zinc-300 rounded-lg focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors text-zinc-900 resize-none placeholder:text-zinc-400" id="instruksi-tambahan" placeholder="Contoh: Fokuskan pembahasan pada sistem antrean online dan arsitektur database PostgreSQL..." rows="3"></textarea>
+</div>
+</section>
+<!-- Section: Data PKL -->
+<section class="space-y-4">
+<div class="flex items-center justify-between pb-1 border-b border-zinc-100">
+<h2 class="text-sm font-bold uppercase tracking-wider text-zinc-800">Data PKL</h2>
+<span class="text-[11px] font-medium text-emerald-600 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            Terisi
+          </span>
+</div>
+<!-- Zinc Flux Callout -->
+<div class="p-3 bg-zinc-50 border border-zinc-200 rounded-xl flex items-start gap-2.5">
+<span class="material-symbols-outlined text-zinc-600 text-[18px] shrink-0 mt-0.5">info</span>
+<p class="text-xs text-zinc-600 leading-relaxed">
+            Rapi hanya menuliskan data yang kamu isi. Kegiatan dan nama tidak akan dikarang. Bagian kosong ditandai <span class="font-mono font-medium text-zinc-800 bg-zinc-200/70 px-1 py-0.5 rounded text-[11px]">[lengkapi]</span>.
+          </p>
+</div>
+<!-- Field: Nama Instansi -->
+<div class="space-y-1.5">
+<label class="block text-xs font-semibold text-zinc-700" for="nama-instansi">Nama instansi</label>
+<input class="w-full px-3 py-2 text-sm bg-white border border-zinc-300 rounded-lg focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors text-zinc-900" id="nama-instansi" type="text" value="Dinas Komunikasi dan Informatika Kota Bandung"/>
+</div>
+<!-- Field: Divisi / Bagian -->
+<div class="space-y-1.5">
+<label class="block text-xs font-semibold text-zinc-700" for="divisi">Divisi / bagian</label>
+<input class="w-full px-3 py-2 text-sm bg-white border border-zinc-300 rounded-lg focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors text-zinc-900" id="divisi" type="text" value="Bidang Aplikasi Informatika"/>
+</div>
+<!-- Field: Periode (Two Date-like inputs) -->
+<div class="space-y-1.5">
+<label class="block text-xs font-semibold text-zinc-700">Periode magang / PKL</label>
+<div class="grid grid-cols-2 gap-2 items-center">
+<div class="relative">
+<input class="w-full px-3 py-2 pr-7 text-xs sm:text-sm bg-white border border-zinc-300 rounded-lg focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors text-zinc-900 font-medium" type="text" value="1 Jul 2026"/>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 text-[16px] pointer-events-none">calendar_today</span>
+</div>
+<div class="relative">
+<input class="w-full px-3 py-2 pr-7 text-xs sm:text-sm bg-white border border-zinc-300 rounded-lg focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors text-zinc-900 font-medium" type="text" value="31 Agu 2026"/>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 text-[16px] pointer-events-none">calendar_today</span>
+</div>
+</div>
+</div>
+<!-- Field: Daftar kegiatan (Stacked inputs with X buttons) -->
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<label class="block text-xs font-semibold text-zinc-700">Daftar kegiatan</label>
+<span class="text-[11px] text-zinc-400">3 butir kegiatan</span>
+</div>
+<div class="space-y-2">
+<!-- Kegiatan 1 -->
+<div class="flex items-center gap-1.5">
+<span class="text-[11px] font-semibold text-zinc-400 w-4 text-center">1.</span>
+<div class="relative flex-1">
+<input class="w-full px-3 py-2 pr-8 text-xs sm:text-sm bg-white border border-zinc-300 rounded-lg focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors text-zinc-800" type="text" value="Membuat dashboard data kunjungan website Pemkot"/>
+<button aria-label="Hapus kegiatan" class="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-700 p-0.5 rounded transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+</div>
+<!-- Kegiatan 2 -->
+<div class="flex items-center gap-1.5">
+<span class="text-[11px] font-semibold text-zinc-400 w-4 text-center">2.</span>
+<div class="relative flex-1">
+<input class="w-full px-3 py-2 pr-8 text-xs sm:text-sm bg-white border border-zinc-300 rounded-lg focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors text-zinc-800" type="text" value="Memperbaiki form pengaduan warga"/>
+<button aria-label="Hapus kegiatan" class="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-700 p-0.5 rounded transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+</div>
+<!-- Kegiatan 3 -->
+<div class="flex items-center gap-1.5">
+<span class="text-[11px] font-semibold text-zinc-400 w-4 text-center">3.</span>
+<div class="relative flex-1">
+<input class="w-full px-3 py-2 pr-8 text-xs sm:text-sm bg-white border border-zinc-300 rounded-lg focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-colors text-zinc-800" type="text" value="Dokumentasi API layanan perizinan"/>
+<button aria-label="Hapus kegiatan" class="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-700 p-0.5 rounded transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Ghost Button: Tambah kegiatan -->
+<button class="w-full py-2 px-3 text-xs font-semibold text-zinc-700 bg-white hover:bg-zinc-50 border border-dashed border-zinc-300 hover:border-zinc-400 rounded-lg flex items-center justify-center gap-1 transition-colors mt-1" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span>
+            Tambah kegiatan
+          </button>
+</div>
+</section>
+<!-- Section: Sumber referensi (opsional) - Collapsed row with chevron -->
+<section class="border border-zinc-200 rounded-xl bg-white overflow-hidden">
+<button class="w-full px-3.5 py-3 flex items-center justify-between text-left hover:bg-zinc-50 transition-colors" type="button">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-zinc-500 text-[18px]">library_books</span>
+<div>
+<p class="text-xs font-semibold text-zinc-800">Sumber referensi (opsional)</p>
+<p class="text-[10px] text-zinc-400">0 sumber terhubung · Tidak mengarang referensi</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-zinc-400 text-[20px]">expand_more</span>
+</button>
+</section>
+</main>
+<!-- Sticky Bottom Bar -->
+<footer class="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur border-t border-zinc-200 px-4 py-3 z-30 shadow-[0_-4px_12px_rgba(0,0,0,0.04)]">
+<!-- Helper micro text -->
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="text-[11px] font-medium text-zinc-500">Data pokok lengkap · 4 dari 4</span>
+</div>
+<span class="text-[11px] text-zinc-400">Akurasi data 100%</span>
+</div>
+<!-- Primary Red Button with arrow-right icon -->
+<button class="w-full py-3 px-4 bg-[#DC2626] hover:bg-[#B91C1C] active:scale-[0.99] text-white text-sm font-semibold rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all" type="button">
+<span>Buat outline</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</footer>
+</div>
+</body>
+</html>
