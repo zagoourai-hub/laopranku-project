@@ -1,9 +1,14 @@
 <?php
 
 use App\Http\Controllers\DocumentDownloadController;
+use App\Http\Controllers\GuestController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
+
+Route::post('guest', GuestController::class)
+    ->middleware(['guest', 'throttle:10,1'])
+    ->name('guest.start');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');

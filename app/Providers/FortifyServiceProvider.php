@@ -4,9 +4,11 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Http\Middleware\RedirectIfRealUser;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
@@ -26,6 +28,8 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Route::aliasMiddleware('guest', RedirectIfRealUser::class);
+
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();

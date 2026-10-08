@@ -37,6 +37,18 @@ class UserFactory extends Factory
     }
 
     /**
+     * Indicate that the user is a throwaway trial (guest) user.
+     */
+    public function guest(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'name' => 'Tamu',
+            'password' => Str::random(40),
+            'is_guest' => true,
+        ]);
+    }
+
+    /**
      * Indicate that the model's email address should be unverified.
      */
     public function unverified(): static

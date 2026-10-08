@@ -29,6 +29,12 @@
                     <p class="max-w-xl text-lg text-zinc-600 dark:text-zinc-400">{{ __('Berhenti mengatur spasi rusak, margin lari, daftar isi manual, dan nomor romawi di Word. Rapi menyusun naskah akademik siap cetak dalam hitungan detik.') }}</p>
                     <div class="flex flex-wrap gap-3">
                         <flux:button :href="Route::has('register') ? route('register') : route('login')" variant="primary">{{ __('Rapikan makalah') }}</flux:button>
+                        @guest
+                            <form method="POST" action="{{ route('guest.start') }}">
+                                @csrf
+                                <flux:button type="submit" data-test="start-guest">{{ __('Coba tanpa daftar') }}</flux:button>
+                            </form>
+                        @endguest
                     </div>
                     <p class="font-mono text-xs text-zinc-500">{{ __('TNR 12 · spasi 1.5 · margin 4-3-3-3 · siap dibuka di Word') }}</p>
                 </div>
