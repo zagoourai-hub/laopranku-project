@@ -92,5 +92,7 @@ test('the editor renders reorder handles and undo/redo buttons', function () {
         ->assertSee('data-test="chapter-up"', false)
         ->assertSee('data-test="open-preview"', false)
         ->assertSee('data-test="undo"', false)
-        ->assertSee('data-test="redo"', false);
+        ->assertSee('data-test="redo"', false)
+        ->assertSee('data-test="chapter-number"', false)
+        ->assertSee('data-test="save-status"', false);
 });

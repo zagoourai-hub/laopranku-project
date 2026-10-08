@@ -88,6 +88,14 @@ const register = () =>
             return this.future.length > 0;
         },
 
+        // Display-only chapter number (BAB I, II, ...); the builder numbers the real document.
+        roman(n) {
+            return [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']].reduce((out, [v, s]) => {
+                for (; n >= v; n -= v) out += s;
+                return out;
+            }, '');
+        },
+
         // Commit pending edits as one history step (snapshots are JSON strings, so no shared references).
         settle() {
             clearTimeout(this.timer);

@@ -49,13 +49,13 @@ new #[Title('Preview dokumen')] class extends Component {
     $coverText = $document->education_level->cover($cover);
 @endphp
 
-<div class="mx-auto flex w-full max-w-5xl flex-col gap-6" x-data="docPreview">
+<div class="mx-auto flex w-full max-w-6xl flex-col gap-6" x-data="docPreview">
     <div class="flex flex-wrap items-start justify-between gap-4">
-        <div>
-            <flux:heading size="xl" level="1">{{ __('Preview') }}: {{ $document->title }}</flux:heading>
+        <div class="min-w-0">
+            <flux:heading size="xl" level="1" class="break-words">{{ __('Preview') }}: {{ $document->title }}</flux:heading>
             <flux:subheading>{{ __('Perkiraan tampilan kertas A4, bukan hasil akhir. Untuk hasil yang pasti, pakai Preview akurat.') }}</flux:subheading>
         </div>
-        <div class="flex gap-2">
+        <div class="flex flex-wrap gap-2">
             <flux:button :href="route('documents.show', $document)" wire:navigate icon="arrow-left">{{ __('Kembali ke editor') }}</flux:button>
             @if ($chapters !== [])
                 <flux:button variant="primary" icon="document-magnifying-glass" x-on:click="open()" x-bind:disabled="loading" data-test="accurate-preview">
@@ -85,8 +85,8 @@ new #[Title('Preview dokumen')] class extends Component {
 
         {{-- paged.js rewrites this DOM, so Livewire must leave it alone. Paper stays white in dark mode. --}}
         <div wire:ignore class="relative">
-            <div x-show="rendering" class="mb-2 flex justify-center" data-test="preview-loading">
-                <flux:badge color="zinc">{{ __('Menyusun halaman…') }}</flux:badge>
+            <div x-show="rendering" class="flex justify-center rounded-xl bg-zinc-100 py-16 dark:bg-zinc-800" data-test="preview-loading">
+                <flux:badge color="zinc" icon="arrow-path">{{ __('Menyusun halaman…') }}</flux:badge>
             </div>
 
             <div id="preview-source" hidden
@@ -158,7 +158,8 @@ new #[Title('Preview dokumen')] class extends Component {
                 </section>
             </div>
 
-            <div id="preview-pages" class="overflow-x-auto rounded-xl bg-zinc-200 p-4 dark:bg-zinc-800" data-test="preview-pages"></div>
+            {{-- Laid out off-screen while paged.js works, so half-built sheets never flash. --}}
+            <div id="preview-pages" class="overflow-x-auto rounded-xl bg-zinc-200 p-2 sm:p-4 dark:bg-zinc-800" x-bind:class="rendering && 'invisible absolute inset-x-0 top-0'" data-test="preview-pages"></div>
         </div>
     @endif
 </div>

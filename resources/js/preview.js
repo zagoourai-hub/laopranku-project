@@ -8,24 +8,29 @@ function pageCss(s) {
 @page front { @bottom-center { content: counter(page, lower-roman); font: ${s.size}pt "${s.font}", serif; } }
 @page body { @top-right { content: counter(page); font: ${s.size}pt "${s.font}", serif; } }
 @page body:first { @top-right { content: none; } @bottom-center { content: counter(page); font: ${s.size}pt "${s.font}", serif; } }
-section.cover { page: cover; text-align: center; }
+section.cover { page: cover; }
 section.front { page: front; break-before: page; counter-reset: page 1; }
 section.body { page: body; break-before: page; }
 section.body.first { counter-reset: page 1; }
-body, .pagedjs_page_content { font-family: "${s.font}", "Times New Roman", serif; font-size: ${s.size}pt; line-height: ${s.line}; color: #000; text-align: justify; }
-.cover-type { margin-top: 2em; font-size: 14pt; font-weight: bold; }
-.cover-title { margin: 1em 0 6em; font-size: 14pt; font-weight: bold; }
-.cover-foot { margin-top: 9em; }
-h1 { text-align: center; font-size: ${s.size}pt; font-weight: bold; margin: 0 0 24pt; break-after: avoid; }
+h1, h2 { break-after: avoid; }
 h1.new-page { break-before: page; }
-p.signature { text-align: right; margin-top: 1.5em; }
-h2 { text-align: left; font-size: ${s.size}pt; font-weight: bold; margin: 12pt 0 0; break-after: avoid; }
-p { margin: 0; }
-p.indent { text-indent: ${s.indent}cm; }
-p.ref { padding-left: ${s.hanging}cm; text-indent: -${s.hanging}cm; margin-bottom: 6pt; }
-ol, ul { margin: 0; padding-left: 1.27cm; }
-ol { list-style: decimal; }
-ul { list-style: disc; }
+/* Paged.js injects this sheet into <head>, so every visual rule is scoped to the paper, never the app. */
+.pagedjs_page_content { font-family: "${s.font}", "Times New Roman", serif; font-size: ${s.size}pt; line-height: ${s.line}; color: #000; text-align: justify; }
+/* paged.js marks a section cut by a page break with text-align-last: justify; stop it leaking into headings and paragraphs inside. */
+.pagedjs_page_content [data-align-last-split-element] :not([data-align-last-split-element]) { text-align-last: auto; }
+.pagedjs_page_content section.cover { text-align: center; }
+.pagedjs_page_content .cover-type { margin-top: 2em; font-size: 14pt; font-weight: bold; }
+.pagedjs_page_content .cover-title { margin: 1em 0 6em; font-size: 14pt; font-weight: bold; }
+.pagedjs_page_content .cover-foot { margin-top: 9em; }
+.pagedjs_page_content h1 { text-align: center; font-size: ${s.size}pt; font-weight: bold; margin: 0 0 24pt; }
+.pagedjs_page_content p.signature { text-align: right; margin-top: 1.5em; }
+.pagedjs_page_content h2 { text-align: left; font-size: ${s.size}pt; font-weight: bold; margin: 12pt 0 0; }
+.pagedjs_page_content p { margin: 0; }
+.pagedjs_page_content p.indent { text-indent: ${s.indent}cm; }
+.pagedjs_page_content p.ref { padding-left: ${s.hanging}cm; text-indent: -${s.hanging}cm; margin-bottom: 6pt; }
+.pagedjs_page_content ol, .pagedjs_page_content ul { margin: 0; padding-left: 1.27cm; }
+.pagedjs_page_content ol { list-style: decimal; }
+.pagedjs_page_content ul { list-style: disc; }
 ul.toc { list-style: none; padding: 0; text-align: left; }
 ul.toc a { color: inherit; text-decoration: none; }
 ul.toc li { display: flex; }
@@ -44,6 +49,8 @@ function register() {
         loading: false,
         pdf: null,
         error: null,
+        previewer: null,
+        fit: null,
 
         init() {
             const source = document.getElementById('preview-source');
@@ -51,9 +58,31 @@ function register() {
 
             if (!source || !target) return;
 
-            new Previewer()
+            this.previewer = new Previewer();
+            this.previewer
                 .preview(source.innerHTML, [{ 'preview.css': pageCss(source.dataset) }], target)
-                .finally(() => { this.rendering = false; });
+                .finally(() => {
+                    this.rendering = false;
+                    this.fit = () => this.scale(target);
+                    this.$nextTick(this.fit);
+                    window.addEventListener('resize', this.fit);
+                });
+        },
+
+        // Shrink the A4 sheets to the container on narrow screens; zoom keeps layout honest (no clipped text, no blank gap).
+        scale(target) {
+            const pages = target.querySelector('.pagedjs_pages');
+            const page = target.querySelector('.pagedjs_page');
+            if (!pages || !page) return;
+            pages.style.zoom = '';
+            const room = target.clientWidth - 32;
+            pages.style.zoom = Math.min(1, room / page.offsetWidth);
+        },
+
+        // wire:navigate swaps the page without a reload, so drop paged.js's <head> styles with the component.
+        destroy() {
+            window.removeEventListener('resize', this.fit);
+            this.previewer?.polisher?.destroy();
         },
 
         async open() {
