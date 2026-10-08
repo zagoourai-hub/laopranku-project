@@ -18,7 +18,7 @@
                     </a>
                     <nav class="flex items-center gap-1 text-sm sm:gap-3">
                         <a href="{{ route('home') }}#cara-kerja" class="hidden items-center gap-1.5 rounded-lg px-2 py-1.5 text-zinc-600 transition-colors duration-150 hover:text-zinc-900 sm:flex dark:text-zinc-400 dark:hover:text-white">
-                            <flux:icon.question-mark-circle variant="mini" class="size-4" />{{ __('Bantuan') }}
+                            <flux:icon.question-mark-circle variant="mini" class="size-4" />{{ __('Cara kerja') }}
                         </a>
                         <a href="{{ route('home') }}" class="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-zinc-600 transition-colors duration-150 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white" wire:navigate>
                             <flux:icon.arrow-left variant="mini" class="size-4" /><span class="max-sm:hidden">{{ __('Kembali ke Beranda') }}</span><span class="sm:hidden">{{ __('Beranda') }}</span>

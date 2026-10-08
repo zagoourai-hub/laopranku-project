@@ -14,7 +14,7 @@
                     @else
                         <flux:button :href="route('login')" variant="ghost" size="sm">{{ __('Masuk') }}</flux:button>
                         @if (Route::has('register'))
-                            <flux:button :href="route('register')" size="sm">{{ __('Coba gratis') }}</flux:button>
+                            <flux:button :href="route('register')" size="sm">{{ __('Daftar') }}</flux:button>
                         @endif
                     @endauth
                 </nav>
@@ -109,9 +109,9 @@
 
             <section class="border-t border-zinc-200 dark:border-white/10">
                 <div class="mx-auto flex max-w-6xl flex-col items-start gap-4 px-4 py-16">
-                    <h2 class="text-2xl font-semibold tracking-tight">{{ __('Siap merapikan tugas kuliahmu?') }}</h2>
+                    <h2 class="text-2xl font-semibold tracking-tight">{{ __('Siap merapikan makalah dan laporanmu?') }}</h2>
                     <p class="text-zinc-600 dark:text-zinc-400">{{ __('Mulai gratis tanpa kartu kredit.') }}</p>
-                    <flux:button :href="Route::has('register') ? route('register') : route('login')" variant="primary">{{ __('Coba gratis sekarang') }}</flux:button>
+                    <flux:button :href="Route::has('register') ? route('register') : route('login')" variant="primary">{{ __('Daftar gratis sekarang') }}</flux:button>
                 </div>
             </section>
         </main>
