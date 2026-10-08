@@ -26,7 +26,7 @@ class DocumentDownloadController extends Controller
         }
 
         $templateKey = config("documents.templates.{$document->template_key}") ? $document->template_key : 'default';
-        $path = $builder->build($content, Template::fromConfig($templateKey));
+        $path = $builder->build($content, Template::fromConfig($templateKey), $document->education_level);
 
         $name = Str::slug($document->title) ?: 'dokumen';
         $disposition = $request->boolean('inline') ? 'inline' : 'attachment';

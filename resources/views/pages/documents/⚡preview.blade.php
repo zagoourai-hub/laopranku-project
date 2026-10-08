@@ -46,11 +46,7 @@ new #[Title('Preview dokumen')] class extends Component {
     $cover = $content['cover'] ?? [];
     $t = Template::fromConfig(config("documents.templates.{$document->template_key}") ? $document->template_key : 'default');
     $references = collect($content['references'] ?? [])->pluck('text')->sortBy(fn ($x) => mb_strtolower($x))->values();
-    $coverLines = array_filter([
-        isset($cover['prodi']) ? 'PROGRAM STUDI '.$cover['prodi'] : null,
-        $cover['campus'] ?? null,
-        $cover['year'] ?? null,
-    ]);
+    $coverText = $document->education_level->cover($cover);
 @endphp
 
 <div class="mx-auto flex w-full max-w-5xl flex-col gap-6" x-data="docPreview">
@@ -101,9 +97,9 @@ new #[Title('Preview dokumen')] class extends Component {
                     <p class="cover-type">{{ $document->type->coverLabel() }}</p>
                     <p class="cover-title">{{ mb_strtoupper($cover['title'] ?? $document->title) }}</p>
                     <p>Disusun oleh:</p>
-                    <p><strong>{{ trim(($cover['name'] ?? '').' '.(isset($cover['nim']) ? "({$cover['nim']})" : '')) }}</strong></p>
+                    <p><strong>{{ $coverText['person'] }}</strong></p>
                     <div class="cover-foot">
-                        @foreach ($coverLines as $line)
+                        @foreach ($coverText['foot'] as $line)
                             <p><strong>{{ mb_strtoupper($line) }}</strong></p>
                         @endforeach
                     </div>

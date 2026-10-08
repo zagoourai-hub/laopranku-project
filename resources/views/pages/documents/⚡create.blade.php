@@ -2,6 +2,7 @@
 
 use App\Enums\DocumentStatus;
 use App\Enums\DocumentType;
+use App\Enums\EducationLevel;
 use App\Models\Document;
 use App\Services\Documents\ImportParser;
 use App\Services\Documents\SchemaValidator;
@@ -17,6 +18,7 @@ use Livewire\WithFileUploads;
 new #[Title('Dokumen baru')] class extends Component {
     use WithFileUploads;
 
+    public string $educationLevel = 'mahasiswa';
     public string $type = 'makalah';
     public string $title = '';
     public string $name = '';
@@ -48,7 +50,8 @@ new #[Title('Dokumen baru')] class extends Component {
     protected function rules(): array
     {
         return [
-            'type' => ['required', Rule::enum(DocumentType::class)],
+            'educationLevel' => ['required', Rule::enum(EducationLevel::class)],
+            'type' => ['required', Rule::enum(DocumentType::class), Rule::notIn($this->level()->value === 'mahasiswa' ? [] : ['proposal'])],
             'title' => ['required', 'string', 'max:255'],
             'name' => ['nullable', 'string', 'max:150'],
             'nim' => ['nullable', 'regex:/^\d+$/', 'max:20'],
@@ -74,7 +77,7 @@ new #[Title('Dokumen baru')] class extends Component {
         return [
             'title.required' => 'Judul dokumen wajib diisi.',
             'type.required' => 'Pilih jenis dokumen.',
-            'nim.regex' => 'NIM hanya boleh berisi angka.',
+            'nim.regex' => 'Nomor induk hanya boleh berisi angka.',
             'year.digits' => 'Tahun harus 4 digit.',
             'topic.required' => 'Topik wajib diisi.',
             'topic.min' => 'Topik minimal 10 karakter.',
@@ -84,18 +87,46 @@ new #[Title('Dokumen baru')] class extends Component {
         ];
     }
 
+    protected function level(): EducationLevel
+    {
+        return EducationLevel::tryFrom($this->educationLevel) ?? EducationLevel::Mahasiswa;
+    }
+
+    public function updatedEducationLevel(): void
+    {
+        // Proposal (usulan skripsi) is not offered to school students.
+        if ($this->level() !== EducationLevel::Mahasiswa && $this->type === 'proposal') {
+            $this->type = 'makalah';
+        }
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    #[\Livewire\Attributes\Computed]
+    public function coverLabels(): array
+    {
+        return $this->level()->coverLabels();
+    }
+
     /**
      * @return array<string, array{label: string, description: string}>
      */
     #[\Livewire\Attributes\Computed]
     public function typeOptions(): array
     {
-        return [
+        $options = [
             'makalah' => ['label' => 'Makalah', 'description' => 'Format standar BAB I–V, daftar pustaka'],
             'laporan_praktikum' => ['label' => 'Laporan praktikum', 'description' => 'Metodologi, data pengamatan, grafik'],
             'laporan_pkl' => ['label' => 'Laporan PKL', 'description' => 'Profil instansi, pelaksanaan magang'],
             'proposal' => ['label' => 'Proposal', 'description' => 'Usulan penelitian, RAB, dan jadwal'],
         ];
+
+        if ($this->level() !== EducationLevel::Mahasiswa) {
+            unset($options['proposal']);
+        }
+
+        return $options;
     }
 
     public function save(): void
@@ -187,6 +218,7 @@ new #[Title('Dokumen baru')] class extends Component {
             'user_id' => Auth::id(),
             'title' => $this->title,
             'type' => $this->type,
+            'education_level' => $this->level(),
             'status' => DocumentStatus::Draft,
             'template_key' => 'default',
             'content' => $content,
@@ -207,6 +239,15 @@ new #[Title('Dokumen baru')] class extends Component {
     <form novalidate wire:submit="save" class="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div class="flex min-w-0 flex-col gap-10">
             <section class="flex flex-col gap-4">
+                <flux:heading size="lg">{{ __('Jenjang') }}</flux:heading>
+                <flux:radio.group wire:model.live="educationLevel" variant="segmented" aria-label="{{ __('Jenjang') }}" data-test="level-group">
+                    @foreach (\App\Enums\EducationLevel::cases() as $level)
+                        <flux:radio :value="$level->value" :label="$level->label()" wire:key="level-{{ $level->value }}" />
+                    @endforeach
+                </flux:radio.group>
+            </section>
+
+            <section class="flex flex-col gap-4 border-t border-zinc-200 pt-8 dark:border-white/10">
                 <flux:heading size="lg">{{ __('Jenis dokumen') }}</flux:heading>
                 <flux:radio.group wire:model.live="type" variant="cards" class="max-sm:flex-col sm:grid sm:grid-cols-2" aria-label="{{ __('Jenis dokumen') }}" data-test="type-group">
                     @foreach ($this->typeOptions as $value => $option)
@@ -218,12 +259,12 @@ new #[Title('Dokumen baru')] class extends Component {
 
             <section class="flex flex-col gap-4 border-t border-zinc-200 pt-8 dark:border-white/10">
                 <flux:heading size="lg">{{ __('Data cover') }}</flux:heading>
-                <flux:input wire:model.live.debounce.300ms="title" :label="__('Judul dokumen')" :placeholder="__('Pengaruh Media Sosial terhadap Prestasi Belajar Mahasiswa')" />
+                <flux:input wire:model.live.debounce.300ms="title" :label="__('Judul dokumen')" :placeholder="$educationLevel === 'mahasiswa' ? __('Pengaruh Media Sosial terhadap Prestasi Belajar Mahasiswa') : __('Pengaruh Media Sosial terhadap Prestasi Belajar Siswa')" />
                 <div class="grid gap-4 sm:grid-cols-2">
-                    <flux:input wire:model.live.debounce.300ms="name" :label="__('Nama lengkap')" />
-                    <flux:input wire:model.live.debounce.300ms="nim" :label="__('NIM')" inputmode="numeric" placeholder="2201234567" />
-                    <flux:input wire:model.live.debounce.300ms="prodi" :label="__('Program studi')" placeholder="Teknik Informatika" />
-                    <flux:input wire:model.live.debounce.300ms="campus" :label="__('Kampus')" placeholder="Universitas Padjadjaran" />
+                    <flux:input wire:model.live.debounce.300ms="name" :label="$this->coverLabels['name']" />
+                    <flux:input wire:model.live.debounce.300ms="nim" :label="$this->coverLabels['nim']" inputmode="numeric" :placeholder="$educationLevel === 'mahasiswa' ? '2201234567' : '0012345678'" />
+                    <flux:input wire:model.live.debounce.300ms="prodi" :label="$this->coverLabels['prodi']" :placeholder="$educationLevel === 'mahasiswa' ? 'Teknik Informatika' : ($educationLevel === 'smk' ? 'XII RPL 1' : 'XII IPA 2')" />
+                    <flux:input wire:model.live.debounce.300ms="campus" :label="$this->coverLabels['campus']" :placeholder="$educationLevel === 'mahasiswa' ? 'Universitas Padjadjaran' : 'SMA Negeri 1 Bandung'" />
                     <flux:input wire:model.live.debounce.300ms="year" :label="__('Tahun')" inputmode="numeric" maxlength="4" />
                 </div>
             </section>
@@ -285,12 +326,12 @@ new #[Title('Dokumen baru')] class extends Component {
                     <p class="text-[10px] font-bold tracking-widest">{{ strtoupper($this->typeOptions[$type]['label'] ?? '') }}</p>
                     <p class="mt-3 text-sm font-bold leading-tight">{{ $title !== '' ? strtoupper($title) : strtoupper(__('Judul dokumen')) }}</p>
                 </div>
-                <div class="grid h-12 w-16 place-items-center border border-dashed border-zinc-400 text-[8px] text-zinc-500">{{ __('LOGO KAMPUS') }}</div>
+                <div class="grid h-12 w-16 place-items-center border border-dashed border-zinc-400 text-[8px] text-zinc-500">{{ $educationLevel === 'mahasiswa' ? __('LOGO KAMPUS') : __('LOGO SEKOLAH') }}</div>
                 <div class="w-full text-[10px] leading-snug">
                     <p>{{ __('Disusun oleh:') }}</p>
                     <p class="font-bold">{{ $name !== '' ? $name : '—' }}</p>
                     @if ($nim !== '')
-                        <p>NIM {{ $nim }}</p>
+                        <p>{{ $this->coverLabels['nim'] }} {{ $nim }}</p>
                     @endif
                     <p class="mt-3 font-bold">{{ strtoupper(trim($prodi)) }}</p>
                     <p class="font-bold">{{ strtoupper(trim($campus)) }}</p>

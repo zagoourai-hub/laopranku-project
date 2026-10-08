@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\DocumentStatus;
 use App\Enums\DocumentType;
+use App\Enums\EducationLevel;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -22,6 +23,7 @@ class DocumentFactory extends Factory
             'user_id' => User::factory(),
             'title' => fake()->sentence(4),
             'type' => DocumentType::Makalah,
+            'education_level' => EducationLevel::Mahasiswa,
             'status' => DocumentStatus::Draft,
             'content' => null,
             'template_key' => 'default',

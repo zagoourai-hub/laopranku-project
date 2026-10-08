@@ -3,6 +3,7 @@
 namespace App\Services\Documents;
 
 use App\Enums\DocumentType;
+use App\Enums\EducationLevel;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -35,7 +36,7 @@ class DocxBuilder
      * @param  array<string, mixed>  $document
      * @return string absolute path of the generated .docx
      */
-    public function build(array $document, Template $template): string
+    public function build(array $document, Template $template, EducationLevel $level = EducationLevel::Mahasiswa): string
     {
         $errors = $this->validator->validate($document);
 
@@ -59,7 +60,7 @@ class DocxBuilder
         $this->addStyles($word, $template);
         $page = $this->pageStyle($template);
 
-        $this->addCover($word, $document, $page);
+        $this->addCover($word, $document, $page, $level);
         $this->addFrontMatter($word, $document, $page);
 
         foreach ($document['chapters'] as $index => $chapter) {
@@ -108,7 +109,7 @@ class DocxBuilder
      * @param  array<string, mixed>  $document
      * @param  array<string, mixed>  $page
      */
-    private function addCover(PhpWord $word, array $document, array $page): void
+    private function addCover(PhpWord $word, array $document, array $page, EducationLevel $level): void
     {
         $cover = $document['cover'];
         $center = ['alignment' => Jc::CENTER];
@@ -121,16 +122,11 @@ class DocxBuilder
         $section->addText(mb_strtoupper($cover['title']), ['bold' => true, 'size' => 14], $center);
         $section->addTextBreak(6);
         $section->addText('Disusun oleh:', null, $center);
-        $section->addText(trim(($cover['name'] ?? '').' '.(isset($cover['nim']) ? "({$cover['nim']})" : '')), $bold, $center);
+        $text = $level->cover($cover);
+        $section->addText($text['person'], $bold, $center);
         $section->addTextBreak(6);
 
-        $lines = array_filter([
-            isset($cover['prodi']) ? 'PROGRAM STUDI '.$cover['prodi'] : null,
-            $cover['campus'] ?? null,
-            $cover['year'] ?? null,
-        ]);
-
-        foreach ($lines as $line) {
+        foreach ($text['foot'] as $line) {
             $section->addText(mb_strtoupper($line), $bold, $center);
         }
     }

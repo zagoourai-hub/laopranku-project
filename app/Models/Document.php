@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\DocumentStatus;
 use App\Enums\DocumentType;
+use App\Enums\EducationLevel;
 use Database\Factories\DocumentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,6 +21,7 @@ use Illuminate\Support\Str;
  * @property int $user_id
  * @property string $title
  * @property DocumentType $type
+ * @property EducationLevel $education_level
  * @property DocumentStatus $status
  * @property array<string, mixed>|null $content
  * @property string $template_key
@@ -27,7 +29,7 @@ use Illuminate\Support\Str;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  */
-#[Fillable(['user_id', 'title', 'type', 'status', 'content', 'template_key'])]
+#[Fillable(['user_id', 'title', 'type', 'education_level', 'status', 'content', 'template_key'])]
 class Document extends Model
 {
     /** @use HasFactory<DocumentFactory> */
@@ -42,6 +44,7 @@ class Document extends Model
     {
         return [
             'type' => DocumentType::class,
+            'education_level' => EducationLevel::class,
             'status' => DocumentStatus::class,
             'content' => 'array',
         ];
@@ -76,6 +79,7 @@ class Document extends Model
             'user_id' => $this->user_id,
             'title' => $this->title.' (Salinan)',
             'type' => $this->type,
+            'education_level' => $this->education_level,
             'status' => DocumentStatus::Draft,
             'content' => $reid($this->content),
             'template_key' => $this->template_key,
