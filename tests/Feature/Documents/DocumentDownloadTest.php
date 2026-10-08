@@ -97,3 +97,33 @@ test('PDF download answers 503 when Gotenberg is down', function () {
 
     $this->actingAs($owner)->get(documentWithContent($owner)->downloadUrl('pdf'))->assertStatus(503);
 });
+
+test('inline download sends an inline Content-Disposition', function () {
+    $owner = User::factory()->create();
+    $document = documentWithContent($owner);
+
+    $response = $this->actingAs($owner)->get($document->downloadUrl('docx', inline: true));
+
+    expect($response->headers->get('Content-Disposition'))->toStartWith('inline;');
+    $response->streamedContent();
+});
+
+test('default download stays an attachment', function () {
+    $owner = User::factory()->create();
+
+    $response = $this->actingAs($owner)->get(documentWithContent($owner)->downloadUrl());
+
+    expect($response->headers->get('Content-Disposition'))->toStartWith('attachment;');
+    $response->streamedContent();
+});
+
+test('downloads are rate limited per user', function () {
+    $owner = User::factory()->create();
+    $document = documentWithContent($owner, ['content' => ['chapters' => []]]);
+
+    foreach (range(1, 20) as $i) {
+        $this->actingAs($owner)->get($document->downloadUrl())->assertStatus(422);
+    }
+
+    $this->actingAs($owner)->get($document->downloadUrl())->assertStatus(429);
+});

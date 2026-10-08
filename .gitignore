@@ -35,3 +35,4 @@ yarn-error.log
 /opencode.jsonc
 /graphify-out
 /image.png
+.playwright-mcp/

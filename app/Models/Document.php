@@ -50,9 +50,9 @@ class Document extends Model
     /**
      * Signed DOCX/PDF download link, valid for 10 minutes. Create it on click, not on render.
      */
-    public function downloadUrl(string $format = 'docx'): string
+    public function downloadUrl(string $format = 'docx', bool $inline = false): string
     {
-        return URL::temporarySignedRoute('documents.download', now()->addMinutes(10), ['document' => $this, 'format' => $format]);
+        return URL::temporarySignedRoute('documents.download', now()->addMinutes(10), ['document' => $this, 'format' => $format] + ($inline ? ['inline' => 1] : []));
     }
 
     /**

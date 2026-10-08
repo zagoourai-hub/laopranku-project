@@ -29,6 +29,7 @@ class DocumentDownloadController extends Controller
         $path = $builder->build($content, Template::fromConfig($templateKey));
 
         $name = Str::slug($document->title) ?: 'dokumen';
+        $disposition = $request->boolean('inline') ? 'inline' : 'attachment';
 
         if ($request->query('format') === 'pdf') {
             try {
@@ -40,9 +41,9 @@ class DocumentDownloadController extends Controller
                 @unlink($path);
             }
 
-            return response()->download($pdfPath, $name.'.pdf')->deleteFileAfterSend();
+            return response()->download($pdfPath, $name.'.pdf', [], $disposition)->deleteFileAfterSend();
         }
 
-        return response()->download($path, $name.'.docx')->deleteFileAfterSend();
+        return response()->download($path, $name.'.docx', [], $disposition)->deleteFileAfterSend();
     }
 }
