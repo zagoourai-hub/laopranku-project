@@ -118,3 +118,8 @@ select:focus[data-flux-control] {
         animation: sheet-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 }
+
+/* Block editor (TipTap) */
+.rapi-editor .ProseMirror p { margin: 0; min-height: 1.5em; }
+.rapi-editor .ProseMirror ul { list-style: disc; padding-inline-start: 1.5rem; }
+.rapi-editor .ProseMirror ol { list-style: decimal; padding-inline-start: 1.5rem; }
