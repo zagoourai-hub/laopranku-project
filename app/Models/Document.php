@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
@@ -43,6 +45,41 @@ class Document extends Model
             'status' => DocumentStatus::class,
             'content' => 'array',
         ];
+    }
+
+    /**
+     * Signed DOCX download link, valid for 10 minutes. Create it on click, not on render.
+     */
+    public function downloadUrl(): string
+    {
+        return URL::temporarySignedRoute('documents.download', now()->addMinutes(10), ['document' => $this]);
+    }
+
+    /**
+     * Copy as a fresh draft for the same user. Every content id is regenerated so ids stay unique per document.
+     */
+    public function duplicate(): self
+    {
+        $reid = function (mixed $node) use (&$reid): mixed {
+            if (! is_array($node)) {
+                return $node;
+            }
+
+            foreach ($node as $key => $value) {
+                $node[$key] = $key === 'id' && is_string($value) ? (string) Str::uuid() : $reid($value);
+            }
+
+            return $node;
+        };
+
+        return static::create([
+            'user_id' => $this->user_id,
+            'title' => $this->title.' (Salinan)',
+            'type' => $this->type,
+            'status' => DocumentStatus::Draft,
+            'content' => $reid($this->content),
+            'template_key' => $this->template_key,
+        ]);
     }
 
     /**

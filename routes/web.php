@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DocumentDownloadController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -7,6 +8,11 @@ Route::view('/', 'welcome')->name('home');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
     Route::livewire('documents/create', 'pages::documents.create')->name('documents.create');
+    Route::livewire('documents/{document}', 'pages::documents.show')->name('documents.show');
 });
+
+Route::get('documents/{document}/download', DocumentDownloadController::class)
+    ->middleware(['auth', 'signed'])
+    ->name('documents.download');
 
 require __DIR__.'/settings.php';

@@ -9,6 +9,16 @@ enum DocumentType: string
     case LaporanPkl = 'laporan_pkl';
     case Proposal = 'proposal';
 
+    public function label(): string
+    {
+        return match ($this) {
+            self::Makalah => 'Makalah',
+            self::LaporanPraktikum => 'Laporan Praktikum',
+            self::LaporanPkl => 'Laporan PKL',
+            self::Proposal => 'Proposal',
+        };
+    }
+
     /**
      * Heading shown on the cover page.
      */
