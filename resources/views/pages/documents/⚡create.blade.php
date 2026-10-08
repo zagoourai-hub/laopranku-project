@@ -3,9 +3,12 @@
 use App\Enums\DocumentStatus;
 use App\Enums\DocumentType;
 use App\Models\Document;
+use App\Services\Documents\ImportParser;
+use App\Services\Documents\SchemaValidator;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -113,38 +116,81 @@ new #[Title('Dokumen baru')] class extends Component {
             $brief['raw_text'] = $this->rawText;
         }
 
+        $chapters = [];
+
         if ($this->inputMode === 'upload') {
-            $brief['upload_path'] = $this->upload->store('document-uploads/'.Auth::id());
+            try {
+                $parsed = app(ImportParser::class)->parse($this->upload);
+            } catch (\Throwable $e) {
+                report($e);
+                $this->addError('upload', 'File tidak bisa dibaca. Pastikan berformat .docx, .md, atau .txt yang valid.');
+
+                return;
+            }
+
+            $chapters = $parsed['chapters'] ?? [];
+
+            if (isset($parsed['paragraphs'])) {
+                $brief['paragraphs'] = $parsed['paragraphs'];
+            }
         }
 
+        $content = [
+            'schema_version' => 1,
+            'type' => $this->type,
+            'cover' => [
+                'title' => $this->title,
+                'name' => $this->name,
+                'nim' => $this->nim,
+                'prodi' => $this->prodi,
+                'campus' => $this->campus,
+                'year' => $this->year,
+            ],
+            'style' => $this->style,
+            'chapters' => $chapters,
+            'references' => [],
+            'sources' => [],
+            'brief' => $brief,
+        ];
+
+        if ($chapters !== [] && app(SchemaValidator::class)->validate($content) !== []) {
+            $this->addError('upload', 'Struktur heading di file tidak valid. Periksa judul bab dan subbab.');
+
+            return;
+        }
+
+        if ($this->inputMode === 'upload') {
+            $content['brief']['upload_path'] = $this->upload->store('document-uploads/'.Auth::id());
+        }
+
+        try {
+            $this->createDocument($content);
+        } catch (\Throwable $e) {
+            if (isset($content['brief']['upload_path'])) {
+                Storage::delete($content['brief']['upload_path']);
+            }
+
+            throw $e;
+        }
+
+        Flux::toast(variant: 'success', text: __('Dokumen draft dibuat'));
+
+        $this->redirectRoute('dashboard', navigate: true);
+    }
+
+    /**
+     * @param  array<string, mixed>  $content
+     */
+    protected function createDocument(array $content): void
+    {
         Document::create([
             'user_id' => Auth::id(),
             'title' => $this->title,
             'type' => $this->type,
             'status' => DocumentStatus::Draft,
             'template_key' => 'default',
-            'content' => [
-                'schema_version' => 1,
-                'type' => $this->type,
-                'cover' => [
-                    'title' => $this->title,
-                    'name' => $this->name,
-                    'nim' => $this->nim,
-                    'prodi' => $this->prodi,
-                    'campus' => $this->campus,
-                    'year' => $this->year,
-                ],
-                'style' => $this->style,
-                'chapters' => [],
-                'references' => [],
-                'sources' => [],
-                'brief' => $brief,
-            ],
+            'content' => $content,
         ]);
-
-        Flux::toast(variant: 'success', text: __('Dokumen draft dibuat'));
-
-        $this->redirectRoute('dashboard', navigate: true);
     }
 };
 ?>

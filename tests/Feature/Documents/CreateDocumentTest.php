@@ -94,7 +94,9 @@ test('an uploaded file is stored and referenced by the draft', function () {
     Livewire::test('pages::documents.create')
         ->set('title', 'Naskah unggahan')
         ->set('inputMode', 'upload')
-        ->set('upload', UploadedFile::fake()->create('naskah.docx', 100))
+        ->set('upload', UploadedFile::fake()->createWithContent('naskah.txt', 'Paragraf satu.
+
+Paragraf dua.'))
         ->call('save')
         ->assertHasNoErrors();
 
@@ -102,6 +104,69 @@ test('an uploaded file is stored and referenced by the draft', function () {
 
     expect($path)->toStartWith('document-uploads/'.$user->id.'/');
     Storage::assertExists($path);
+});
+
+test('an uploaded markdown with headings becomes valid chapters', function () {
+    Storage::fake();
+    $this->actingAs(User::factory()->create());
+
+    Livewire::test('pages::documents.create')
+        ->set('title', 'Naskah markdown')
+        ->set('inputMode', 'upload')
+        ->set('upload', UploadedFile::fake()->createWithContent('naskah.md', '# Pendahuluan
+
+## Latar Belakang
+
+Isi latar belakang.
+
+# Penutup
+
+Isi penutup.'))
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $content = Document::sole()->content;
+
+    expect(array_column($content['chapters'], 'title'))->toBe(['Pendahuluan', 'Penutup'])
+        ->and($content['chapters'][0]['sections'][0]['title'])->toBe('Latar Belakang')
+        ->and(app(SchemaValidator::class)->validate($content))->toBe([]);
+});
+
+test('an uploaded text file keeps its paragraphs in the brief and leaves the content empty', function () {
+    Storage::fake();
+    $this->actingAs(User::factory()->create());
+
+    Livewire::test('pages::documents.create')
+        ->set('title', 'Naskah teks')
+        ->set('inputMode', 'upload')
+        ->set('upload', UploadedFile::fake()->createWithContent('naskah.txt', 'Paragraf satu.
+
+Paragraf dua.'))
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $content = Document::sole()->content;
+
+    expect($content['chapters'])->toBe([])
+        ->and($content['brief']['paragraphs'])->toBe([
+            ['id' => 'p1', 'text' => 'Paragraf satu.'],
+            ['id' => 'p2', 'text' => 'Paragraf dua.'],
+        ]);
+});
+
+test('a corrupt docx is rejected with an Indonesian error and no document is created', function () {
+    Storage::fake();
+    $this->actingAs(User::factory()->create());
+
+    Livewire::test('pages::documents.create')
+        ->set('title', 'Naskah rusak')
+        ->set('inputMode', 'upload')
+        ->set('upload', UploadedFile::fake()->createWithContent('naskah.docx', 'bukan docx asli'))
+        ->call('save')
+        ->assertHasErrors('upload')
+        ->assertSee('File tidak bisa dibaca');
+
+    expect(Document::count())->toBe(0);
 });
 
 test('invalid input is rejected and no document is created', function (array $input, string $field) {
@@ -144,4 +209,18 @@ test('the dashboard shows an empty state without documents', function () {
         ->get(route('dashboard'))
         ->assertOk()
         ->assertSee('Belum ada dokumen');
+});
+
+test('a failed insert removes the file that was just stored', function () {
+    Storage::fake();
+    $this->actingAs(User::factory()->create());
+    Document::creating(fn () => throw new RuntimeException('db down'));
+
+    expect(fn () => Livewire::test('pages::documents.create')
+        ->set('title', 'Naskah gagal')
+        ->set('inputMode', 'upload')
+        ->set('upload', UploadedFile::fake()->createWithContent('naskah.txt', 'Paragraf satu.'))
+        ->call('save'))->toThrow(RuntimeException::class);
+
+    expect(Storage::allFiles('document-uploads'))->toBe([]);
 });
