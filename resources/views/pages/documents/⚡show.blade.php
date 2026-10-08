@@ -129,8 +129,13 @@ new #[Title('Dokumen')] class extends Component {
     @else
         <div class="flex flex-col items-center gap-3 rounded-xl border border-dashed border-zinc-300 px-6 py-16 text-center dark:border-white/10" data-test="document-empty">
             <flux:icon.document-text class="size-8 text-zinc-400" />
-            <flux:heading size="lg">{{ __('Dokumen belum punya isi') }}</flux:heading>
-            <flux:text class="max-w-sm">{{ __('Bab dan subbab akan tampil di sini setelah isi dokumen dibuat.') }}</flux:text>
+            @if (($document->content['brief']['input'] ?? null) === 'topic')
+                <flux:heading size="lg" data-test="outline-pending">{{ __('Outline akan dibuat AI (segera)') }}</flux:heading>
+                <flux:text class="max-w-sm">{{ __('Topik dan data pokokmu sudah tersimpan. Outline bab dan subbab akan disusun dari situ, lalu kamu setujui sebelum isi ditulis.') }}</flux:text>
+            @else
+                <flux:heading size="lg">{{ __('Dokumen belum punya isi') }}</flux:heading>
+                <flux:text class="max-w-sm">{{ __('Bab dan subbab akan tampil di sini setelah isi dokumen dibuat.') }}</flux:text>
+            @endif
         </div>
     @endif
     </div>

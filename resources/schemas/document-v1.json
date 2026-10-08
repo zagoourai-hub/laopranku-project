@@ -56,11 +56,56 @@
         "chapter_count": { "type": "integer", "minimum": 3, "maximum": 7 },
         "length": { "enum": ["ringkas", "sedang", "panjang"] },
         "instructions": { "type": "string", "maxLength": 500 },
-        "facts": { "type": ["object", "array"], "maxItems": 0 }
+        "raw_text": { "type": "string" },
+        "paragraphs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "text"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string", "pattern": "^p[1-9][0-9]*$" },
+              "text": { "type": "string" }
+            }
+          }
+        },
+        "facts": {
+          "anyOf": [
+            { "type": "array", "maxItems": 0 },
+            { "type": "object", "maxProperties": 0 },
+            { "$ref": "#/$defs/praktikum_facts" },
+            { "$ref": "#/$defs/pkl_facts" }
+          ]
+        }
       }
     }
   },
   "$defs": {
+    "fact_text": { "type": "string", "minLength": 1 },
+    "fact_list": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/fact_text" } },
+    "praktikum_facts": {
+      "type": "object",
+      "required": ["experiment_title", "objective", "materials", "steps", "observations"],
+      "additionalProperties": false,
+      "properties": {
+        "experiment_title": { "$ref": "#/$defs/fact_text" },
+        "objective": { "$ref": "#/$defs/fact_text" },
+        "materials": { "$ref": "#/$defs/fact_list" },
+        "steps": { "$ref": "#/$defs/fact_list" },
+        "observations": { "$ref": "#/$defs/fact_text" }
+      }
+    },
+    "pkl_facts": {
+      "type": "object",
+      "required": ["institution", "division", "period", "activities"],
+      "additionalProperties": false,
+      "properties": {
+        "institution": { "$ref": "#/$defs/fact_text" },
+        "division": { "$ref": "#/$defs/fact_text" },
+        "period": { "$ref": "#/$defs/fact_text" },
+        "activities": { "$ref": "#/$defs/fact_list" }
+      }
+    },
     "id": { "type": "string", "format": "uuid" },
     "heading": {
       "type": "string",
