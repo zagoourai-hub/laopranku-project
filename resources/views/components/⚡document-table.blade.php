@@ -80,7 +80,7 @@ new class extends Component {
         <div class="flex flex-col items-center gap-3 rounded-xl border border-dashed border-zinc-300 px-6 py-16 text-center dark:border-white/10" data-test="documents-empty">
             <flux:icon.document-text class="size-8 text-zinc-400" />
             <flux:heading size="lg">{{ __('Belum ada dokumen') }}</flux:heading>
-            <flux:text class="max-w-sm">{{ __('Mulai dari teks mentah, topik, atau file naskahmu. Rapi menyiapkan formatnya.') }}</flux:text>
+            <flux:text class="max-w-sm">{{ __('Mulai dari teks mentah, topik, atau file naskahmu. Laporanku menyiapkan formatnya.') }}</flux:text>
             <flux:button :href="route('documents.create')" wire:navigate>{{ __('Buat dokumen pertama') }}</flux:button>
         </div>
     @else

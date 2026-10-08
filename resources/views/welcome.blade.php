@@ -26,7 +26,7 @@
                 <div class="flex flex-col gap-6">
                     <p class="w-fit rounded-md bg-zinc-100 px-2.5 py-1 text-xs text-zinc-600 dark:bg-white/10 dark:text-zinc-300">{{ __('Makalah · Laporan praktikum · Laporan PKL · Proposal') }}</p>
                     <h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">{{ __('Kamu tulis isinya. Formatnya kami yang rapikan.') }}</h1>
-                    <p class="max-w-xl text-lg text-zinc-600 dark:text-zinc-400">{{ __('Berhenti mengatur spasi rusak, margin lari, daftar isi manual, dan nomor romawi di Word. Rapi menyusun naskah akademik siap cetak dalam hitungan detik.') }}</p>
+                    <p class="max-w-xl text-lg text-zinc-600 dark:text-zinc-400">{{ __('Berhenti mengatur spasi rusak, margin lari, daftar isi manual, dan nomor romawi di Word. Laporanku menyusun naskah akademik siap cetak dalam hitungan detik.') }}</p>
                     <div class="flex flex-wrap gap-3">
                         <flux:button :href="Route::has('register') ? route('register') : route('login')" variant="primary">{{ __('Rapikan makalah') }}</flux:button>
                         @guest
@@ -65,11 +65,11 @@
             <section class="border-t border-zinc-200 dark:border-white/10">
                 <div class="mx-auto max-w-6xl px-4 py-16">
                     <h2 class="text-2xl font-semibold tracking-tight">{{ __('Yang biasanya bikin ribet di Word') }}</h2>
-                    <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('Kendala umum naskah manual dan cara Rapi menanganinya.') }}</p>
+                    <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('Kendala umum naskah manual dan cara Laporanku menanganinya.') }}</p>
                     <div class="mt-8 overflow-x-auto rounded-xl border border-zinc-200 dark:border-white/10">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-zinc-50 text-zinc-500 dark:bg-zinc-950">
-                                <tr><th class="px-4 py-3 font-medium">{{ __('Di Word') }}</th><th class="px-4 py-3 font-medium">{{ __('Di Rapi') }}</th></tr>
+                                <tr><th class="px-4 py-3 font-medium">{{ __('Di Word') }}</th><th class="px-4 py-3 font-medium">{{ __('Di Laporanku') }}</th></tr>
                             </thead>
                             <tbody class="divide-y divide-zinc-200 dark:divide-white/10">
                                 @foreach ([
@@ -119,7 +119,7 @@
         <footer class="border-t border-zinc-200 dark:border-white/10">
             <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-6 text-sm text-zinc-500">
                 <x-app-logo href="{{ route('home') }}" class="text-base" />
-                <span>© {{ date('Y') }} Rapi</span>
+                <span>© {{ date('Y') }} Laporanku</span>
             </div>
         </footer>
 

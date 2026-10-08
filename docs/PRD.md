@@ -1,6 +1,6 @@
 # PRD — Web Perapi Makalah & Laporan Pelajar dan Mahasiswa
 
-> Status: **Draft v1.1** · Tanggal: 2026-10-07 · Pemilik: bigboss · Nama produk: AIdocs (nama kerja di desain: "Rapi")
+> Status: **Draft v1.1** · Tanggal: 2026-10-07 · Pemilik: bigboss · Nama produk: Laporanku (nama kerja: AIdocs; nama lama di desain: "Rapi")
 > Mode: sintesis dari diskusi + hasil spike (`D:\Project\project\testing\spike.php`, `contoh-makalah.docx`, `contoh-makalah.pdf`) + desain Stitch.
 >
 > **Perubahan v1.1:** UI hanya memakai Flux UI **free** (tanpa Flux Pro); ditambah bagian *UI & Design System* (tema merah, light + dark mode, link Stitch); path referensi spike diperbaiki.
@@ -126,7 +126,7 @@ Pilih jenis dokumen + isi data cover
 
 | Layar | Isi utama | Story |
 |---|---|---|
-| Landing | Hero dengan artefak asli (teks mentah → halaman A4), tabel "Masalah vs Di Rapi", cara kerja 3 langkah | — |
+| Landing | Hero dengan artefak asli (teks mentah → halaman A4), tabel "Masalah vs Di Laporanku", cara kerja 3 langkah | — |
 | Dashboard Dokumen | Sidebar, tabel dokumen + badge status, dropdown aksi, kartu kuota Free | F2, F3 |
 | Dokumen baru | Radio card jenis dokumen, form cover, radio card jalur input, textarea, pratinjau cover A4 | A1–A4, C2 |
 | Tulis topik | Form topik, jumlah bab, panjang, gaya, instruksi, sumber, data pokok praktikum/PKL | A2, A5 |

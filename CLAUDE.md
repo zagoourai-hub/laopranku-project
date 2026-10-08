@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-AIdocs ("Rapi"): a web app that turns raw student content (pasted text, uploaded file, or prompt) into a structured JSON document, then builds a campus-formatted DOCX (+ PDF via Gotenberg). Spec in `docs/PRD.md` (Indonesian). **Current code is still the Laravel starter kit** (auth + settings only) plus the first document foundations; the AI pipeline from the PRD is not implemented yet.
+AIdocs ("Laporanku"): a web app that turns raw student content (pasted text, uploaded file, or prompt) into a structured JSON document, then builds a campus-formatted DOCX (+ PDF via Gotenberg). Spec in `docs/PRD.md` (Indonesian). **Current code is still the Laravel starter kit** (auth + settings only) plus the first document foundations; the AI pipeline from the PRD is not implemented yet.
 
 ## Commands
 

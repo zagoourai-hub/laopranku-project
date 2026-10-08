@@ -112,7 +112,7 @@
             <footer class="border-t border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-900">
                 <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-5 text-sm text-zinc-500 sm:px-6">
                     <span>{{ __('Standar format makalah dan laporan akademik untuk sekolah dan kampus di Indonesia.') }}</span>
-                    <span>© {{ date('Y') }} Rapi</span>
+                    <span>© {{ date('Y') }} Laporanku</span>
                 </div>
             </footer>
         </div>
