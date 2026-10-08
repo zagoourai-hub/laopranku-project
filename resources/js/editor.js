@@ -1,5 +1,8 @@
 import { Editor, Node } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
+import Sortable from 'sortablejs';
+
+const MAX_HISTORY = 100;
 
 // One paragraph per block: Enter cannot split it, so the stored text never contains a newline.
 const SingleParagraph = Node.create({ name: 'doc', topNode: true, content: 'paragraph' });
@@ -22,7 +25,7 @@ function mount(el, block) {
             StarterKit.configure({
                 blockquote: false, bold: false, code: false, codeBlock: false, dropcursor: false, gapcursor: false,
                 document: isList, hardBreak: false, heading: false, horizontalRule: false, italic: false, link: false, strike: false,
-                trailingNode: false, underline: false,
+                trailingNode: false, underline: false, undoRedo: false, // one history for the whole document, see docEditor
                 bulletList: isList, orderedList: isList, listItem: isList, listKeymap: isList,
             }),
             ...(isList ? [] : [SingleParagraph]),
@@ -59,12 +62,96 @@ const register = () =>
         again: false,
         timer: null,
         editors: [],
+        rev: 0, // bumped by undo/redo so every block remounts on the restored objects
+        past: [],
+        future: [],
+        last: JSON.stringify(initial),
+        dirty: false,
 
         init() {
             this.$watch('doc', () => {
                 this.status = 'saving';
+                this.dirty = true;
                 clearTimeout(this.timer);
-                this.timer = setTimeout(() => this.flush(), 800);
+                this.timer = setTimeout(() => {
+                    this.settle();
+                    this.flush();
+                }, 800);
+            });
+        },
+
+        get canUndo() {
+            return this.dirty || this.past.length > 0;
+        },
+
+        get canRedo() {
+            return this.future.length > 0;
+        },
+
+        // Commit pending edits as one history step (snapshots are JSON strings, so no shared references).
+        settle() {
+            clearTimeout(this.timer);
+            this.dirty = false;
+            const now = JSON.stringify(this.doc);
+            if (now === this.last) return;
+            this.past.push(this.last);
+            if (this.past.length > MAX_HISTORY) this.past.shift();
+            this.future = [];
+            this.last = now;
+        },
+
+        restore(snapshot) {
+            this.editors.forEach((e) => e.destroy());
+            this.editors = [];
+            this.rev++;
+            this.last = snapshot;
+            this.doc = JSON.parse(snapshot);
+        },
+
+        undo() {
+            this.settle();
+            if (!this.past.length) return;
+            this.future.push(this.last);
+            this.restore(this.past.pop());
+        },
+
+        redo() {
+            this.settle();
+            if (!this.future.length) return;
+            this.past.push(this.last);
+            this.restore(this.future.pop());
+        },
+
+        keys(e) {
+            if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+            const k = e.key.toLowerCase();
+            if (k !== 'z' && k !== 'y') return;
+            e.preventDefault();
+            k === 'y' || e.shiftKey ? this.redo() : this.undo();
+        },
+
+        // Move one item in a list (chapters or a chapter's sections); each move is its own undo step.
+        reorder(list, from, to) {
+            const arr = list();
+            if (to < 0 || to >= arr.length || from === to) return;
+            this.settle();
+            arr.splice(to, 0, arr.splice(from, 1)[0]);
+            this.settle();
+        },
+
+        // SortableJS only reports the drop. Put its DOM move back and let Alpine's keyed x-for do the real move,
+        // so the TipTap editors inside are never duplicated or orphaned.
+        sortable(el, list, handle) {
+            Sortable.create(el, {
+                handle,
+                draggable: '.js-sort-item',
+                animation: 150,
+                onEnd: ({ item, from, oldIndex, newIndex }) => {
+                    from.removeChild(item);
+                    const rest = [...from.children].filter((c) => c.classList.contains('js-sort-item'));
+                    from.insertBefore(item, rest[oldIndex] ?? null);
+                    this.reorder(list, oldIndex, newIndex);
+                },
             });
         },
 

@@ -63,3 +63,34 @@ test('the show page renders the editor with PDF and DOCX buttons', function () {
         ->assertSee('data-test="download-pdf"', false)
         ->assertSee('data-test="download-docx"', false);
 });
+
+test('reordered chapters and sections are saved with their ids unchanged', function () {
+    $owner = User::factory()->create();
+    $document = editableDocument($owner);
+    $content = $document->content;
+    $chapterIds = array_column($content['chapters'], 'id');
+    $content['chapters'] = array_reverse($content['chapters']);
+    $content['chapters'][0]['sections'] = array_reverse($content['chapters'][0]['sections']);
+    $sectionIds = array_column($content['chapters'][0]['sections'], 'id');
+
+    Livewire::actingAs($owner)->test('pages::documents.show', ['document' => $document])
+        ->call('save', $content)
+        ->assertReturned([]);
+
+    $saved = $document->refresh()->content;
+
+    expect(array_column($saved['chapters'], 'id'))->toBe(array_reverse($chapterIds))
+        ->and(array_column($saved['chapters'][0]['sections'], 'id'))->toBe($sectionIds);
+});
+
+test('the editor renders reorder handles and undo/redo buttons', function () {
+    $owner = User::factory()->create();
+
+    $this->actingAs($owner)->get(route('documents.show', editableDocument($owner)))
+        ->assertOk()
+        ->assertSee('js-handle-chapter', false)
+        ->assertSee('data-test="chapter-up"', false)
+        ->assertSee('data-test="open-preview"', false)
+        ->assertSee('data-test="undo"', false)
+        ->assertSee('data-test="redo"', false);
+});
