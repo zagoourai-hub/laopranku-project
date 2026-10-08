@@ -54,7 +54,7 @@ new class extends Component {
         Flux::toast(variant: 'success', text: __('Dokumen dihapus'));
     }
 
-    public function download(int $id): void
+    public function download(int $id, string $format = 'docx'): void
     {
         $document = Document::findOrFail($id);
 
@@ -66,7 +66,7 @@ new class extends Component {
             return;
         }
 
-        $this->redirect($document->downloadUrl());
+        $this->redirect($document->downloadUrl($format));
     }
 };
 ?>
@@ -121,7 +121,11 @@ new class extends Component {
                                                 <span class="block" data-test="download-disabled"><flux:menu.item icon="arrow-down-tray" disabled>{{ __('Unduh DOCX') }}</flux:menu.item></span>
                                             </flux:tooltip>
                                         @endif
-                                        <flux:menu.item icon="arrow-down-tray">{{ __('Unduh PDF') }}</flux:menu.item>
+                                        @if ($hasContent)
+                                            <flux:menu.item icon="arrow-down-tray" wire:click="download({{ $document->id }}, 'pdf')" data-test="download-pdf">{{ __('Unduh PDF') }}</flux:menu.item>
+                                        @else
+                                            <flux:menu.item icon="arrow-down-tray" disabled>{{ __('Unduh PDF') }}</flux:menu.item>
+                                        @endif
                                         <flux:menu.separator />
                                         <flux:menu.item icon="trash" variant="danger" wire:click="confirmDelete({{ $document->id }})" data-test="delete-document">{{ __('Hapus') }}</flux:menu.item>
                                     </flux:menu>

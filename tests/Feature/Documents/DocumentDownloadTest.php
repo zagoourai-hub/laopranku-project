@@ -2,6 +2,7 @@
 
 use App\Models\Document;
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
 
 function documentWithContent(User $owner, array $overrides = []): Document
 {
@@ -72,3 +73,27 @@ test('a document without chapters answers 422 with an Indonesian message', funct
     'empty chapters' => [['schema_version' => 1, 'chapters' => []]],
     'schema-invalid content' => [['schema_version' => 1, 'chapters' => [['title' => 'tanpa id']]]],
 ]);
+
+test('owner downloads a PDF converted by Gotenberg and temp files are removed', function () {
+    Http::fake(['*' => Http::response('%PDF-1.7 fake')]);
+    $owner = User::factory()->create();
+    $document = documentWithContent($owner);
+
+    $response = $this->actingAs($owner)->get($document->downloadUrl('pdf'));
+
+    $response->assertOk()->assertDownload('pengaruh-media-sosial.pdf');
+    $file = $response->baseResponse->getFile()->getPathname();
+    expect(file_get_contents($file, length: 4))->toBe('%PDF');
+
+    $response->streamedContent();
+
+    expect(file_exists($file))->toBeFalse()
+        ->and(file_exists(preg_replace('/\.pdf$/', '.docx', $file)))->toBeFalse();
+});
+
+test('PDF download answers 503 when Gotenberg is down', function () {
+    Http::fake(['*' => Http::response('boom', 500)]);
+    $owner = User::factory()->create();
+
+    $this->actingAs($owner)->get(documentWithContent($owner)->downloadUrl('pdf'))->assertStatus(503);
+});

@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Document;
 use App\Services\Documents\DocxBuilder;
+use App\Services\Documents\PdfConverter;
 use App\Services\Documents\SchemaValidator;
 use App\Services\Documents\Template;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Throwable;
 
 class DocumentDownloadController extends Controller
 {
-    public function __invoke(Document $document, DocxBuilder $builder, SchemaValidator $validator): BinaryFileResponse
+    public function __invoke(Document $document, Request $request, DocxBuilder $builder, PdfConverter $pdf, SchemaValidator $validator): BinaryFileResponse
     {
         Gate::authorize('view', $document);
 
@@ -25,8 +28,21 @@ class DocumentDownloadController extends Controller
         $templateKey = config("documents.templates.{$document->template_key}") ? $document->template_key : 'default';
         $path = $builder->build($content, Template::fromConfig($templateKey));
 
-        return response()
-            ->download($path, (Str::slug($document->title) ?: 'dokumen').'.docx')
-            ->deleteFileAfterSend();
+        $name = Str::slug($document->title) ?: 'dokumen';
+
+        if ($request->query('format') === 'pdf') {
+            try {
+                $pdfPath = $pdf->convert($path);
+            } catch (Throwable $e) {
+                report($e);
+                abort(503, 'Konversi PDF sedang tidak tersedia. Coba lagi sebentar lagi, atau unduh DOCX.');
+            } finally {
+                @unlink($path);
+            }
+
+            return response()->download($pdfPath, $name.'.pdf')->deleteFileAfterSend();
+        }
+
+        return response()->download($path, $name.'.docx')->deleteFileAfterSend();
     }
 }
