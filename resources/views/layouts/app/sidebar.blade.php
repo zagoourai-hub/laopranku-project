@@ -81,13 +81,6 @@
             </flux:dropdown>
         </flux:header>
 
-        @if (auth()->user()->is_guest)
-            <div class="border-b border-zinc-200 bg-zinc-50 px-4 py-2 text-sm text-zinc-700 dark:border-white/10 dark:bg-zinc-950 dark:text-zinc-300" data-test="guest-banner">
-                {{ __('Kamu masuk sebagai tamu.') }}
-                <a href="{{ route('register') }}" class="font-medium text-accent underline">{{ __('Simpan dokumenmu, daftar akun') }}</a>
-            </div>
-        @endif
-
         {{ $slot }}
 
         @persist('toast')

@@ -123,3 +123,10 @@ test('guests are sent to the login page from the document page', function () {
 
     $this->get(route('documents.show', $document))->assertRedirect(route('login'));
 });
+
+test('the document list shows type and education level', function () {
+    $owner = User::factory()->create();
+    Document::factory()->for($owner)->create(['education_level' => 'sma']);
+
+    $this->actingAs($owner)->get(route('dashboard'))->assertSee('Makalah · SMA');
+});

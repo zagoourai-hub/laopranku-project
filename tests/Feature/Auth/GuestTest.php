@@ -76,3 +76,18 @@ test('starting a trial is throttled', function () {
 
     $this->post(route('guest.start'))->assertTooManyRequests();
 });
+
+test('only guests see the sign-up banner', function () {
+    $this->actingAs(User::factory()->guest()->create())->get(route('dashboard'))
+        ->assertSee('data-test="guest-banner"', false)
+        ->assertSee(route('register'));
+
+    $this->actingAs(User::factory()->create())->get(route('dashboard'))
+        ->assertDontSee('data-test="guest-banner"', false);
+});
+
+test('the create form does not prefill the placeholder guest name', function () {
+    Livewire\Livewire::actingAs(User::factory()->guest()->create(['name' => 'Tamu']))
+        ->test('pages::documents.create')
+        ->assertSet('name', '');
+});

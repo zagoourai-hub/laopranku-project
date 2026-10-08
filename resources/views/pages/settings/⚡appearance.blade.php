@@ -7,7 +7,7 @@ new #[Title('Pengaturan tampilan')] class extends Component {
     //
 }; ?>
 
-<section class="w-full">
+<section class="mx-auto w-full max-w-6xl">
     @include('partials.settings-heading')
 
     <flux:heading level="2" class="sr-only">{{ __('Pengaturan tampilan') }}</flux:heading>

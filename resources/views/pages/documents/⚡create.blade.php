@@ -40,7 +40,7 @@ new #[Title('Dokumen baru')] class extends Component {
     {
         Gate::authorize('create', Document::class);
 
-        $this->name = Auth::user()->name;
+        $this->name = Auth::user()->is_guest ? '' : Auth::user()->name;
         $this->year = (string) now()->year;
     }
 
@@ -309,7 +309,7 @@ new #[Title('Dokumen baru')] class extends Component {
                 @endif
             </section>
 
-            <div class="flex items-center justify-end gap-3 border-t border-zinc-200 pt-6 dark:border-white/10">
+            <div class="sticky bottom-0 z-10 flex items-center justify-end gap-3 border-t border-zinc-200 bg-white/90 py-4 backdrop-blur dark:border-white/10 dark:bg-zinc-900/90">
                 <flux:button :href="route('dashboard')" variant="ghost" wire:navigate>{{ __('Batal') }}</flux:button>
                 <flux:button type="submit" variant="primary" data-test="create-document-button">{{ __('Buat draf') }}</flux:button>
             </div>

@@ -4,8 +4,11 @@ use Livewire\Component;
 
 new class extends Component {}; ?>
 
-<section class="mt-10 space-y-6">
-    <div class="relative mb-5">
+<section class="mt-10">
+    <flux:separator variant="subtle" class="mb-8" />
+
+    <div class="space-y-6 rounded-xl border border-red-200 p-5 dark:border-red-500/30" data-test="danger-zone">
+    <div class="relative">
         <flux:heading>{{ __('Hapus akun') }}</flux:heading>
         <flux:subheading>{{ __('Hapus akunmu beserta seluruh datanya') }}</flux:subheading>
     </div>
@@ -15,6 +18,8 @@ new class extends Component {}; ?>
             {{ __('Hapus akun') }}
         </flux:button>
     </flux:modal.trigger>
+
+    </div>
 
     <livewire:pages::settings.delete-user-modal />
 </section>

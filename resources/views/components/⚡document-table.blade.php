@@ -86,12 +86,12 @@ new class extends Component {
     @else
         <div class="overflow-x-auto rounded-xl border border-zinc-200 dark:border-white/10">
             <flux:table>
-                <flux:table.columns>
-                    <flux:table.column>{{ __('Judul') }}</flux:table.column>
+                <flux:table.columns class="bg-zinc-50 max-sm:hidden dark:bg-white/5">
+                    <flux:table.column class="first:ps-4!">{{ __('Judul') }}</flux:table.column>
                     <flux:table.column class="max-sm:hidden">{{ __('Status') }}</flux:table.column>
                     <flux:table.column class="max-sm:hidden">{{ __('Template') }}</flux:table.column>
                     <flux:table.column class="max-sm:hidden">{{ __('Diubah') }}</flux:table.column>
-                    <flux:table.column />
+                    <flux:table.column class="last:pe-4!" />
                 </flux:table.columns>
 
                 <flux:table.rows>
@@ -100,15 +100,15 @@ new class extends Component {
                             $hasContent = ! empty($document->content['chapters'] ?? []);
                         @endphp
                         <flux:table.row wire:key="document-{{ $document->id }}">
-                            <flux:table.cell class="whitespace-normal">
+                            <flux:table.cell class="whitespace-normal first:ps-4!">
                                 <div class="font-medium text-zinc-900 dark:text-white">{{ $document->title }}</div>
-                                <div class="text-sm text-zinc-500">{{ $document->type->label() }}</div>
+                                <div class="text-sm text-zinc-500">{{ $document->type->label() }} · {{ $document->education_level->label() }}</div>
                                 <flux:badge class="mt-2 sm:hidden" size="sm" :color="$document->status->color()">{{ $document->status->label() }}</flux:badge>
                             </flux:table.cell>
                             <flux:table.cell class="max-sm:hidden"><flux:badge size="sm" :color="$document->status->color()">{{ $document->status->label() }}</flux:badge></flux:table.cell>
                             <flux:table.cell class="max-sm:hidden">{{ $document->template_key === 'default' ? 'Umum 4-3-3-3' : $document->template_key }}</flux:table.cell>
                             <flux:table.cell class="max-sm:hidden">{{ $document->updated_at->locale('id')->diffForHumans() }}</flux:table.cell>
-                            <flux:table.cell>
+                            <flux:table.cell class="last:pe-4!">
                                 <flux:dropdown align="end">
                                     <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset aria-label="{{ __('Aksi') }}" />
                                     <flux:menu>
