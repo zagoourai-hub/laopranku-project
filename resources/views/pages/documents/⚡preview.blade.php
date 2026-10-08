@@ -96,8 +96,13 @@ new #[Title('Preview dokumen')] class extends Component {
                 <section class="cover">
                     <p class="cover-type">{{ $document->type->coverLabel() }}</p>
                     <p class="cover-title">{{ mb_strtoupper($cover['title'] ?? $document->title) }}</p>
-                    <p>Disusun oleh:</p>
-                    <p><strong>{{ $coverText['person'] }}</strong></p>
+                    <p><strong>Disusun oleh:</strong></p>
+                    @isset($cover['name'])
+                        <p><strong><u>{{ $cover['name'] }}</u></strong></p>
+                    @endisset
+                    @isset($cover['nim'])
+                        <p><strong>{{ $cover['nim'] }}</strong></p>
+                    @endisset
                     <div class="cover-foot">
                         @foreach ($coverText['foot'] as $line)
                             <p><strong>{{ mb_strtoupper($line) }}</strong></p>
@@ -106,23 +111,26 @@ new #[Title('Preview dokumen')] class extends Component {
                 </section>
 
                 <section class="front">
-                    <h1>KATA PENGANTAR</h1>
+                    <h1 id="kp">KATA PENGANTAR</h1>
                     <p class="indent">Puji syukur kami panjatkan ke hadirat Tuhan Yang Maha Esa atas terselesaikannya {{ mb_strtolower($document->type->coverLabel()) }} berjudul "{{ $cover['title'] ?? $document->title }}" ini.</p>
-                    <h1 style="margin-top: 2em">DAFTAR ISI</h1>
+                    <p class="signature">Penulis</p>
+                    <h1 id="toc" class="new-page">DAFTAR ISI</h1>
                     <ul class="toc">
+                        <li class="toc-1 toc-front"><a href="#kp">KATA PENGANTAR</a></li>
+                        <li class="toc-1 toc-front"><a href="#toc">DAFTAR ISI</a></li>
                         @foreach ($chapters as $ci => $chapter)
-                            <li><a href="#c{{ $ci }}">BAB {{ $this->roman($ci + 1) }} {{ mb_strtoupper($chapter['title']) }}</a></li>
+                            <li class="toc-1"><a href="#c{{ $ci }}">BAB {{ $this->roman($ci + 1) }} {{ mb_strtoupper($chapter['title']) }}</a></li>
                             @foreach ($chapter['sections'] as $si => $section)
                                 <li class="toc-2"><a href="#s{{ $ci }}-{{ $si }}">{{ $ci + 1 }}.{{ $si + 1 }} {{ $section['title'] }}</a></li>
                             @endforeach
                         @endforeach
-                        <li><a href="#refs">DAFTAR PUSTAKA</a></li>
+                        <li class="toc-1"><a href="#refs">DAFTAR PUSTAKA</a></li>
                     </ul>
                 </section>
 
                 @foreach ($chapters as $ci => $chapter)
                     <section class="body {{ $loop->first ? 'first' : '' }}">
-                        <h1 id="c{{ $ci }}">BAB {{ $this->roman($ci + 1) }} {{ mb_strtoupper($chapter['title']) }}</h1>
+                        <h1 id="c{{ $ci }}">BAB {{ $this->roman($ci + 1) }}<br>{{ mb_strtoupper($chapter['title']) }}</h1>
                         @foreach ($chapter['sections'] as $si => $section)
                             <h2 id="s{{ $ci }}-{{ $si }}">{{ $ci + 1 }}.{{ $si + 1 }} {{ $section['title'] }}</h2>
                             @foreach ($section['blocks'] as $block)

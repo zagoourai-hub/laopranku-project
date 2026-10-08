@@ -7,6 +7,9 @@ use App\Enums\EducationLevel;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use PhpOffice\PhpWord\Element\Header;
+use PhpOffice\PhpWord\Element\Section;
+use PhpOffice\PhpWord\Element\TextRun;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Settings;
@@ -73,7 +76,7 @@ class DocxBuilder
         $path = storage_path('app/documents/'.Str::uuid().'.docx');
         IOFactory::createWriter($word, 'Word2007')->save($path);
 
-        $this->patchPackage($path);
+        $this->patchPackage($path, self::A4_WIDTH_TWIPS - $page['marginLeft'] - $page['marginRight'], count($document['chapters']));
 
         return $path;
     }
@@ -82,7 +85,7 @@ class DocxBuilder
     {
         $heading = ['bold' => true, 'size' => $template->fontSize];
 
-        $word->addTitleStyle(1, $heading, ['alignment' => Jc::CENTER, 'spaceAfter' => $this->pt(12), 'keepNext' => true]);
+        $word->addTitleStyle(1, $heading, ['alignment' => Jc::CENTER, 'spaceAfter' => $this->pt(24), 'keepNext' => true]);
         $word->addTitleStyle(2, $heading, ['alignment' => Jc::START, 'spaceBefore' => $this->pt(12), 'keepNext' => true]);
 
         $level = ['left' => 720, 'hanging' => 360, 'tabPos' => 720];
@@ -121,12 +124,19 @@ class DocxBuilder
         $section->addTextBreak();
         $section->addText(mb_strtoupper($cover['title']), ['bold' => true, 'size' => 14], $center);
         $section->addTextBreak(6);
-        $section->addText('Disusun oleh:', null, $center);
-        $text = $level->cover($cover);
-        $section->addText($text['person'], $bold, $center);
-        $section->addTextBreak(6);
+        $section->addText('Disusun oleh:', $bold, $center);
 
-        foreach ($text['foot'] as $line) {
+        if (isset($cover['name'])) {
+            $section->addText($cover['name'], $bold + ['underline' => 'single'], $center);
+        }
+
+        if (isset($cover['nim'])) {
+            $section->addText($cover['nim'], $bold, $center);
+        }
+
+        $section->addTextBreak(9);
+
+        foreach ($level->cover($cover)['foot'] as $line) {
             $section->addText(mb_strtoupper($line), $bold, $center);
         }
     }
@@ -141,9 +151,11 @@ class DocxBuilder
         $section->addFooter()->addPreserveText('{PAGE}', null, ['alignment' => Jc::CENTER]);
 
         $section->addTitle('KATA PENGANTAR', 1);
-        $section->addText('Puji syukur kami panjatkan ke hadirat Tuhan Yang Maha Esa atas terselesaikannya '.mb_strtolower(DocumentType::from($document['type'])->coverLabel()).' berjudul "'.$document['cover']['title'].'" ini.');
+        $section->addText('Puji syukur kami panjatkan ke hadirat Tuhan Yang Maha Esa atas terselesaikannya '.mb_strtolower(DocumentType::from($document['type'])->coverLabel()).' berjudul "'.$document['cover']['title'].'" ini.', null, ['indentation' => ['firstLine' => $this->cm(1.25)]]);
+        $section->addTextBreak();
+        $section->addText('Penulis', null, ['alignment' => Jc::END]);
         $section->addPageBreak();
-        $section->addText('DAFTAR ISI', ['bold' => true], ['alignment' => Jc::CENTER, 'spaceAfter' => $this->pt(12)]);
+        $section->addTitle('DAFTAR ISI', 1);
         $section->addText(self::TOC_PLACEHOLDER);
     }
 
@@ -161,8 +173,14 @@ class DocxBuilder
         }
 
         $section = $word->addSection($style);
-        $section->addFooter()->addPreserveText('{PAGE}', null, ['alignment' => Jc::CENTER]);
-        $section->addTitle('BAB '.$this->roman($number).' '.mb_strtoupper($chapter['title']), 1);
+        $this->addBodyPageNumbers($section);
+
+        // "BAB I" and the title on separate lines, still one heading so the TOC reads "BAB I PENDAHULUAN".
+        $heading = new TextRun;
+        $heading->addText('BAB '.$this->roman($number));
+        $heading->addTextBreak();
+        $heading->addText(mb_strtoupper($chapter['title']));
+        $section->addTitle($heading, 1);
 
         foreach ($chapter['sections'] as $sectionIndex => $subsection) {
             $section->addTitle($number.'.'.($sectionIndex + 1).' '.$subsection['title'], 2);
@@ -188,7 +206,7 @@ class DocxBuilder
     private function addReferences(PhpWord $word, array $references, array $page, Template $template): void
     {
         $section = $word->addSection($page + ['breakType' => 'nextPage']);
-        $section->addFooter()->addPreserveText('{PAGE}', null, ['alignment' => Jc::CENTER]);
+        $this->addBodyPageNumbers($section);
         $section->addTitle('DAFTAR PUSTAKA', 1);
 
         if ($references === []) {
@@ -208,10 +226,22 @@ class DocxBuilder
     }
 
     /**
+     * Indonesian convention: a chapter's first page has its number bottom-centre, later pages top-right.
+     * Every slot is set explicitly, otherwise Word inherits the roman footer from the front matter.
+     */
+    private function addBodyPageNumbers(Section $section): void
+    {
+        $section->addHeader(Header::FIRST);
+        $section->addFooter(Header::FIRST)->addPreserveText('{PAGE}', null, ['alignment' => Jc::CENTER]);
+        $section->addHeader()->addPreserveText('{PAGE}', null, ['alignment' => Jc::END]);
+        $section->addFooter();
+    }
+
+    /**
      * XML patches PHPWord cannot express: roman front-matter numbering, a real TOC field,
      * hanging indent without firstLine, and outline levels on the heading styles.
      */
-    private function patchPackage(string $path): void
+    private function patchPackage(string $path, int $textWidth, int $chapterCount): void
     {
         $zip = new ZipArchive;
         $zip->open($path);
@@ -227,6 +257,9 @@ class DocxBuilder
             .'<w:r><w:fldChar w:fldCharType="end"/></w:r></w:p>';
         $xml = preg_replace('/<w:p>(?:(?!<w:p>).)*?'.preg_quote(self::TOC_PLACEHOLDER, '/').'.*?<\/w:p>/s', $toc, $xml, 1, $tocCount);
 
+        // PHPWord writes a TextRun line break as a bare <w:br/> in the paragraph; OOXML needs it inside a run.
+        $xml = preg_replace('/<\/w:r><w:br\/><w:r>/', '</w:r><w:r><w:br/></w:r><w:r>', $xml, -1, $breakCount);
+
         // ponytail: firstLine="0" next to hanging makes LibreOffice ignore the hanging indent.
         $xml = preg_replace('/ w:firstLine="0"( w:hanging="[1-9])/', '$1', $xml);
 
@@ -239,7 +272,16 @@ class DocxBuilder
             $outlineCount += $count;
         }
 
-        if ($romanCount !== 1 || $tocCount !== 1 || $outlineCount !== 2) {
+        // TOC entry styles: bold chapters, indented sections, dot leader to a right tab at the text edge.
+        $tab = '<w:tabs><w:tab w:val="right" w:leader="dot" w:pos="'.$textWidth.'"/></w:tabs>';
+        $styles = str_replace('</w:styles>',
+            '<w:style w:type="paragraph" w:styleId="TOC1"><w:name w:val="toc 1"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:uiPriority w:val="39"/>'
+            .'<w:pPr>'.$tab.'<w:spacing w:before="120"/><w:jc w:val="left"/></w:pPr><w:rPr><w:b/></w:rPr></w:style>'
+            .'<w:style w:type="paragraph" w:styleId="TOC2"><w:name w:val="toc 2"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:uiPriority w:val="39"/>'
+            .'<w:pPr>'.$tab.'<w:ind w:left="284"/><w:jc w:val="left"/></w:pPr></w:style></w:styles>',
+            $styles, $tocStyleCount);
+
+        if ($romanCount !== 1 || $tocCount !== 1 || $outlineCount !== 2 || $tocStyleCount !== 1 || $breakCount !== $chapterCount) {
             $zip->close();
 
             throw new RuntimeException('DOCX post-processing did not find its anchors; PHPWord output has changed.');

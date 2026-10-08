@@ -55,13 +55,13 @@ test('puts no page number on the cover', function () {
     preg_match_all('/^\s*(\d+|[ivx]+)\s*$/mi', $cover, $standalone);
 
     expect($cover)->toContain('MAKALAH')
-        ->and($standalone[1])->toBe(['2026']);
+        ->and($standalone[1])->toBe(['2201234567', '2026']);
 });
 
 test('numbers front matter i and ii, then restarts body at 1 on Bab I', function () {
     expect(pdfPageText($this->pdf, 2))->toMatch('/^\s*i\s*$/m')
         ->and(pdfPageText($this->pdf, 3))->toMatch('/^\s*ii\s*$/m')
-        ->and(pdfPageText($this->pdf, 4))->toContain('BAB I PENDAHULUAN')->toMatch('/^\s*1\s*$/m')
+        ->and(pdfPageText($this->pdf, 4))->toMatch('/^\s*BAB I\s*$/m')->toContain('PENDAHULUAN')->toMatch('/^\s*1\s*$/m')
         ->and(pdfPageText($this->pdf, 6))->toMatch('/^\s*3\s*$/m');
 });
 
@@ -69,10 +69,19 @@ test('fills the table of contents with every level 1 and 2 heading', function ()
     $toc = pdfPageText($this->pdf, 3);
 
     foreach ([
-        'BAB I PENDAHULUAN', '1.1 Latar Belakang', '1.2 Rumusan Masalah',
+        'KATA PENGANTAR', 'DAFTAR ISI', 'BAB I PENDAHULUAN', '1.1 Latar Belakang', '1.2 Rumusan Masalah',
         'BAB II PEMBAHASAN', '2.1 Pola Penggunaan', '2.2 Dampak terhadap Prestasi',
         'BAB III PENUTUP', '3.1 Kesimpulan', '3.2 Saran', 'DAFTAR PUSTAKA',
     ] as $heading) {
         expect($toc)->toContain($heading);
+    }
+});
+
+test('starts every chapter on its own page with the number at the bottom', function () {
+    foreach ([4 => ['BAB I', '1'], 5 => ['BAB II', '2'], 6 => ['BAB III', '3']] as $page => [$chapter, $number]) {
+        $lines = array_values(array_filter(array_map('trim', preg_split('/\R/', pdfPageText($this->pdf, $page)))));
+
+        expect($lines[0])->toBe($chapter)
+            ->and(end($lines))->toBe($number);
     }
 });
