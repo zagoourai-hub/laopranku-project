@@ -40,7 +40,7 @@
                 @if ($variant === 'login')
                     <div class="sheet-in grid w-full max-w-4xl overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-[0_1px_2px_rgb(24_24_27/0.04),0_24px_48px_-24px_rgb(24_24_27/0.2)] lg:grid-cols-2 dark:border-white/10 dark:bg-zinc-900 dark:shadow-none">
                         <aside class="hidden flex-col gap-6 bg-rose-50 p-10 lg:flex dark:bg-white/[0.03]">
-                            <span class="w-fit rounded-md bg-white px-2.5 py-1 text-xs font-semibold tracking-wide text-zinc-700 uppercase dark:bg-white/10 dark:text-zinc-200">{{ __('Ruang kerja mahasiswa') }}</span>
+                            <span class="w-fit rounded-md bg-white px-2.5 py-1 text-xs font-semibold tracking-wide text-zinc-700 uppercase dark:bg-white/10 dark:text-zinc-200">{{ __('Ruang kerja pelajar dan mahasiswa') }}</span>
                             <h2 class="text-3xl font-semibold tracking-tight text-balance text-zinc-900 dark:text-white">{{ __('Format makalah rapi tanpa repot margin.') }}</h2>
                             <p class="text-zinc-600 dark:text-zinc-400">{{ __('Margin 4-3-3-3, nomor halaman, dan daftar isi diatur otomatis. Ekspor ke DOCX dan PDF.') }}</p>
 
@@ -111,7 +111,7 @@
 
             <footer class="border-t border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-900">
                 <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-5 text-sm text-zinc-500 sm:px-6">
-                    <span>{{ __('Standar format makalah dan laporan akademik untuk perguruan tinggi di Indonesia.') }}</span>
+                    <span>{{ __('Standar format makalah dan laporan akademik untuk sekolah dan kampus di Indonesia.') }}</span>
                     <span>© {{ date('Y') }} Rapi</span>
                 </div>
             </footer>

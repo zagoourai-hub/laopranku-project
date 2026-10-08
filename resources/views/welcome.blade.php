@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        @include('partials.head', ['title' => __('Perapi makalah mahasiswa')])
+        @include('partials.head', ['title' => __('Perapi makalah pelajar dan mahasiswa')])
     </head>
     <body class="min-h-screen bg-white text-zinc-900 antialiased dark:bg-zinc-900 dark:text-zinc-100">
         <header class="border-b border-zinc-200 dark:border-white/10">

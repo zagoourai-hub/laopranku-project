@@ -21,18 +21,6 @@
 
             <flux:spacer />
 
-            {{-- Contoh: kuota Free belum terhubung ke data pengguna. --}}
-            <div class="mx-2 mb-3 rounded-xl border border-zinc-200 bg-white p-4 dark:border-white/10 dark:bg-zinc-900">
-                <div class="flex items-center justify-between text-sm font-medium text-zinc-900 dark:text-white">
-                    <span>{{ __('Paket Free') }}</span>
-                    <span class="tabular-nums text-zinc-500">2 / 3</span>
-                </div>
-                <p class="mt-1 text-sm text-zinc-500">{{ __('2 dari 3 dokumen bulan ini') }}</p>
-                <div class="mt-3 h-1.5 rounded-full bg-zinc-200 dark:bg-white/10" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="2">
-                    <div class="h-full w-2/3 rounded-full bg-accent"></div>
-                </div>
-            </div>
-
             <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
         </flux:sidebar>
 

@@ -1,4 +1,4 @@
-# PRD — Web Perapi Makalah & Laporan Mahasiswa
+# PRD — Web Perapi Makalah & Laporan Pelajar dan Mahasiswa
 
 > Status: **Draft v1.1** · Tanggal: 2026-10-07 · Pemilik: bigboss · Nama produk: AIdocs (nama kerja di desain: "Rapi")
 > Mode: sintesis dari diskusi + hasil spike (`D:\Project\project\testing\spike.php`, `contoh-makalah.docx`, `contoh-makalah.pdf`) + desain Stitch.
@@ -9,14 +9,14 @@
 
 ## 1. Executive Summary
 
-**Problem Statement.** Mahasiswa menghabiskan waktu lama merapikan format makalah di Word (heading, nomor bab, daftar isi, nomor halaman romawi/angka, margin, daftar pustaka), dan format sering rusak karena konten dan format tercampur saat copy-paste.
+**Problem Statement.** Pelajar (SMA/SMK) dan mahasiswa menghabiskan waktu lama merapikan format makalah di Word (heading, nomor bab, daftar isi, nomor halaman romawi/angka, margin, daftar pustaka), dan format sering rusak karena konten dan format tercampur saat copy-paste.
 
-**Proposed Solution.** Mahasiswa cukup memberi konten (paste teks mentah, upload file, atau prompt). Sistem mengubahnya jadi dokumen terstruktur (JSON), lalu builder menerapkan template format kampus dan menghasilkan DOCX yang rapi dan masih bisa diedit, plus PDF.
+**Proposed Solution.** Pelajar dan mahasiswa cukup memberi konten (paste teks mentah, upload file, atau prompt). Sistem mengubahnya jadi dokumen terstruktur (JSON), lalu builder menerapkan template format sekolah/kampus dan menghasilkan DOCX yang rapi dan masih bisa diedit, plus PDF.
 
 **Success Criteria** (angka target = usulan, dikonfirmasi bigboss sebelum launch):
 1. **Kualitas format:** 100% dokumen hasil export lolos golden test (cover tanpa nomor, halaman awal romawi, isi angka mulai 1, daftar isi terisi, Bab/Subbab bernomor benar).
 2. **Kecepatan:** dari paste teks (≤ 5.000 kata) sampai DOCX siap unduh ≤ 60 detik (p90).
-3. **Akurasi structuring:** ≥ 90% heading terdeteksi benar pada set uji 10 teks mentah asli mahasiswa.
+3. **Akurasi structuring:** ≥ 90% heading terdeteksi benar pada set uji 10 teks mentah asli pelajar dan mahasiswa.
 4. **Integritas konten:** 0 kalimat baru yang dikarang AI pada jalur paste/upload (konten asli tidak berubah).
 5. **Adopsi:** TBD (misal jumlah dokumen ter-export per minggu selama beta).
 
@@ -25,8 +25,9 @@
 ## 2. User Experience & Functionality
 
 ### Personas
+- **Pelajar SMA/SMK (utama):** butuh makalah, laporan praktikum, dan laporan PKL/Prakerin rapi untuk tugas sekolah; sama-sama punya isi tapi belum mahir mengatur format Word. Perlu hasil sesuai panduan sekolah (preset umum dulu).
 - **Mahasiswa S1/D3 (utama):** punya isi tulisan (hasil ketik, copy dari sumber, catatan) tapi tidak mahir/tidak sempat mengatur format Word. Perlu hasil sesuai panduan kampus.
-- **Mahasiswa dengan prompt:** butuh draf awal dari topik ("buatkan makalah tentang X, 5 bab").
+- **Pelajar/mahasiswa dengan prompt:** butuh draf awal dari topik ("buatkan makalah tentang X, 5 bab").
 - **Pengguna AI agent (Fase 3–4):** memakai Claude Desktop/ChatGPT/Cursor, ingin agent-nya langsung menghasilkan DOCX format kampus lewat MCP.
 - **Admin (bigboss):** mengelola template, kuota, dan biaya AI.
 
@@ -53,59 +54,68 @@ Pilih jenis dokumen + isi data cover
 
 | # | Story | Acceptance Criteria |
 |---|---|---|
-| A1 | Sebagai mahasiswa, saya ingin paste teks mentah agar dirapikan jadi makalah. | Teks ≤ 20.000 kata diterima; karakter aneh copy-paste, spasi ganda, dan nomor manual ("BAB 1.", "1.1") dibersihkan; hasil berupa bab/subbab/paragraf/list; isi kalimat identik dengan input (diuji otomatis). |
-| A2 | Sebagai mahasiswa, saya ingin menulis prompt topik agar dibuatkan draf. | Form "Tulis topik" berisi: topik (wajib, ≥ 10 karakter), jumlah bab (default dari jenis dokumen, 3–7), panjang per bab (ringkas/sedang/panjang), gaya bahasa, instruksi tambahan (opsional, ≤ 500 karakter), sumber referensi (opsional). Sistem menampilkan outline (bab, subbab, deskripsi) dulu; isi tidak ditulis sebelum user menekan "Setujui". |
-| A5 | Sebagai mahasiswa yang membuat laporan praktikum/PKL, saya ingin AI menulis dari data asli saya, bukan mengarang. | Jenis **laporan praktikum** meminta: judul percobaan, tujuan, alat dan bahan, langkah kerja, data hasil pengamatan. Jenis **laporan PKL** meminta: nama instansi, divisi/bagian, periode, daftar kegiatan. Field data pokok wajib sebelum generate; AI hanya menarasikan data itu dan tidak menambah angka, nama, atau kegiatan baru; bagian tanpa data ditandai "[lengkapi]" di dokumen. |
-| A3 | Sebagai mahasiswa, saya ingin upload .docx/.txt/.md. | .md dan .docx ber-style Heading dipetakan tanpa AI; file lain lewat jalur A1; file > 10 MB atau format lain ditolak dengan pesan jelas. |
-| A4 | Sebagai mahasiswa, saya ingin memilih jenis dokumen (makalah, laporan praktikum, laporan PKL, proposal). | Jenis dokumen menentukan kerangka bab default dan judul cover. |
+| A1 | Sebagai pelajar/mahasiswa, saya ingin paste teks mentah agar dirapikan jadi makalah. | Teks ≤ 20.000 kata diterima; karakter aneh copy-paste, spasi ganda, dan nomor manual ("BAB 1.", "1.1") dibersihkan; hasil berupa bab/subbab/paragraf/list; isi kalimat identik dengan input (diuji otomatis). |
+| A2 | Sebagai pelajar/mahasiswa, saya ingin menulis prompt topik agar dibuatkan draf. | Form "Tulis topik" berisi: topik (wajib, ≥ 10 karakter), jumlah bab (default dari jenis dokumen, 3–7), panjang per bab (ringkas/sedang/panjang), gaya bahasa, instruksi tambahan (opsional, ≤ 500 karakter), sumber referensi (opsional). Sistem menampilkan outline (bab, subbab, deskripsi) dulu; isi tidak ditulis sebelum user menekan "Setujui". |
+| A5 | Sebagai pelajar/mahasiswa yang membuat laporan praktikum/PKL, saya ingin AI menulis dari data asli saya, bukan mengarang. | Jenis **laporan praktikum** meminta: judul percobaan, tujuan, alat dan bahan, langkah kerja, data hasil pengamatan. Jenis **laporan PKL** meminta: nama instansi, divisi/bagian, periode, daftar kegiatan. Field data pokok wajib sebelum generate; AI hanya menarasikan data itu dan tidak menambah angka, nama, atau kegiatan baru; bagian tanpa data ditandai "[lengkapi]" di dokumen. |
+| A3 | Sebagai pelajar/mahasiswa, saya ingin upload .docx/.txt/.md. | .md dan .docx ber-style Heading dipetakan tanpa AI; file lain lewat jalur A1; file > 10 MB atau format lain ditolak dengan pesan jelas. |
+| A4 | Sebagai pelajar/mahasiswa, saya ingin memilih jenis dokumen (makalah, laporan praktikum, laporan PKL, proposal). | Jenis dokumen menentukan kerangka bab default dan judul cover. |
 
 **B. AI structuring dan penulisan**
 
 | # | Story | Acceptance Criteria |
 |---|---|---|
-| B1 | Sebagai mahasiswa, saya ingin outline bisa saya ubah sebelum isi ditulis. | Bab/subbab bisa ditambah, dihapus, di-rename, diurutkan; perubahan tersimpan. |
-| B2 | Sebagai mahasiswa, saya ingin isi ditulis per bab dengan progres terlihat. | Satu job per bab; UI menampilkan "Bab n dari N"; bab gagal bisa di-regenerate sendiri. |
-| B3 | Sebagai mahasiswa, saya ingin memilih gaya bahasa (formal akademik, semi-formal, ringkas). | Gaya tersimpan per dokumen dan dipakai di setiap generate bab. |
-| B4 | Sebagai mahasiswa, saya tidak ingin referensi palsu. | Di mode prompt AI tidak menulis daftar pustaka atau sitasi kecuali dari sumber yang ditempel user; jika tidak ada sumber, daftar pustaka kosong + catatan "tambahkan referensi". |
+| B1 | Sebagai pelajar/mahasiswa, saya ingin outline bisa saya ubah sebelum isi ditulis. | Bab/subbab bisa ditambah, dihapus, di-rename, diurutkan; perubahan tersimpan. |
+| B2 | Sebagai pelajar/mahasiswa, saya ingin isi ditulis per bab dengan progres terlihat. | Satu job per bab; UI menampilkan "Bab n dari N"; bab gagal bisa di-regenerate sendiri. |
+| B3 | Sebagai pelajar/mahasiswa, saya ingin memilih gaya bahasa (formal akademik, semi-formal, ringkas). | Gaya tersimpan per dokumen dan dipakai di setiap generate bab. |
+| B4 | Sebagai pelajar/mahasiswa, saya tidak ingin referensi palsu. | Di mode prompt AI tidak menulis daftar pustaka atau sitasi kecuali dari sumber yang ditempel user; jika tidak ada sumber, daftar pustaka kosong + catatan "tambahkan referensi". |
 
 **C. Template dan format**
 
 | # | Story | Acceptance Criteria |
 |---|---|---|
-| C1 | Sebagai mahasiswa, saya ingin format standar otomatis. | Default: Times New Roman 12, spasi 1.5, margin kiri 4 / atas 3 / kanan 3 / bawah 3 cm, A4, paragraf rata kiri-kanan dengan indent baris pertama 1.25 cm. |
-| C2 | Sebagai mahasiswa, saya ingin cover otomatis. | Cover memuat jenis dokumen, judul, nama, NIM, prodi, kampus, tahun; tanpa nomor halaman. |
-| C3 | Sebagai mahasiswa, saya ingin kata pengantar dan daftar isi otomatis. | Kata pengantar dari template berplaceholder; daftar isi berupa field TOC asli (heading level 1–2), terisi di PDF dan di Word setelah update field. |
-| C4 | Sebagai mahasiswa, saya ingin nomor halaman romawi lalu angka. | Halaman awal i, ii, …; Bab I mulai dari 1; tidak ada halaman kosong sisipan di PDF. |
-| C5 | Sebagai mahasiswa, saya ingin Bab dan subbab bernomor otomatis. | Format "BAB I JUDUL" dan "1.1 Subjudul"; nomor dihitung builder, bukan AI; tetap benar setelah bab diurutkan ulang. |
-| C6 | Sebagai mahasiswa, saya ingin daftar pustaka rapi. | Hanging indent 1.25 cm, diurutkan alfabetis, judul "DAFTAR PUSTAKA" masuk daftar isi. |
+| C1 | Sebagai pelajar/mahasiswa, saya ingin format standar otomatis. | Default: Times New Roman 12, spasi 1.5, margin kiri 4 / atas 3 / kanan 3 / bawah 3 cm, A4, paragraf rata kiri-kanan dengan indent baris pertama 1.25 cm. |
+| C2 | Sebagai pelajar/mahasiswa, saya ingin cover otomatis. | Cover memuat jenis dokumen, judul, nama, NIM, prodi, kampus, tahun; tanpa nomor halaman. |
+| C3 | Sebagai pelajar/mahasiswa, saya ingin kata pengantar dan daftar isi otomatis. | Kata pengantar dari template berplaceholder; daftar isi berupa field TOC asli (heading level 1–2), terisi di PDF dan di Word setelah update field. |
+| C4 | Sebagai pelajar/mahasiswa, saya ingin nomor halaman romawi lalu angka. | Halaman awal i, ii, …; Bab I mulai dari 1; tidak ada halaman kosong sisipan di PDF. |
+| C5 | Sebagai pelajar/mahasiswa, saya ingin Bab dan subbab bernomor otomatis. | Format "BAB I JUDUL" dan "1.1 Subjudul"; nomor dihitung builder, bukan AI; tetap benar setelah bab diurutkan ulang. |
+| C6 | Sebagai pelajar/mahasiswa, saya ingin daftar pustaka rapi. | Hanging indent 1.25 cm, diurutkan alfabetis, judul "DAFTAR PUSTAKA" masuk daftar isi. |
 
 **D. Editor dan preview**
 
 | # | Story | Acceptance Criteria |
 |---|---|---|
-| D1 | Sebagai mahasiswa, saya ingin melihat preview mirip kertas A4. | Preview HTML berhalaman A4 ter-update ≤ 1 detik setelah edit; tombol "Preview akurat" menampilkan PDF hasil Gotenberg. |
-| D2 | Sebagai mahasiswa, saya ingin mengedit per blok. | Paragraf/list/heading bisa diedit (TipTap); perubahan auto-save (debounce) ke JSON dokumen. |
-| D3 | Sebagai mahasiswa, saya ingin drag-and-drop urutan bab. | Urutan bab dan subbab berubah; penomoran di preview langsung menyesuaikan. |
-| D4 | Sebagai mahasiswa, saya ingin undo/redo. | Minimal 50 langkah, berjalan di browser tanpa round-trip server. |
+| D1 | Sebagai pelajar/mahasiswa, saya ingin melihat preview mirip kertas A4. | Preview HTML berhalaman A4 ter-update ≤ 1 detik setelah edit; tombol "Preview akurat" menampilkan PDF hasil Gotenberg. |
+| D2 | Sebagai pelajar/mahasiswa, saya ingin mengedit per blok. | Paragraf/list/heading bisa diedit (TipTap); perubahan auto-save (debounce) ke JSON dokumen. |
+| D3 | Sebagai pelajar/mahasiswa, saya ingin drag-and-drop urutan bab. | Urutan bab dan subbab berubah; penomoran di preview langsung menyesuaikan. |
+| D4 | Sebagai pelajar/mahasiswa, saya ingin undo/redo. | Minimal 50 langkah, berjalan di browser tanpa round-trip server. |
 
 **E. Export**
 
 | # | Story | Acceptance Criteria |
 |---|---|---|
-| E1 | Sebagai mahasiswa, saya ingin unduh DOCX yang bisa diedit. | File terbuka tanpa error di MS Word dan LibreOffice; heading memakai style Heading 1/2 asli. |
-| E2 | Sebagai mahasiswa, saya ingin unduh PDF. | PDF dihasilkan dari DOCX yang sama (isi identik), daftar isi terisi. |
+| E1 | Sebagai pelajar/mahasiswa, saya ingin unduh DOCX yang bisa diedit. | File terbuka tanpa error di MS Word dan LibreOffice; heading memakai style Heading 1/2 asli. |
+| E2 | Sebagai pelajar/mahasiswa, saya ingin unduh PDF. | PDF dihasilkan dari DOCX yang sama (isi identik), daftar isi terisi. |
 
 **F. Akun dan dokumen**
 
 | # | Story | Acceptance Criteria |
 |---|---|---|
-| F1 | Sebagai mahasiswa, saya ingin mencoba tanpa daftar. | Guest user dibuat otomatis; saat register, dokumen tetap milik akun yang sama. |
-| F2 | Sebagai mahasiswa, saya ingin login dan menyimpan dokumen. | Login session (starter kit); dokumen hanya bisa diakses pemiliknya. |
-| F3 | Sebagai mahasiswa, saya ingin mengelola daftar dokumen. | Buka, duplikat, hapus (dengan konfirmasi). |
+| F1 | Sebagai pelajar/mahasiswa, saya ingin mencoba tanpa daftar. | Guest user dibuat otomatis; saat register, dokumen tetap milik akun yang sama. |
+| F2 | Sebagai pelajar/mahasiswa, saya ingin login dan menyimpan dokumen. | Login session (starter kit); dokumen hanya bisa diakses pemiliknya. |
+| F3 | Sebagai pelajar/mahasiswa, saya ingin mengelola daftar dokumen. | Buka, duplikat, hapus (dengan konfirmasi). |
+
+
+**G. Jenjang**
+
+| # | Story | Acceptance Criteria |
+|---|---|---|
+| G1 | Sebagai pelajar/mahasiswa, saya ingin memilih jenjang (Mahasiswa, SMA, SMK). | Jenjang dipilih saat membuat dokumen dan tersimpan per dokumen; label cover mengikuti jenjang (mahasiswa: NIM, prodi, kampus; SMA/SMK: NIS/NISN, jurusan/kelas, sekolah). |
+| G2 | Sebagai pelajar SMA/SMK, saya ingin format standar tanpa mengatur sendiri. | Template default sama untuk semua jenjang: Times New Roman 12, spasi 1.5, margin 4-3-3-3. Panduan sekolah spesifik lewat template custom (task 3.4/4.2). |
 
 ### Non-Goals (MVP)
 - Bukan alat deteksi/penghindar AI detector atau plagiarisme.
-- Tidak menjamin kesesuaian dengan panduan kampus spesifik (hanya preset umum) sampai fitur template custom.
+- Jenis **Proposal** (skripsi/tugas akhir) tidak ditawarkan untuk SMA/SMK.
+- Tidak menjamin kesesuaian dengan panduan sekolah/kampus spesifik (hanya preset umum) sampai fitur template custom.
 - Tidak ada editor bebas ala Word (format manual per kata, font bebas) — format selalu dari template.
 - Tidak ada kolaborasi realtime, komentar, atau riwayat versi di MVP.
 - Tidak memakai komponen atau layanan berbayar untuk UI (Flux Pro dikecualikan).
@@ -172,7 +182,7 @@ Status free beberapa komponen (Table, Toast, Callout) dikonfirmasi saat task 1.1
 5. **Validasi:** output tidak valid → retry 1× dengan pesan error validator → jika masih gagal, state `failed` + pesan ke user.
 
 ### Evaluasi kualitas
-- **Set uji:** 10 teks mentah asli mahasiswa (copy dari web, PDF, chat) + 5 prompt topik. Dikumpulkan sebelum memilih model (**TBD: sumber data**).
+- **Set uji:** 10 teks mentah asli pelajar dan mahasiswa (copy dari web, PDF, chat) + 5 prompt topik. Dikumpulkan sebelum memilih model (**TBD: sumber data**).
 - **Metrik:** akurasi deteksi heading (target ≥ 90%), integritas teks (100% kalimat asli terjaga, diuji diff otomatis), validitas JSON (≥ 99% setelah retry), biaya dan latensi per dokumen.
 - **Regresi:** set uji dijalankan ulang setiap ganti model atau prompt.
 
@@ -338,6 +348,8 @@ Setiap task ≈ ≤ 1 hari, bisa diverifikasi sendiri.
 - [ ] 2.7 Export PDF + tombol "Preview akurat".
 - [ ] 2.8 Rate limit + kuota generate per user.
 - [ ] 2.9 Deploy demo: Cloudflare Tunnel; lalu Oracle Cloud Free.
+- [ ] 2.10 Jenjang resmi (Mahasiswa/SMA/SMK): pilihan saat buat dokumen, label cover per jenjang, template default dipakai bersama.
+- [ ] 2.11 Teks produk dan PRD netral (pelajar dan mahasiswa); cek relevansi jenis Proposal untuk SMA/SMK.
 
 **Fase 3 — Referensi, template, elemen**
 - [ ] 3.1 Format sitasi APA/IEEE/Harvard untuk daftar pustaka.
@@ -388,7 +400,8 @@ Import PDF, input suara, CSV → tabel, Google Docs export, komentar, mode bandi
 4. Budget biaya AI per dokumen dan batas kuota Free.
 5. Retensi data guest dan teks dokumen.
 6. Harga paket Pro (per 30 hari).
-7. Panduan format 3–5 kampus acuan untuk template.
+7. Panduan format 3–5 kampus/sekolah acuan untuk template.
+8. **Open question:** pengguna di bawah 18 tahun (pelajar SMA/SMK) — kebijakan privasi dan persetujuan orang tua/sekolah belum diputuskan.
 
 **Referensi:**
 - Spike: `D:\Project\project\testing\spike.php` (bukti builder + semua workaround), `contoh-makalah.docx`, `contoh-makalah.pdf` di folder yang sama.

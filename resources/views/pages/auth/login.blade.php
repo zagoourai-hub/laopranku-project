@@ -22,7 +22,7 @@
                 required
                 autofocus
                 autocomplete="email"
-                placeholder="nama@kampus.ac.id"
+                placeholder="nama@email.com"
             />
 
             <!-- Password -->
