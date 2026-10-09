@@ -22,3 +22,4 @@ Route::get('documents/{document}/download', DocumentDownloadController::class)
     ->name('documents.download');
 
 require __DIR__.'/settings.php';
+require __DIR__.'/billing.php';
