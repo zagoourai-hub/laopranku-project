@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Document;
 use App\Models\User;
+use App\Services\Billing\PlanLimits;
 
 class DocumentPolicy
 {
@@ -12,9 +13,12 @@ class DocumentPolicy
         return true;
     }
 
+    /**
+     * Free plan monthly quota applies to every new document (create page, duplicate).
+     */
     public function create(User $user): bool
     {
-        return true;
+        return app(PlanLimits::class)->canCreateDocument($user);
     }
 
     public function view(User $user, Document $document): bool

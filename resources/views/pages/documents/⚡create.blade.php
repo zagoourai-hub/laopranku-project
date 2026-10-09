@@ -4,6 +4,7 @@ use App\Enums\DocumentStatus;
 use App\Enums\DocumentType;
 use App\Enums\EducationLevel;
 use App\Models\Document;
+use App\Services\Billing\PlanLimits;
 use App\Services\Documents\ImportParser;
 use App\Services\Documents\SchemaValidator;
 use Flux\Flux;
@@ -43,8 +44,6 @@ new #[Title('Dokumen baru')] class extends Component {
 
     public function mount(): void
     {
-        Gate::authorize('create', Document::class);
-
         $this->name = Auth::user()->is_guest ? '' : Auth::user()->name;
         $this->year = (string) now()->year;
     }
@@ -225,6 +224,12 @@ new #[Title('Dokumen baru')] class extends Component {
 
     public function save(): void
     {
+        if (! app(PlanLimits::class)->canCreateDocument(Auth::user())) {
+            $this->addError('quota', __('Kuota dokumen bulan ini sudah habis. Upgrade ke Pro untuk membuat dokumen tanpa batas.'));
+
+            return;
+        }
+
         Gate::authorize('create', Document::class);
 
         $this->validate();
@@ -339,6 +344,17 @@ new #[Title('Dokumen baru')] class extends Component {
     <flux:heading size="xl" level="1">{{ __('Dokumen baru') }}</flux:heading>
     <flux:subheading>{{ __('Isi data cover dan pilih cara memasukkan isi dokumen.') }}</flux:subheading>
 
+    @php($quotaFull = ! app(\App\Services\Billing\PlanLimits::class)->canCreateDocument(auth()->user()))
+    @if ($quotaFull)
+        <flux:callout class="mt-4" variant="warning" icon="exclamation-triangle" data-test="quota-full">
+            <flux:callout.heading>{{ __('Kuota dokumen bulan ini sudah habis') }}</flux:callout.heading>
+            <flux:callout.text>{{ __('Paket Free dibatasi :n dokumen per bulan. Upgrade ke Pro untuk dokumen tanpa batas dan unduh PDF.', ['n' => config('plans.free_documents_per_month')]) }}</flux:callout.text>
+            <x-slot name="actions">
+                <flux:button size="sm" variant="primary" :href="app(\App\Services\Billing\PlanLimits::class)->upgradeUrl()" data-test="upgrade-cta">{{ __('Upgrade ke Pro') }}</flux:button>
+            </x-slot>
+        </flux:callout>
+    @endif
+
     <form novalidate wire:submit="save" class="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div class="flex min-w-0 flex-col gap-10">
             <section class="flex flex-col gap-4">
@@ -432,7 +448,7 @@ new #[Title('Dokumen baru')] class extends Component {
 
             <div class="sticky bottom-0 z-10 flex items-center justify-end gap-3 border-t border-zinc-200 bg-white/90 py-4 backdrop-blur dark:border-white/10 dark:bg-zinc-900/90">
                 <flux:button :href="route('dashboard')" variant="ghost" wire:navigate>{{ __('Batal') }}</flux:button>
-                <flux:button type="submit" variant="primary" data-test="create-document-button">{{ __('Buat draf') }}</flux:button>
+                <flux:button type="submit" variant="primary" :disabled="$quotaFull" data-test="create-document-button">{{ __('Buat draf') }}</flux:button>
             </div>
         </div>
 

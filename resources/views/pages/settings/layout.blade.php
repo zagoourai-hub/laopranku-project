@@ -4,6 +4,12 @@
             <flux:navlist.item :href="route('profile.edit')" wire:navigate>{{ __('Profil') }}</flux:navlist.item>
             <flux:navlist.item :href="route('security.edit')" wire:navigate>{{ __('Keamanan') }}</flux:navlist.item>
             <flux:navlist.item :href="route('appearance.edit')" wire:navigate>{{ __('Tampilan') }}</flux:navlist.item>
+            @if (\Illuminate\Support\Facades\Route::has('settings.billing'))
+                <flux:navlist.item :href="route('settings.billing')" wire:navigate>{{ __('Tagihan') }}</flux:navlist.item>
+            @endif
+            @if (\Illuminate\Support\Facades\Route::has('settings.tokens'))
+                <flux:navlist.item :href="route('settings.tokens')" wire:navigate>{{ __('Token MCP') }}</flux:navlist.item>
+            @endif
         </flux:navlist>
     </div>
 

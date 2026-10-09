@@ -12,7 +12,7 @@ function previewDocument(User $owner, array $overrides = []): Document
 }
 
 test('owner sees the numbered preview source with TOC and references', function () {
-    $owner = User::factory()->create();
+    $owner = User::factory()->pro()->create();
     $document = previewDocument($owner);
 
     $this->actingAs($owner)
@@ -46,7 +46,7 @@ test('a document without chapters shows the empty state and no accurate button',
 });
 
 test('the accurate preview link is a signed inline PDF url', function () {
-    $owner = User::factory()->create();
+    $owner = User::factory()->pro()->create();
     $document = previewDocument($owner);
 
     $url = Livewire\Livewire::actingAs($owner)->test('pages::documents.preview', ['document' => $document])

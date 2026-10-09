@@ -24,7 +24,7 @@ test('403 on another user\'s document is in Indonesian and links back to documen
 });
 
 test('503 shows the reason given by the app', function () {
-    $owner = User::factory()->create();
+    $owner = User::factory()->pro()->create();
     $document = Document::factory()->for($owner)->create([
         'content' => json_decode(file_get_contents(base_path('tests/Fixtures/documents/makalah.json')), true),
     ]);

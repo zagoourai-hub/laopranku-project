@@ -24,6 +24,13 @@ new class extends Component {
         $document = Document::findOrFail($id);
 
         Gate::authorize('view', $document);
+
+        if (! app(\App\Services\Billing\PlanLimits::class)->canCreateDocument(auth()->user())) {
+            Flux::toast(variant: 'warning', text: __('Kuota dokumen bulan ini sudah habis. Upgrade ke Pro untuk menduplikat.'));
+
+            return;
+        }
+
         Gate::authorize('create', Document::class);
 
         $document->duplicate();
@@ -59,6 +66,7 @@ new class extends Component {
         $document = Document::findOrFail($id);
 
         Gate::authorize('view', $document);
+        abort_if($format === 'pdf' && ! app(\App\Services\Billing\PlanLimits::class)->canExportPdf(auth()->user()), 403);
 
         if (empty($document->content['chapters'] ?? [])) {
             Flux::toast(variant: 'warning', text: __('Dokumen belum punya isi untuk diunduh'));
@@ -74,6 +82,9 @@ new class extends Component {
 <div>
     @php
         $documents = $this->documents;
+        $plans = app(\App\Services\Billing\PlanLimits::class);
+        $canPdf = $plans->canExportPdf(auth()->user());
+        $upgradeUrl = $plans->upgradeUrl();
     @endphp
 
     @if ($documents->isEmpty())
@@ -121,7 +132,9 @@ new class extends Component {
                                                 <span class="block" data-test="download-disabled"><flux:menu.item icon="arrow-down-tray" disabled>{{ __('Unduh DOCX') }}</flux:menu.item></span>
                                             </flux:tooltip>
                                         @endif
-                                        @if ($hasContent)
+                                        @if (! $canPdf)
+                                            <flux:menu.item icon="lock-closed" :href="$upgradeUrl" data-test="download-pdf-locked">{{ __('Unduh PDF (khusus Pro)') }}</flux:menu.item>
+                                        @elseif ($hasContent)
                                             <flux:menu.item icon="arrow-down-tray" wire:click="download({{ $document->id }}, 'pdf')" data-test="download-pdf">{{ __('Unduh PDF') }}</flux:menu.item>
                                         @else
                                             <flux:menu.item icon="arrow-down-tray" disabled>{{ __('Unduh PDF') }}</flux:menu.item>

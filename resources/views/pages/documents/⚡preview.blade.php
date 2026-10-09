@@ -20,6 +20,7 @@ new #[Title('Preview dokumen')] class extends Component {
     public function accurateUrl(): string
     {
         Gate::authorize('view', $this->document);
+        abort_unless(app(\App\Services\Billing\PlanLimits::class)->canExportPdf(auth()->user()), 403);
 
         return $this->document->downloadUrl('pdf', inline: true);
     }
@@ -47,6 +48,7 @@ new #[Title('Preview dokumen')] class extends Component {
     $t = Template::fromConfig(config("documents.templates.{$document->template_key}") ? $document->template_key : 'default');
     $references = collect($content['references'] ?? [])->pluck('text')->sortBy(fn ($x) => mb_strtolower($x))->values();
     $coverText = $document->education_level->cover($cover);
+    $plans = app(\App\Services\Billing\PlanLimits::class);
 @endphp
 
 <div class="mx-auto flex w-full max-w-6xl flex-col gap-6" x-data="docPreview">
@@ -58,10 +60,16 @@ new #[Title('Preview dokumen')] class extends Component {
         <div class="flex flex-wrap gap-2">
             <flux:button :href="route('documents.show', $document)" wire:navigate icon="arrow-left">{{ __('Kembali ke editor') }}</flux:button>
             @if ($chapters !== [])
-                <flux:button variant="primary" icon="document-magnifying-glass" x-on:click="open()" x-bind:disabled="loading" data-test="accurate-preview">
-                    <span x-show="!loading">{{ __('Preview akurat') }}</span>
-                    <span x-show="loading" x-cloak>{{ __('Menyiapkan PDF…') }}</span>
-                </flux:button>
+                @if ($plans->canExportPdf(auth()->user()))
+                    <flux:button variant="primary" icon="document-magnifying-glass" x-on:click="open()" x-bind:disabled="loading" data-test="accurate-preview">
+                        <span x-show="!loading">{{ __('Preview akurat') }}</span>
+                        <span x-show="loading" x-cloak>{{ __('Menyiapkan PDF…') }}</span>
+                    </flux:button>
+                @else
+                    <flux:tooltip :content="__('Preview akurat (PDF) khusus paket Pro')">
+                        <flux:button variant="primary" icon="lock-closed" :href="$plans->upgradeUrl()" data-test="accurate-preview-locked">{{ __('Preview akurat (Pro)') }}</flux:button>
+                    </flux:tooltip>
+                @endif
             @endif
         </div>
     </div>

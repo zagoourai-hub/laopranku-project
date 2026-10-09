@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @property int $id
@@ -25,6 +26,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property string|null $two_factor_recovery_codes
  * @property Carbon|null $two_factor_confirmed_at
  * @property bool $is_guest
+ * @property Carbon|null $pro_until
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -47,7 +49,23 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_guest' => 'boolean',
+            'pro_until' => 'datetime',
         ];
+    }
+
+    public function isPro(): bool
+    {
+        return $this->pro_until?->isFuture() ?? false;
+    }
+
+    /**
+     * Add Pro days on top of the remaining time (or from now when expired).
+     */
+    public function extendPro(int $days): void
+    {
+        $from = $this->isPro() ? $this->pro_until : now();
+
+        $this->forceFill(['pro_until' => $from->copy()->addDays($days)])->save();
     }
 
     /**

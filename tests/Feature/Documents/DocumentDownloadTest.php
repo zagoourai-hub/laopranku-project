@@ -76,7 +76,7 @@ test('a document without chapters answers 422 with an Indonesian message', funct
 
 test('owner downloads a PDF converted by Gotenberg and temp files are removed', function () {
     Http::fake(['*' => Http::response('%PDF-1.7 fake')]);
-    $owner = User::factory()->create();
+    $owner = User::factory()->pro()->create();
     $document = documentWithContent($owner);
 
     $response = $this->actingAs($owner)->get($document->downloadUrl('pdf'));
@@ -93,7 +93,7 @@ test('owner downloads a PDF converted by Gotenberg and temp files are removed', 
 
 test('PDF download answers 503 when Gotenberg is down', function () {
     Http::fake(['*' => Http::response('boom', 500)]);
-    $owner = User::factory()->create();
+    $owner = User::factory()->pro()->create();
 
     $this->actingAs($owner)->get(documentWithContent($owner)->downloadUrl('pdf'))->assertStatus(503);
 });

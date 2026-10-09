@@ -19,6 +19,7 @@ new #[Title('Dokumen')] class extends Component {
     public function download(string $format = 'docx'): void
     {
         Gate::authorize('view', $this->document);
+        abort_if($format === 'pdf' && ! app(\App\Services\Billing\PlanLimits::class)->canExportPdf(auth()->user()), 403);
 
         $this->redirect($this->document->downloadUrl($format));
     }
@@ -79,7 +80,11 @@ new #[Title('Dokumen')] class extends Component {
                     <flux:button variant="primary" icon="arrow-down-tray" icon:trailing="chevron-down">{{ __('Unduh') }}</flux:button>
                     <flux:menu>
                         <flux:menu.item icon="document-text" wire:click="download" data-test="download-docx">{{ __('Unduh DOCX') }}</flux:menu.item>
-                        <flux:menu.item icon="document" wire:click="download('pdf')" data-test="download-pdf">{{ __('Unduh PDF') }}</flux:menu.item>
+                        @if (app(\App\Services\Billing\PlanLimits::class)->canExportPdf(auth()->user()))
+                            <flux:menu.item icon="document" wire:click="download('pdf')" data-test="download-pdf">{{ __('Unduh PDF') }}</flux:menu.item>
+                        @else
+                            <flux:menu.item icon="lock-closed" :href="app(\App\Services\Billing\PlanLimits::class)->upgradeUrl()" data-test="download-pdf-locked">{{ __('Unduh PDF (khusus Pro)') }}</flux:menu.item>
+                        @endif
                     </flux:menu>
                 </flux:dropdown>
             @endif

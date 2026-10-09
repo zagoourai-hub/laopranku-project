@@ -55,7 +55,7 @@ test('another user cannot save', function () {
 });
 
 test('the show page renders the editor with PDF and DOCX buttons', function () {
-    $owner = User::factory()->create();
+    $owner = User::factory()->pro()->create();
 
     $this->actingAs($owner)->get(route('documents.show', editableDocument($owner)))
         ->assertOk()
