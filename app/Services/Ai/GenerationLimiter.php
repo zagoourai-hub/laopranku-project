@@ -24,14 +24,14 @@ class GenerationLimiter
 
         $user = auth()->user();
 
-        return $user !== null && $this->plans->spendGeneration($user, $kind, $units);
+        return $user !== null && $this->plans->spendGeneration($user, $kind, $units, request()->ip());
     }
 
-    /** True when the last refusal was the daily plan quota rather than the minute burst. */
-    public function dailyQuotaExhausted(): bool
+    /** True when the last refusal was the daily quota (plan or guest IP) rather than the minute burst. */
+    public function dailyQuotaExhausted(int $units = 1): bool
     {
         $user = auth()->user();
 
-        return $user !== null && $this->plans->generationsLeftToday($user) <= 0;
+        return $user !== null && $this->plans->generationsLeftToday($user, request()->ip()) < $units;
     }
 }

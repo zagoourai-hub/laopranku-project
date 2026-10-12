@@ -33,26 +33,43 @@ class PlanLimits
         return (int) config($user->isPro() ? 'plans.pro_generations_per_day' : 'plans.free_generations_per_day');
     }
 
-    public function generationsLeftToday(User $user): int
+    /**
+     * Units left today. Guests are also capped per IP, so a fresh guest account from the
+     * same network does not bring a fresh quota.
+     */
+    public function generationsLeftToday(User $user, ?string $ip = null): int
     {
         $used = DB::table('ai_generations')
             ->where('user_id', $user->id)
             ->where('created_at', '>=', now()->startOfDay())
             ->count();
 
-        return max(0, $this->generationsPerDay($user) - $used);
+        $left = max(0, $this->generationsPerDay($user) - $used);
+
+        if (! $user->is_guest || $ip === null) {
+            return $left;
+        }
+
+        $usedByIp = DB::table('ai_generations')
+            ->where('ip', $ip)
+            ->where('created_at', '>=', now()->startOfDay())
+            ->count();
+
+        return min($left, max(0, (int) config('plans.guest_generations_per_ip_per_day') - $usedByIp));
     }
 
     /**
-     * Spend one AI generation for today. The user row is locked so two concurrent requests
+     * Spend AI generations for today. The user row is locked so two concurrent requests
      * cannot both take the last slot. Returns false when today's quota is used up.
      */
-    public function spendGeneration(User $user, string $kind, int $units = 1): bool
+    public function spendGeneration(User $user, string $kind, int $units = 1, ?string $ip = null): bool
     {
-        return DB::transaction(function () use ($user, $kind, $units): bool {
+        return DB::transaction(function () use ($user, $kind, $units, $ip): bool {
             $locked = User::query()->lockForUpdate()->findOrFail($user->id);
 
-            if ($this->generationsLeftToday($locked) < $units) {
+            // ponytail: the IP cap is not locked across different guest accounts, so two guests on
+            // one IP racing for the last slots can overshoot by a request; add Cache::lock per IP if it matters.
+            if ($this->generationsLeftToday($locked, $ip) < $units) {
                 return false;
             }
 
@@ -60,6 +77,7 @@ class PlanLimits
             DB::table('ai_generations')->insert(array_fill(0, $units, [
                 'user_id' => $locked->id,
                 'kind' => $kind,
+                'ip' => $locked->is_guest ? $ip : null,
                 'created_at' => $now,
             ]));
 

@@ -14,9 +14,17 @@ class GuestController extends Controller
      */
     public function __invoke(): RedirectResponse
     {
-        Auth::login(User::factory()->guest()->create([
+        // No factory here: Faker is a dev dependency and is absent on a `--no-dev` production install.
+        $guest = (new User)->forceFill([
+            'name' => 'Tamu',
             'email' => 'guest-'.Str::uuid().'@guest.invalid',
-        ]));
+            'password' => Str::random(40),
+            'email_verified_at' => now(),
+            'is_guest' => true,
+        ]);
+        $guest->save();
+
+        Auth::login($guest);
 
         request()->session()->regenerate();
 

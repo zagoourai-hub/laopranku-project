@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'welcome')->name('home');
 
 Route::post('guest', GuestController::class)
-    ->middleware(['guest', 'throttle:10,1'])
+    ->middleware(['guest', 'throttle:guest-start'])
     ->name('guest.start');
 
 Route::middleware(['auth', 'verified'])->group(function () {

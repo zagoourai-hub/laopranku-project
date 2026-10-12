@@ -115,7 +115,7 @@ new #[Title('Outline')] class extends Component {
             }
 
             if (! app(GenerationLimiter::class)->consume(count($document->content['chapters']))) {
-                return ['outcome' => 'limited', 'daily' => app(GenerationLimiter::class)->dailyQuotaExhausted()];
+                return ['outcome' => 'limited', 'daily' => app(GenerationLimiter::class)->dailyQuotaExhausted(count($document->content['chapters']))];
             }
 
             $content = $document->content;

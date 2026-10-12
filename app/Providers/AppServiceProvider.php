@@ -34,10 +34,16 @@ class AppServiceProvider extends ServiceProvider
     {
         RateLimiter::for('downloads', fn (Request $request) => Limit::perMinute(20)->by($request->user()?->id ?: $request->ip()));
 
-        // Not wired to any route yet: apply as `throttle:ai-generate` once the AI pipeline exists.
+        // Per-minute burst for AI actions, spent through GenerationLimiter. Guests are keyed by IP.
         RateLimiter::for('ai-generate', fn (Request $request) => $request->user() && ! $request->user()->is_guest
             ? Limit::perMinute(5)->by('u'.$request->user()->id)
-            : Limit::perMinute(5)->by('ip'.$request->ip()));
+            : Limit::perMinute((int) config('plans.guest_generations_per_ip_per_minute'))->by('ip'.$request->ip()));
+
+        // Guest accounts are free to create, so cap them per IP per day as well as per minute.
+        RateLimiter::for('guest-start', fn (Request $request) => [
+            Limit::perMinute(10)->by('min'.$request->ip()),
+            Limit::perDay((int) config('plans.guest_accounts_per_ip_per_day'))->by('day'.$request->ip()),
+        ]);
     }
 
     /**
