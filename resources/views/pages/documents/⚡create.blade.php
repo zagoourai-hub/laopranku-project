@@ -304,7 +304,9 @@ new #[Title('Dokumen baru')] class extends Component {
         $needsAi = $this->inputMode === 'topic' || $chapters === [];
 
         if ($needsAi && ! app(GenerationLimiter::class)->consume()) {
-            $this->addError('generate', __('Terlalu banyak permintaan AI. Coba lagi beberapa menit lagi.'));
+            $this->addError('generate', app(GenerationLimiter::class)->dailyQuotaExhausted()
+                ? __('Kuota generate AI hari ini sudah habis. Coba lagi besok atau upgrade ke Pro.')
+                : __('Terlalu banyak permintaan AI. Coba lagi beberapa menit lagi.'));
 
             return;
         }

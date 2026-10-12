@@ -114,8 +114,8 @@ new #[Title('Outline')] class extends Component {
                 return ['outcome' => 'noop'];
             }
 
-            if (! app(GenerationLimiter::class)->consume()) {
-                return ['outcome' => 'limited'];
+            if (! app(GenerationLimiter::class)->consume(count($document->content['chapters']))) {
+                return ['outcome' => 'limited', 'daily' => app(GenerationLimiter::class)->dailyQuotaExhausted()];
             }
 
             $content = $document->content;
@@ -148,7 +148,7 @@ new #[Title('Outline')] class extends Component {
             }
 
             if (! app(GenerationLimiter::class)->consume()) {
-                return ['outcome' => 'limited'];
+                return ['outcome' => 'limited', 'daily' => app(GenerationLimiter::class)->dailyQuotaExhausted()];
             }
 
             $document->update(['status' => DocumentStatus::Generating]);
@@ -194,7 +194,7 @@ new #[Title('Outline')] class extends Component {
     private function dispatchResult(array $result): void
     {
         match ($result['outcome']) {
-            'limited' => Flux::toast(variant: 'warning', text: __('Terlalu banyak permintaan AI. Coba lagi beberapa menit lagi.')),
+            'limited' => Flux::toast(variant: 'warning', text: ($result['daily'] ?? false) ? __('Kuota generate AI hari ini sudah habis. Coba lagi besok atau upgrade ke Pro.') : __('Terlalu banyak permintaan AI. Coba lagi beberapa menit lagi.')),
             'error' => Flux::toast(variant: 'danger', text: $result['message']),
             'queued' => $this->queue($result['jobs']),
             default => null,
