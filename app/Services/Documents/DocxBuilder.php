@@ -2,7 +2,6 @@
 
 namespace App\Services\Documents;
 
-use App\Enums\DocumentType;
 use App\Enums\EducationLevel;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -19,9 +18,10 @@ use RuntimeException;
 use ZipArchive;
 
 /**
- * Turns a validated document array into a campus-format DOCX.
+ * Renders the DocumentLayout plan as a campus-format DOCX. This class adds only Word-specific
+ * formatting: A4 page size, styles, section breaks, and page numbers. What appears, and in what
+ * order, comes from DocumentLayout, which the A4 preview also uses.
  *
- * Chapter and section numbers are computed here, never read from the data.
  * The PHPWord workarounds (integer twips, A4 size, XML escaping, roman page numbers,
  * a real TOC field, outline levels, hanging indent) come from the PRD spike findings.
  */
@@ -35,7 +35,7 @@ class DocxBuilder
 
     public function __construct(
         private readonly SchemaValidator $validator,
-        private readonly CitationFormatter $citations,
+        private readonly DocumentLayout $layout,
     ) {}
 
     /**
@@ -65,22 +65,23 @@ class DocxBuilder
 
         $this->addStyles($word, $template);
         $page = $this->pageStyle($template);
+        $plan = $this->layout->plan($document, $level);
 
-        $this->addCover($word, $document, $page, $level);
-        $this->addFrontMatter($word, $document, $page, $level);
+        $this->addCover($word, $plan['cover'], $page);
+        $this->addFrontMatter($word, $plan, $page, $template);
 
-        foreach ($document['chapters'] as $index => $chapter) {
-            $this->addChapter($word, $chapter, $index, $page, $template);
+        foreach ($plan['chapters'] as $chapter) {
+            $this->addChapter($word, $chapter, $page, $template, $chapter['index'] === 0);
         }
 
-        $this->addReferences($word, $document, $page, $template);
-        $this->addAppendices($word, $document, $page, $template);
+        $this->addReferences($word, $plan['references'], $page, $template);
+        $this->addAppendices($word, $plan['appendices'], $page, $template);
 
         File::ensureDirectoryExists(storage_path('app/documents'));
         $path = storage_path('app/documents/'.Str::uuid().'.docx');
         IOFactory::createWriter($word, 'Word2007')->save($path);
 
-        $this->patchPackage($path, self::A4_WIDTH_TWIPS - $page['marginLeft'] - $page['marginRight'], count($document['chapters']));
+        $this->patchPackage($path, self::A4_WIDTH_TWIPS - $page['marginLeft'] - $page['marginRight'], count($plan['chapters']));
 
         return $path;
     }
@@ -113,77 +114,115 @@ class DocxBuilder
     }
 
     /**
-     * @param  array<string, mixed>  $document
+     * @param  array<string, mixed>  $cover  from DocumentLayout
      * @param  array<string, mixed>  $page
      */
-    private function addCover(PhpWord $word, array $document, array $page, EducationLevel $level): void
+    private function addCover(PhpWord $word, array $cover, array $page): void
     {
-        $cover = $document['cover'];
         $center = ['alignment' => Jc::CENTER];
         $bold = ['bold' => true];
 
         $section = $word->addSection($page);
         $section->addTextBreak(2);
-        $section->addText(DocumentType::from($document['type'])->coverLabel(), ['bold' => true, 'size' => 14], $center);
+        $section->addText($cover['label'], ['bold' => true, 'size' => 14], $center);
         $section->addTextBreak();
-        $section->addText(mb_strtoupper($cover['title']), ['bold' => true, 'size' => 14], $center);
+        $section->addText($cover['title'], ['bold' => true, 'size' => 14], $center);
         $section->addTextBreak(6);
         $section->addText('Disusun oleh:', $bold, $center);
 
-        if (isset($cover['name'])) {
+        if ($cover['name'] !== null) {
             $section->addText($cover['name'], $bold + ['underline' => 'single'], $center);
         }
 
-        if (isset($cover['nim'])) {
+        if ($cover['nim'] !== null) {
             $section->addText($cover['nim'], $bold, $center);
         }
 
         $section->addTextBreak(9);
 
-        foreach ($level->cover($cover)['foot'] as $line) {
-            $section->addText(mb_strtoupper($line), $bold, $center);
+        foreach ($cover['foot'] as $line) {
+            $section->addText($line, $bold, $center);
         }
     }
 
     /**
-     * @param  array<string, mixed>  $document
+     * Front matter in the order the plan gives: approval, abstract, preface, table of contents.
+     *
+     * @param  array<string, mixed>  $plan
      * @param  array<string, mixed>  $page
      */
-    private function addFrontMatter(PhpWord $word, array $document, array $page, EducationLevel $level): void
+    private function addFrontMatter(PhpWord $word, array $plan, array $page, Template $template): void
     {
         $section = $word->addSection($page + ['pageNumberingStart' => 1, 'breakType' => 'nextPage']);
         $section->addFooter()->addPreserveText('{PAGE}', null, ['alignment' => Jc::CENTER]);
+        $indent = ['indentation' => ['firstLine' => $this->cm($template->firstLineIndentCm)]];
 
-        if ($document['options']['approval_page'] ?? false) {
-            $this->addApprovalPage($section, $document, $level);
-            $section->addPageBreak();
+        foreach ($plan['front'] as $item) {
+            match ($item['key']) {
+                'approval' => $this->addApproval($section, $plan['approval']),
+                'abstract' => $this->addTitleAndText($section, $item['title'], $plan['abstract'], $indent),
+                'preface' => $this->addPreface($section, $plan['preface'], $indent),
+                'toc' => $this->addTocPlaceholder($section, $item['title']),
+                default => null,
+            };
+
+            if ($item['key'] !== 'toc') {
+                $section->addPageBreak();
+            }
         }
+    }
 
-        if ($document['options']['abstract'] ?? false) {
-            $section->addTitle('ABSTRAK', 1);
-            $section->addText(($document['abstract'] ?? '') !== '' ? $document['abstract'] : '[Tambahkan abstrak]', null, ['indentation' => ['firstLine' => $this->cm(1.25)]]);
-            $section->addPageBreak();
-        }
-
-        $section->addTitle('KATA PENGANTAR', 1);
-        $section->addText('Puji syukur kami panjatkan ke hadirat Tuhan Yang Maha Esa atas terselesaikannya '.mb_strtolower(DocumentType::from($document['type'])->coverLabel()).' berjudul "'.$document['cover']['title'].'" ini.', null, ['indentation' => ['firstLine' => $this->cm(1.25)]]);
+    /** @param  array<string, mixed>  $approval */
+    private function addApproval(Section $section, array $approval): void
+    {
+        $section->addTitle('LEMBAR PENGESAHAN', 1);
+        $section->addText($approval['sentence'], null, ['indentation' => ['firstLine' => $this->cm(1.25)]]);
         $section->addTextBreak();
-        $section->addText('Penulis', null, ['alignment' => Jc::END]);
-        $section->addPageBreak();
-        $section->addTitle('DAFTAR ISI', 1);
+
+        foreach ($approval['lines'] as $index => $line) {
+            if ($index === 2) {
+                $section->addTextBreak(2);
+            }
+
+            $section->addText($line['label'].': '.$line['value']);
+        }
+    }
+
+    /** @param  array<string, mixed>  $indent */
+    private function addTitleAndText(Section $section, string $title, string $text, array $indent): void
+    {
+        $section->addTitle($title, 1);
+        $section->addText($text, null, $indent);
+    }
+
+    /**
+     * @param  array<string, mixed>  $preface
+     * @param  array<string, mixed>  $indent
+     */
+    private function addPreface(Section $section, array $preface, array $indent): void
+    {
+        $section->addTitle($preface['title'], 1);
+        $section->addText($preface['text'], null, $indent);
+        $section->addTextBreak();
+        $section->addText($preface['signature'], null, ['alignment' => Jc::END]);
+    }
+
+    /** Word fills this field in when the user updates fields; the placeholder is swapped out in patchPackage(). */
+    private function addTocPlaceholder(Section $section, string $title): void
+    {
+        $section->addTitle($title, 1);
         $section->addText(self::TOC_PLACEHOLDER);
     }
 
     /**
-     * @param  array<string, mixed>  $chapter
+     * @param  array<string, mixed>  $chapter  one entry of DocumentLayout::plan()['chapters']
      * @param  array<string, mixed>  $page
      */
-    private function addChapter(PhpWord $word, array $chapter, int $index, array $page, Template $template): void
+    private function addChapter(PhpWord $word, array $chapter, array $page, Template $template, bool $first): void
     {
-        $number = $index + 1;
         $style = $page + ['breakType' => 'nextPage'];
 
-        if ($index === 0) {
+        if ($first) {
             $style['pageNumberingStart'] = 1;
         }
 
@@ -192,13 +231,13 @@ class DocxBuilder
 
         // "BAB I" and the title on separate lines, still one heading so the TOC reads "BAB I PENDAHULUAN".
         $heading = new TextRun;
-        $heading->addText('BAB '.$this->roman($number));
+        $heading->addText($chapter['label']);
         $heading->addTextBreak();
-        $heading->addText(mb_strtoupper($chapter['title']));
+        $heading->addText($chapter['title']);
         $section->addTitle($heading, 1);
 
-        foreach ($chapter['sections'] as $sectionIndex => $subsection) {
-            $section->addTitle($number.'.'.($sectionIndex + 1).' '.$subsection['title'], 2);
+        foreach ($chapter['sections'] as $subsection) {
+            $section->addTitle($subsection['number'].' '.$subsection['title'], 2);
 
             foreach ($subsection['blocks'] as $block) {
                 if ($block['type'] === 'paragraph') {
@@ -215,38 +254,16 @@ class DocxBuilder
     }
 
     /**
-     * Lembar pengesahan: title, name and student number lines, blank signature and date. No supervisor field yet.
-     *
-     * @param  array<string, mixed>  $document
-     */
-    private function addApprovalPage(Section $section, array $document, EducationLevel $level): void
-    {
-        $cover = $document['cover'];
-        $blank = '..............................';
-
-        $section->addTitle('LEMBAR PENGESAHAN', 1);
-        $section->addText(mb_strtolower(DocumentType::from($document['type'])->coverLabel()).' berjudul "'.$cover['title'].'" ini telah diperiksa dan disetujui.', null, ['indentation' => ['firstLine' => $this->cm(1.25)]]);
-        $section->addTextBreak();
-        $section->addText('Nama: '.($cover['name'] ?? $blank));
-        $section->addText($level->coverLabels()['nim'].': '.($cover['nim'] ?? $blank));
-        $section->addTextBreak(2);
-        $section->addText('Tanda tangan: '.$blank);
-        $section->addText('Tanggal: '.$blank);
-    }
-
-    /**
-     * @param  array<string, mixed>  $document
+     * @param  array{title: string, entries: list<string>}  $references
      * @param  array<string, mixed>  $page
      */
-    private function addReferences(PhpWord $word, array $document, array $page, Template $template): void
+    private function addReferences(PhpWord $word, array $references, array $page, Template $template): void
     {
         $section = $word->addSection($page + ['breakType' => 'nextPage']);
         $this->addBodyPageNumbers($section);
-        $section->addTitle('DAFTAR PUSTAKA', 1);
+        $section->addTitle($references['title'], 1);
 
-        $entries = array_values([...($document['references'] ?? []), ...($document['sources'] ?? [])]);
-
-        if ($entries === []) {
+        if ($references['entries'] === []) {
             $section->addText('[Tambahkan referensi]');
 
             return;
@@ -254,7 +271,7 @@ class DocxBuilder
 
         $hanging = $this->cm($template->hangingIndentCm);
 
-        foreach ($this->citations->format($entries, $document['style_citation'] ?? CitationFormatter::DEFAULT_STYLE) as $line) {
+        foreach ($references['entries'] as $line) {
             $section->addText($line, null, ['indentation' => ['left' => $hanging, 'hanging' => $hanging], 'spaceAfter' => $this->pt(6)]);
         }
     }
@@ -262,29 +279,29 @@ class DocxBuilder
     /**
      * Lampiran comes after the bibliography. Each appendix is a Heading 2 (TOC level 2); its text keeps one paragraph per line.
      *
-     * @param  array<string, mixed>  $document
+     * @param  array{title: string, items: list<array{title: string, lines: list<string>}>}|null  $appendices
      * @param  array<string, mixed>  $page
      */
-    private function addAppendices(PhpWord $word, array $document, array $page, Template $template): void
+    private function addAppendices(PhpWord $word, ?array $appendices, array $page, Template $template): void
     {
-        if (! ($document['options']['appendices'] ?? false)) {
+        if ($appendices === null) {
             return;
         }
 
         $section = $word->addSection($page + ['breakType' => 'nextPage']);
         $this->addBodyPageNumbers($section);
-        $section->addTitle('LAMPIRAN', 1);
+        $section->addTitle($appendices['title'], 1);
 
-        if (($document['appendices'] ?? []) === []) {
+        if ($appendices['items'] === []) {
             $section->addText('[Tambahkan lampiran]');
 
             return;
         }
 
-        foreach ($document['appendices'] as $appendix) {
+        foreach ($appendices['items'] as $appendix) {
             $section->addTitle($appendix['title'], 2);
 
-            foreach (array_filter(array_map('trim', explode("\n", $appendix['text'])), fn (string $line): bool => $line !== '') as $line) {
+            foreach ($appendix['lines'] as $line) {
                 $section->addText($line, null, ['indentation' => ['firstLine' => $this->cm($template->firstLineIndentCm)]]);
             }
         }
@@ -366,20 +383,5 @@ class DocxBuilder
     private function pt(float $value): int
     {
         return (int) round(Converter::pointToTwip($value));
-    }
-
-    private function roman(int $number): string
-    {
-        $map = ['M' => 1000, 'CM' => 900, 'D' => 500, 'CD' => 400, 'C' => 100, 'XC' => 90, 'L' => 50, 'XL' => 40, 'X' => 10, 'IX' => 9, 'V' => 5, 'IV' => 4, 'I' => 1];
-        $out = '';
-
-        foreach ($map as $symbol => $value) {
-            while ($number >= $value) {
-                $out .= $symbol;
-                $number -= $value;
-            }
-        }
-
-        return $out;
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Document;
-use App\Services\Documents\Template;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -24,30 +23,15 @@ new #[Title('Preview dokumen')] class extends Component {
 
         return $this->document->downloadUrl('pdf', inline: true);
     }
-
-    public function roman(int $n): string
-    {
-        $out = '';
-
-        foreach (['M' => 1000, 'CM' => 900, 'D' => 500, 'CD' => 400, 'C' => 100, 'XC' => 90, 'L' => 50, 'XL' => 40, 'X' => 10, 'IX' => 9, 'V' => 5, 'IV' => 4, 'I' => 1] as $s => $v) {
-            while ($n >= $v) {
-                $out .= $s;
-                $n -= $v;
-            }
-        }
-
-        return $out;
-    }
 };
 ?>
 
 @php
     $content = $document->content;
     $chapters = $content['chapters'] ?? [];
-    $cover = $content['cover'] ?? [];
-    $t = Template::fromConfig(config("documents.templates.{$document->template_key}") ? $document->template_key : 'default');
-    $references = collect($content['references'] ?? [])->pluck('text')->sortBy(fn ($x) => mb_strtolower($x))->values();
-    $coverText = $document->education_level->cover($cover);
+    $t = \App\Services\Documents\Template::fromConfig(config("documents.templates.{$document->template_key}") ? $document->template_key : 'default');
+    // The same plan DocxBuilder renders: what appears, in what order, and how it is numbered.
+    $plan = $chapters === [] ? null : app(\App\Services\Documents\DocumentLayout::class)->plan($content, $document->education_level);
     $plans = app(\App\Services\Billing\PlanLimits::class);
 @endphp
 
@@ -102,45 +86,54 @@ new #[Title('Preview dokumen')] class extends Component {
                 data-ml="{{ $t->marginLeftCm }}" data-mt="{{ $t->marginTopCm }}" data-mr="{{ $t->marginRightCm }}" data-mb="{{ $t->marginBottomCm }}"
                 data-indent="{{ $t->firstLineIndentCm }}" data-hanging="{{ $t->hangingIndentCm }}">
                 <section class="cover">
-                    <p class="cover-type">{{ $document->type->coverLabel() }}</p>
-                    <p class="cover-title">{{ mb_strtoupper($cover['title'] ?? $document->title) }}</p>
+                    <p class="cover-type">{{ $plan['cover']['label'] }}</p>
+                    <p class="cover-title">{{ $plan['cover']['title'] }}</p>
                     <p><strong>Disusun oleh:</strong></p>
-                    @isset($cover['name'])
-                        <p><strong><u>{{ $cover['name'] }}</u></strong></p>
-                    @endisset
-                    @isset($cover['nim'])
-                        <p><strong>{{ $cover['nim'] }}</strong></p>
-                    @endisset
+                    @if ($plan['cover']['name'] !== null)
+                        <p><strong><u>{{ $plan['cover']['name'] }}</u></strong></p>
+                    @endif
+                    @if ($plan['cover']['nim'] !== null)
+                        <p><strong>{{ $plan['cover']['nim'] }}</strong></p>
+                    @endif
                     <div class="cover-foot">
-                        @foreach ($coverText['foot'] as $line)
-                            <p><strong>{{ mb_strtoupper($line) }}</strong></p>
+                        @foreach ($plan['cover']['foot'] as $line)
+                            <p><strong>{{ $line }}</strong></p>
                         @endforeach
                     </div>
                 </section>
 
+                {{-- One front section: its roman numbering and page counter span every item in it. --}}
                 <section class="front">
-                    <h1 id="kp">KATA PENGANTAR</h1>
-                    <p class="indent">Puji syukur kami panjatkan ke hadirat Tuhan Yang Maha Esa atas terselesaikannya {{ mb_strtolower($document->type->coverLabel()) }} berjudul "{{ $cover['title'] ?? $document->title }}" ini.</p>
-                    <p class="signature">Penulis</p>
-                    <h1 id="toc" class="new-page">DAFTAR ISI</h1>
-                    <ul class="toc">
-                        <li class="toc-1 toc-front"><a href="#kp">KATA PENGANTAR</a></li>
-                        <li class="toc-1 toc-front"><a href="#toc">DAFTAR ISI</a></li>
-                        @foreach ($chapters as $ci => $chapter)
-                            <li class="toc-1"><a href="#c{{ $ci }}">BAB {{ $this->roman($ci + 1) }} {{ mb_strtoupper($chapter['title']) }}</a></li>
-                            @foreach ($chapter['sections'] as $si => $section)
-                                <li class="toc-2"><a href="#s{{ $ci }}-{{ $si }}">{{ $ci + 1 }}.{{ $si + 1 }} {{ $section['title'] }}</a></li>
+                    @foreach ($plan['front'] as $item)
+                        @if ($item['key'] === 'approval')
+                            <h1 id="{{ $item['id'] }}" class="{{ $loop->first ? '' : 'new-page' }}">{{ $item['title'] }}</h1>
+                            <p class="indent">{{ $plan['approval']['sentence'] }}</p>
+                            @foreach ($plan['approval']['lines'] as $line)
+                                <p>{{ $line['label'] }}: {{ $line['value'] }}</p>
                             @endforeach
-                        @endforeach
-                        <li class="toc-1"><a href="#refs">DAFTAR PUSTAKA</a></li>
-                    </ul>
+                        @elseif ($item['key'] === 'abstract')
+                            <h1 id="{{ $item['id'] }}" class="{{ $loop->first ? '' : 'new-page' }}">{{ $item['title'] }}</h1>
+                            <p class="indent">{{ $plan['abstract'] }}</p>
+                        @elseif ($item['key'] === 'preface')
+                            <h1 id="{{ $item['id'] }}" class="{{ $loop->first ? '' : 'new-page' }}">{{ $plan['preface']['title'] }}</h1>
+                            <p class="indent">{{ $plan['preface']['text'] }}</p>
+                            <p class="signature">{{ $plan['preface']['signature'] }}</p>
+                        @elseif ($item['key'] === 'toc')
+                            <h1 id="{{ $item['id'] }}" class="new-page">{{ $item['title'] }}</h1>
+                            <ul class="toc">
+                                @foreach ($plan['toc'] as $entry)
+                                    <li class="toc-{{ $entry['level'] }}{{ ($entry['front'] ?? false) ? ' toc-front' : '' }}"><a href="#{{ $entry['id'] }}">{{ $entry['text'] }}</a></li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    @endforeach
                 </section>
 
-                @foreach ($chapters as $ci => $chapter)
+                @foreach ($plan['chapters'] as $chapter)
                     <section class="body {{ $loop->first ? 'first' : '' }}">
-                        <h1 id="c{{ $ci }}">BAB {{ $this->roman($ci + 1) }}<br>{{ mb_strtoupper($chapter['title']) }}</h1>
-                        @foreach ($chapter['sections'] as $si => $section)
-                            <h2 id="s{{ $ci }}-{{ $si }}">{{ $ci + 1 }}.{{ $si + 1 }} {{ $section['title'] }}</h2>
+                        <h1 id="{{ $chapter['id'] }}">{{ $chapter['label'] }}<br>{{ $chapter['title'] }}</h1>
+                        @foreach ($chapter['sections'] as $section)
+                            <h2 id="{{ $section['id'] }}">{{ $section['number'] }} {{ $section['title'] }}</h2>
                             @foreach ($section['blocks'] as $block)
                                 @if ($block['type'] === 'list')
                                     <{{ $block['ordered'] ? 'ol' : 'ul' }}>
@@ -157,13 +150,27 @@ new #[Title('Preview dokumen')] class extends Component {
                 @endforeach
 
                 <section class="body">
-                    <h1 id="refs">DAFTAR PUSTAKA</h1>
-                    @forelse ($references as $text)
-                        <p class="ref">{{ $text }}</p>
+                    <h1 id="{{ $plan['references']['id'] }}">{{ $plan['references']['title'] }}</h1>
+                    @forelse ($plan['references']['entries'] as $line)
+                        <p class="ref">{{ $line }}</p>
                     @empty
                         <p>[Tambahkan referensi]</p>
                     @endforelse
                 </section>
+
+                @if ($plan['appendices'] !== null)
+                    <section class="body">
+                        <h1 id="{{ $plan['appendices']['id'] }}">{{ $plan['appendices']['title'] }}</h1>
+                        @forelse ($plan['appendices']['items'] as $appendix)
+                            <h2 id="{{ $appendix['id'] }}">{{ $appendix['title'] }}</h2>
+                            @foreach ($appendix['lines'] as $line)
+                                <p class="indent">{{ $line }}</p>
+                            @endforeach
+                        @empty
+                            <p>[Tambahkan lampiran]</p>
+                        @endforelse
+                    </section>
+                @endif
             </div>
 
             {{-- Laid out off-screen while paged.js works, so half-built sheets never flash. --}}
