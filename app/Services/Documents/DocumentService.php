@@ -94,8 +94,17 @@ class DocumentService
                 $brief['raw_text'] = $draft['raw_text'] ?? '';
             }
 
-            if ($input === 'topic' && ($draft['facts'] ?? []) !== []) {
-                $brief['facts'] = $draft['facts'];
+            if ($input === 'topic') {
+                $facts = $this->normalizeFacts($draft['type'], $draft['facts'] ?? []);
+                $missing = $this->missingFacts($draft['type'], $facts);
+
+                if ($missing !== []) {
+                    return $this->failed('facts', 'Data pokok belum lengkap: '.implode(', ', $missing).'.');
+                }
+
+                if ($facts !== []) {
+                    $brief['facts'] = $facts;
+                }
             }
         }
 
@@ -178,6 +187,55 @@ class DocumentService
         }
 
         return ['document' => $document, 'errors' => [], 'field' => null];
+    }
+
+    /**
+     * Keep only the fields this type asks for. List fields accept a string (one item per line) or an array.
+     *
+     * @param  array<string, mixed>  $facts
+     * @return array<string, string|list<string>>
+     */
+    private function normalizeFacts(DocumentType $type, array $facts): array
+    {
+        $normalized = [];
+
+        foreach ($type->factFields() as $key => $field) {
+            $value = $facts[$key] ?? ($field['list'] ? [] : '');
+
+            if ($field['list']) {
+                $items = is_array($value) ? $value : (preg_split('/\R/u', (string) $value) ?: []);
+                $normalized[$key] = array_values(array_filter(array_map(
+                    fn ($item): string => trim((string) preg_replace('/^\s*(?:[-•*]|\d+[.)])\s+/u', '', (string) $item)),
+                    $items,
+                ), fn (string $item): bool => $item !== ''));
+            } else {
+                $normalized[$key] = trim((string) $value);
+            }
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * Fields that are still empty. PRD A5: AI only narrates data the user typed, so an empty field blocks the topic path.
+     *
+     * @param  array<string, string|list<string>>  $facts
+     * @return list<string>
+     */
+    private function missingFacts(DocumentType $type, array $facts): array
+    {
+        $missing = [];
+
+        foreach ($type->factFields() as $key => $field) {
+            $value = $facts[$key] ?? null;
+            $empty = $field['list'] ? ($value === null || $value === []) : ($value === null || $value === '');
+
+            if ($empty) {
+                $missing[] = strtolower($field['label']);
+            }
+        }
+
+        return $missing;
     }
 
     /**
