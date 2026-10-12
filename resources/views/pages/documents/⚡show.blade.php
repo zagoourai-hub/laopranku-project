@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\DocumentStatus;
 use App\Models\Document;
 use App\Services\Documents\ContentUpdater;
 use Illuminate\Support\Facades\Gate;
@@ -14,6 +15,12 @@ new #[Title('Dokumen')] class extends Component {
         Gate::authorize('view', $document);
 
         $this->document = $document;
+    }
+
+    /** Polled while the AI works on this document, so the page fills in without a reload. */
+    public function refresh(): void
+    {
+        $this->document->refresh();
     }
 
     public function download(string $format = 'docx'): void
@@ -76,6 +83,9 @@ new #[Title('Dokumen')] class extends Component {
                     <flux:button size="sm" variant="ghost" icon="arrow-uturn-right" x-on:click="redo()" x-bind:disabled="!canRedo" :aria-label="__('Ulangi')" :tooltip="__('Ulangi (Ctrl+Shift+Z)')" data-test="redo" />
                 </div>
                 <flux:button icon="eye" :href="route('documents.preview', $document)" wire:navigate data-test="open-preview">{{ __('Preview') }}</flux:button>
+                @if (($document->content['brief']['input'] ?? null) === 'topic')
+                    <flux:button icon="list-bullet" :href="route('documents.outline', $document)" wire:navigate data-test="open-outline">{{ __('Outline') }}</flux:button>
+                @endif
                 <flux:dropdown align="end">
                     <flux:button variant="primary" icon="arrow-down-tray" icon:trailing="chevron-down">{{ __('Unduh') }}</flux:button>
                     <flux:menu>
@@ -135,8 +145,20 @@ new #[Title('Dokumen')] class extends Component {
         <div class="flex flex-col items-center gap-3 rounded-xl border border-dashed border-zinc-300 px-6 py-16 text-center dark:border-white/10" data-test="document-empty">
             <flux:icon.document-text class="size-8 text-zinc-400" />
             @if (($document->content['brief']['input'] ?? null) === 'topic')
-                <flux:heading size="lg" data-test="outline-pending">{{ __('Outline akan dibuat AI (segera)') }}</flux:heading>
-                <flux:text class="max-w-sm">{{ __('Topik dan data pokokmu sudah tersimpan. Outline bab dan subbab akan disusun dari situ, lalu kamu setujui sebelum isi ditulis.') }}</flux:text>
+                @if ($document->status === DocumentStatus::OutlineReady)
+                    <flux:heading size="lg" data-test="outline-ready">{{ __('Outline siap ditinjau') }}</flux:heading>
+                    <flux:button variant="primary" :href="route('documents.outline', $document)" wire:navigate>{{ __('Tinjau outline') }}</flux:button>
+                @else
+                    <div wire:poll.3s="refresh" class="flex flex-col items-center gap-3">
+                        <flux:heading size="lg" data-test="outline-pending">{{ $document->status === DocumentStatus::Outlining ? __('Outline sedang disusun') : __('Outline akan dibuat AI (segera)') }}</flux:heading>
+                        <flux:text class="max-w-sm">{{ __('Topik dan data pokokmu sudah tersimpan. Outline bab dan subbab akan disusun dari situ, lalu kamu setujui sebelum isi ditulis.') }}</flux:text>
+                    </div>
+                @endif
+            @elseif ($document->status === DocumentStatus::Structuring)
+                <div wire:poll.3s="refresh" class="flex flex-col items-center gap-3">
+                    <flux:heading size="lg" data-test="structuring">{{ __('Sedang menyusun dari teksmu') }}</flux:heading>
+                    <flux:text class="max-w-sm">{{ __('Isi kalimatmu tidak diubah. AI hanya menentukan mana judul bab, subbab, dan paragraf.') }}</flux:text>
+                </div>
             @else
                 <flux:heading size="lg">{{ __('Dokumen belum punya isi') }}</flux:heading>
                 <flux:text class="max-w-sm">{{ __('Bab dan subbab akan tampil di sini setelah isi dokumen dibuat.') }}</flux:text>

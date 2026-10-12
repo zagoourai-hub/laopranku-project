@@ -11,7 +11,7 @@ use Throwable;
 class Structurer
 {
     /** Leading manual numbering the schema forbids in headings: "BAB II", "1.2", "3.", "4)". */
-    private const HEADING_NUMBER = '/^\s*(?:BAB\s+(?:[IVXLC]+|\d+)\b\s*[.:\-–]?|BAB\b\s*[.:\-–]?|\d+(?:\.\d+)+\.?|\d+[.)])\s*/iu';
+    public const HEADING_NUMBER = '/^\s*(?:BAB\s+(?:[IVXLC]+|\d+)\b\s*[.:\-–]?|BAB\b\s*[.:\-–]?|\d+(?:\.\d+)+\.?|\d+[.)])\s*/iu';
 
     /** List markers the builder renders itself. */
     private const LIST_MARKER = '/^\s*(?:[-–•*·]|\d+[.)]|[a-z][.)])\s+/u';

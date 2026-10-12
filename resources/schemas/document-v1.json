@@ -49,9 +49,38 @@
         }
       }
     },
+    "style_citation": { "enum": ["apa", "ieee", "harvard"] },
+    "abstract": { "type": "string", "maxLength": 1500 },
+    "appendices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "text"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "text": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "approval_page": { "type": "boolean" },
+        "abstract": { "type": "boolean" },
+        "appendices": { "type": "boolean" }
+      }
+    },
     "brief": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
+        "input": { "enum": ["paste", "topic", "upload"] },
+        "upload_path": { "type": "string" },
+        "outline_approved_at": { "type": "string" },
+        "section_notes": { "type": "object", "additionalProperties": { "type": "string" } },
         "topic": { "type": "string" },
         "chapter_count": { "type": "integer", "minimum": 3, "maximum": 7 },
         "length": { "enum": ["ringkas", "sedang", "panjang"] },

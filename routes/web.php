@@ -15,6 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('documents/create', 'pages::documents.create')->name('documents.create');
     Route::livewire('documents/{document}', 'pages::documents.show')->name('documents.show');
     Route::livewire('documents/{document}/preview', 'pages::documents.preview')->name('documents.preview');
+    Route::livewire('documents/{document}/outline', 'pages::documents.outline')->name('documents.outline');
 });
 
 Route::get('documents/{document}/download', DocumentDownloadController::class)

@@ -3,7 +3,10 @@
 use App\Enums\DocumentStatus;
 use App\Enums\DocumentType;
 use App\Enums\EducationLevel;
+use App\Jobs\GenerateOutline;
+use App\Jobs\StructureDocument;
 use App\Models\Document;
+use App\Services\Ai\GenerationLimiter;
 use App\Services\Billing\PlanLimits;
 use App\Services\Documents\ImportParser;
 use App\Services\Documents\SchemaValidator;
@@ -298,12 +301,26 @@ new #[Title('Dokumen baru')] class extends Component {
             return;
         }
 
+        $needsAi = $this->inputMode === 'topic' || $chapters === [];
+
+        if ($needsAi && ! app(GenerationLimiter::class)->consume()) {
+            $this->addError('generate', __('Terlalu banyak permintaan AI. Coba lagi beberapa menit lagi.'));
+
+            return;
+        }
+
         if ($this->inputMode === 'upload') {
             $content['brief']['upload_path'] = $this->upload->store('document-uploads/'.Auth::id());
         }
 
         try {
-            $this->createDocument($content);
+            $document = $this->createDocument($content);
+
+            if ($this->inputMode === 'topic') {
+                GenerateOutline::dispatch($document);
+            } elseif ($needsAi) {
+                StructureDocument::dispatch($document);
+            }
         } catch (\Throwable $e) {
             if (isset($content['brief']['upload_path'])) {
                 Storage::delete($content['brief']['upload_path']);
@@ -320,9 +337,9 @@ new #[Title('Dokumen baru')] class extends Component {
     /**
      * @param  array<string, mixed>  $content
      */
-    protected function createDocument(array $content): void
+    protected function createDocument(array $content): Document
     {
-        Document::create([
+        return Document::create([
             'user_id' => Auth::id(),
             'title' => $this->title,
             'type' => $this->type,
@@ -448,7 +465,8 @@ new #[Title('Dokumen baru')] class extends Component {
 
             <div class="sticky bottom-0 z-10 flex items-center justify-end gap-3 border-t border-zinc-200 bg-white/90 py-4 backdrop-blur dark:border-white/10 dark:bg-zinc-900/90">
                 <flux:button :href="route('dashboard')" variant="ghost" wire:navigate>{{ __('Batal') }}</flux:button>
-                <flux:button type="submit" variant="primary" :disabled="$quotaFull" data-test="create-document-button">{{ __('Buat draf') }}</flux:button>
+                <flux:error name="generate" />
+                                <flux:button type="submit" variant="primary" :disabled="$quotaFull" data-test="create-document-button">{{ __('Buat draf') }}</flux:button>
             </div>
         </div>
 
