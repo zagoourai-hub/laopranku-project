@@ -33,7 +33,10 @@ class DocxBuilder
 
     private const TOC_PLACEHOLDER = '[[TOC]]';
 
-    public function __construct(private readonly SchemaValidator $validator) {}
+    public function __construct(
+        private readonly SchemaValidator $validator,
+        private readonly CitationFormatter $citations,
+    ) {}
 
     /**
      * @param  array<string, mixed>  $document
@@ -64,13 +67,14 @@ class DocxBuilder
         $page = $this->pageStyle($template);
 
         $this->addCover($word, $document, $page, $level);
-        $this->addFrontMatter($word, $document, $page);
+        $this->addFrontMatter($word, $document, $page, $level);
 
         foreach ($document['chapters'] as $index => $chapter) {
             $this->addChapter($word, $chapter, $index, $page, $template);
         }
 
-        $this->addReferences($word, $document['references'] ?? [], $page, $template);
+        $this->addReferences($word, $document, $page, $template);
+        $this->addAppendices($word, $document, $page, $template);
 
         File::ensureDirectoryExists(storage_path('app/documents'));
         $path = storage_path('app/documents/'.Str::uuid().'.docx');
@@ -145,10 +149,21 @@ class DocxBuilder
      * @param  array<string, mixed>  $document
      * @param  array<string, mixed>  $page
      */
-    private function addFrontMatter(PhpWord $word, array $document, array $page): void
+    private function addFrontMatter(PhpWord $word, array $document, array $page, EducationLevel $level): void
     {
         $section = $word->addSection($page + ['pageNumberingStart' => 1, 'breakType' => 'nextPage']);
         $section->addFooter()->addPreserveText('{PAGE}', null, ['alignment' => Jc::CENTER]);
+
+        if ($document['options']['approval_page'] ?? false) {
+            $this->addApprovalPage($section, $document, $level);
+            $section->addPageBreak();
+        }
+
+        if ($document['options']['abstract'] ?? false) {
+            $section->addTitle('ABSTRAK', 1);
+            $section->addText(($document['abstract'] ?? '') !== '' ? $document['abstract'] : '[Tambahkan abstrak]', null, ['indentation' => ['firstLine' => $this->cm(1.25)]]);
+            $section->addPageBreak();
+        }
 
         $section->addTitle('KATA PENGANTAR', 1);
         $section->addText('Puji syukur kami panjatkan ke hadirat Tuhan Yang Maha Esa atas terselesaikannya '.mb_strtolower(DocumentType::from($document['type'])->coverLabel()).' berjudul "'.$document['cover']['title'].'" ini.', null, ['indentation' => ['firstLine' => $this->cm(1.25)]]);
@@ -200,28 +215,78 @@ class DocxBuilder
     }
 
     /**
-     * @param  list<array{id: string, text: string}>  $references
+     * Lembar pengesahan: title, name and student number lines, blank signature and date. No supervisor field yet.
+     *
+     * @param  array<string, mixed>  $document
+     */
+    private function addApprovalPage(Section $section, array $document, EducationLevel $level): void
+    {
+        $cover = $document['cover'];
+        $blank = '..............................';
+
+        $section->addTitle('LEMBAR PENGESAHAN', 1);
+        $section->addText(mb_strtolower(DocumentType::from($document['type'])->coverLabel()).' berjudul "'.$cover['title'].'" ini telah diperiksa dan disetujui.', null, ['indentation' => ['firstLine' => $this->cm(1.25)]]);
+        $section->addTextBreak();
+        $section->addText('Nama: '.($cover['name'] ?? $blank));
+        $section->addText($level->coverLabels()['nim'].': '.($cover['nim'] ?? $blank));
+        $section->addTextBreak(2);
+        $section->addText('Tanda tangan: '.$blank);
+        $section->addText('Tanggal: '.$blank);
+    }
+
+    /**
+     * @param  array<string, mixed>  $document
      * @param  array<string, mixed>  $page
      */
-    private function addReferences(PhpWord $word, array $references, array $page, Template $template): void
+    private function addReferences(PhpWord $word, array $document, array $page, Template $template): void
     {
         $section = $word->addSection($page + ['breakType' => 'nextPage']);
         $this->addBodyPageNumbers($section);
         $section->addTitle('DAFTAR PUSTAKA', 1);
 
-        if ($references === []) {
+        $entries = array_values([...($document['references'] ?? []), ...($document['sources'] ?? [])]);
+
+        if ($entries === []) {
             $section->addText('[Tambahkan referensi]');
 
             return;
         }
 
-        $texts = array_column($references, 'text');
-        usort($texts, fn (string $a, string $b): int => strcmp(mb_strtolower($a), mb_strtolower($b)));
-
         $hanging = $this->cm($template->hangingIndentCm);
 
-        foreach ($texts as $text) {
-            $section->addText($text, null, ['indentation' => ['left' => $hanging, 'hanging' => $hanging], 'spaceAfter' => $this->pt(6)]);
+        foreach ($this->citations->format($entries, $document['style_citation'] ?? CitationFormatter::DEFAULT_STYLE) as $line) {
+            $section->addText($line, null, ['indentation' => ['left' => $hanging, 'hanging' => $hanging], 'spaceAfter' => $this->pt(6)]);
+        }
+    }
+
+    /**
+     * Lampiran comes after the bibliography. Each appendix is a Heading 2 (TOC level 2); its text keeps one paragraph per line.
+     *
+     * @param  array<string, mixed>  $document
+     * @param  array<string, mixed>  $page
+     */
+    private function addAppendices(PhpWord $word, array $document, array $page, Template $template): void
+    {
+        if (! ($document['options']['appendices'] ?? false)) {
+            return;
+        }
+
+        $section = $word->addSection($page + ['breakType' => 'nextPage']);
+        $this->addBodyPageNumbers($section);
+        $section->addTitle('LAMPIRAN', 1);
+
+        if (($document['appendices'] ?? []) === []) {
+            $section->addText('[Tambahkan lampiran]');
+
+            return;
+        }
+
+        foreach ($document['appendices'] as $appendix) {
+            $section->addTitle($appendix['title'], 2);
+
+            foreach (array_filter(array_map('trim', explode("\n", $appendix['text'])), fn (string $line): bool => $line !== '') as $line) {
+                $section->addText($line, null, ['indentation' => ['firstLine' => $this->cm($template->firstLineIndentCm)]]);
+            }
         }
     }
 
