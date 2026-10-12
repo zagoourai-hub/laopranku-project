@@ -1,14 +1,11 @@
 <?php
 
 use App\Enums\DocumentStatus;
-use App\Jobs\ChapterWriterJob;
 use App\Models\Document;
-use App\Services\Ai\GenerationLimiter;
-use App\Services\Documents\ContentUpdater;
+use App\Services\Documents\OutlineService;
 use Flux\Flux;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Str;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -30,213 +27,92 @@ new #[Title('Outline')] class extends Component {
 
     public function locked(): bool
     {
-        return $this->isLocked($this->document);
+        return $this->outline()->isLocked($this->document);
     }
 
     public function addChapter(): void
     {
-        $this->edit(function (array &$c): void {
-            $c['chapters'][] = ['id' => (string) Str::uuid(), 'title' => __('Bab baru'), 'sections' => []];
-        });
+        $this->edit(fn (OutlineService $o) => $o->addChapter($this->document));
     }
 
     public function renameChapter(int $i, string $title): void
     {
-        $this->edit(function (array &$c) use ($i, $title): void {
-            $c['chapters'][$i]['title'] = trim($title);
-        });
+        $this->edit(fn (OutlineService $o) => $o->renameChapter($this->document, $i, $title));
     }
 
     public function removeChapter(int $i): void
     {
-        $this->edit(function (array &$c) use ($i): void {
-            $this->forgetNotes($c, $c['chapters'][$i]['sections'] ?? []);
-            array_splice($c['chapters'], $i, 1);
-        });
+        $this->edit(fn (OutlineService $o) => $o->removeChapter($this->document, $i));
     }
 
     public function moveChapter(int $i, int $dir): void
     {
-        $this->edit(function (array &$c) use ($i, $dir): void {
-            $j = $i + $dir;
-
-            if (isset($c['chapters'][$j])) {
-                [$c['chapters'][$i], $c['chapters'][$j]] = [$c['chapters'][$j], $c['chapters'][$i]];
-            }
-        });
+        $this->edit(fn (OutlineService $o) => $o->moveChapter($this->document, $i, $dir));
     }
 
     public function addSection(int $i): void
     {
-        $this->edit(function (array &$c) use ($i): void {
-            $c['chapters'][$i]['sections'][] = ['id' => (string) Str::uuid(), 'title' => __('Subbab baru'), 'blocks' => []];
-        });
+        $this->edit(fn (OutlineService $o) => $o->addSection($this->document, $i));
     }
 
     public function renameSection(int $i, int $s, string $title): void
     {
-        $this->edit(function (array &$c) use ($i, $s, $title): void {
-            $c['chapters'][$i]['sections'][$s]['title'] = trim($title);
-        });
+        $this->edit(fn (OutlineService $o) => $o->renameSection($this->document, $i, $s, $title));
     }
 
     public function removeSection(int $i, int $s): void
     {
-        $this->edit(function (array &$c) use ($i, $s): void {
-            $this->forgetNotes($c, [$c['chapters'][$i]['sections'][$s]]);
-            array_splice($c['chapters'][$i]['sections'], $s, 1);
-        });
+        $this->edit(fn (OutlineService $o) => $o->removeSection($this->document, $i, $s));
     }
 
     public function moveSection(int $i, int $s, int $dir): void
     {
-        $this->edit(function (array &$c) use ($i, $s, $dir): void {
-            $t = $s + $dir;
-            $sections = &$c['chapters'][$i]['sections'];
-
-            if (isset($sections[$t])) {
-                [$sections[$s], $sections[$t]] = [$sections[$t], $sections[$s]];
-            }
-        });
+        $this->edit(fn (OutlineService $o) => $o->moveSection($this->document, $i, $s, $dir));
     }
 
-    /**
-     * Approve the outline and queue one writer job per chapter. The row lock makes a double click queue nothing twice.
-     */
     public function approve(): void
     {
         Gate::authorize('update', $this->document);
 
-        $result = DB::transaction(function (): array {
-            $document = Document::query()->lockForUpdate()->findOrFail($this->document->id);
-
-            if ($this->isLocked($document) || ($document->content['chapters'] ?? []) === []) {
-                return ['outcome' => 'noop'];
-            }
-
-            if (! app(GenerationLimiter::class)->consume(count($document->content['chapters']))) {
-                return ['outcome' => 'limited', 'daily' => app(GenerationLimiter::class)->dailyQuotaExhausted(count($document->content['chapters']))];
-            }
-
-            $content = $document->content;
-            $content['brief']['outline_approved_at'] = now()->toIso8601String();
-
-            if (($errors = app(ContentUpdater::class)->apply($document, $content)) !== []) {
-                return ['outcome' => 'error', 'message' => $errors[0]];
-            }
-
-            $document->update(['status' => DocumentStatus::Generating]);
-
-            return ['outcome' => 'queued', 'jobs' => $this->createJobs($document, array_keys($content['chapters']))];
-        });
-
-        $this->dispatchResult($result);
+        $this->report($this->outline()->approve($this->document, Auth::user(), request()->ip()));
     }
 
-    /**
-     * Write one chapter again. Queued only if that chapter has no job still waiting or running.
-     */
     public function regenerate(int $i): void
     {
         Gate::authorize('update', $this->document);
 
-        $result = DB::transaction(function () use ($i): array {
-            $document = Document::query()->lockForUpdate()->findOrFail($this->document->id);
-
-            if (! $this->isLocked($document) || ! isset($document->content['chapters'][$i]) || $this->isBusy($document, $i)) {
-                return ['outcome' => 'noop'];
-            }
-
-            if (! app(GenerationLimiter::class)->consume()) {
-                return ['outcome' => 'limited', 'daily' => app(GenerationLimiter::class)->dailyQuotaExhausted()];
-            }
-
-            $document->update(['status' => DocumentStatus::Generating]);
-
-            return ['outcome' => 'queued', 'jobs' => $this->createJobs($document, [$i])];
-        });
-
-        $this->dispatchResult($result);
+        $this->report($this->outline()->regenerate($this->document, Auth::user(), $i, request()->ip()));
     }
 
     /** Latest job per chapter index. */
     public function chapterStatuses(): array
     {
-        return $this->document->jobs()
-            ->whereNotNull('chapter_index')
-            ->orderBy('id')
-            ->get()
-            ->groupBy('chapter_index')
-            ->map(fn ($rows) => $rows->last())
-            ->all();
+        return $this->outline()->chapterStatuses($this->document);
     }
 
-    private function isLocked(Document $document): bool
+    private function outline(): OutlineService
     {
-        return ($document->content['brief']['outline_approved_at'] ?? null) !== null;
+        return app(OutlineService::class);
     }
 
-    private function isBusy(Document $document, int $i): bool
-    {
-        return $document->jobs()->where('chapter_index', $i)->whereIn('status', ['queued', 'running'])->exists();
-    }
-
-    /**
-     * @param  list<int>  $chapters
-     * @return list<array{0: int, 1: int}> chapter index and job id
-     */
-    private function createJobs(Document $document, array $chapters): array
-    {
-        return array_map(fn (int $i): array => [$i, $document->jobs()->create(['chapter_index' => $i, 'status' => 'queued'])->id], $chapters);
-    }
-
-    /** Runs after the transaction commits, so a worker never sees a job whose row is not visible yet. */
-    private function dispatchResult(array $result): void
+    /** @param  array{outcome: string, message?: string}  $result */
+    private function report(array $result): void
     {
         match ($result['outcome']) {
-            'limited' => Flux::toast(variant: 'warning', text: ($result['daily'] ?? false) ? __('Kuota generate AI hari ini sudah habis. Coba lagi besok atau upgrade ke Pro.') : __('Terlalu banyak permintaan AI. Coba lagi beberapa menit lagi.')),
+            'limited' => Flux::toast(variant: 'warning', text: $result['message']),
             'error' => Flux::toast(variant: 'danger', text: $result['message']),
-            'queued' => $this->queue($result['jobs']),
             default => null,
         };
 
         $this->document->refresh();
     }
 
-    /** @param  list<array{0: int, 1: int}>  $jobs */
-    private function queue(array $jobs): void
-    {
-        foreach ($jobs as [$i, $jobId]) {
-            ChapterWriterJob::dispatch($this->document, $i, $jobId);
-        }
-    }
-
-    /** Drop notes of removed sections so the brief keeps no dead ids. */
-    private function forgetNotes(array &$c, array $sections): void
-    {
-        foreach ($sections as $section) {
-            unset($c['brief']['section_notes'][$section['id']]);
-        }
-
-        // An empty map would be stored as a JSON list, which the schema rejects.
-        if (($c['brief']['section_notes'] ?? null) === []) {
-            unset($c['brief']['section_notes']);
-        }
-    }
-
-    /** Structural edits, only before approval. A rejected change is shown and not saved. */
+    /** @param  callable(OutlineService): list<string>  $change */
     private function edit(callable $change): void
     {
         Gate::authorize('update', $this->document);
 
-        if ($this->locked()) {
-            return;
-        }
-
-        $content = $this->document->content;
-        $change($content);
-
-        if (($errors = app(ContentUpdater::class)->apply($this->document, $content)) !== []) {
+        if (($errors = $change($this->outline())) !== []) {
             Flux::toast(variant: 'danger', text: $errors[0]);
         }
 

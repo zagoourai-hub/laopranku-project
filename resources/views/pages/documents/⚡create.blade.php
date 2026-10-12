@@ -1,20 +1,13 @@
 <?php
 
-use App\Enums\DocumentStatus;
 use App\Enums\DocumentType;
 use App\Enums\EducationLevel;
-use App\Jobs\GenerateOutline;
-use App\Jobs\StructureDocument;
 use App\Models\Document;
-use App\Services\Ai\GenerationLimiter;
 use App\Services\Billing\PlanLimits;
-use App\Services\Documents\ImportParser;
-use App\Services\Documents\SchemaValidator;
+use App\Services\Documents\DocumentService;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -170,19 +163,6 @@ new #[Title('Dokumen baru')] class extends Component {
         ])->all();
     }
 
-    /**
-     * @return list<array{id: string, text: string, url: string|null, doi: null}>
-     */
-    protected function sources(): array
-    {
-        return array_map(fn (string $line): array => [
-            'id' => (string) Str::uuid(),
-            'text' => $line,
-            'url' => filter_var($line, FILTER_VALIDATE_URL) !== false ? $line : null,
-            'doi' => null,
-        ], self::lines($this->sourcesText));
-    }
-
     protected function level(): EducationLevel
     {
         return EducationLevel::tryFrom($this->educationLevel) ?? EducationLevel::Mahasiswa;
@@ -237,46 +217,11 @@ new #[Title('Dokumen baru')] class extends Component {
 
         $this->validate();
 
-        $brief = [
-            'input' => $this->inputMode,
-            'topic' => $this->inputMode === 'topic' ? $this->topic : '',
-            'chapter_count' => $this->chapterCount,
-            'length' => $this->length,
-            'instructions' => $this->inputMode === 'topic' ? $this->instructions : '',
-        ];
-
-        if ($this->inputMode === 'paste') {
-            $brief['raw_text'] = $this->rawText;
-        }
-
-        if ($this->inputMode === 'topic' && $this->factFields !== []) {
-            $brief['facts'] = $this->briefFacts();
-        }
-
-        $chapters = [];
-
-        if ($this->inputMode === 'upload') {
-            try {
-                $parsed = app(ImportParser::class)->parse($this->upload);
-            } catch (\Throwable $e) {
-                report($e);
-                $this->addError('upload', 'File tidak bisa dibaca. Pastikan berformat .docx, .md, atau .txt yang valid.');
-
-                return;
-            }
-
-            $chapters = $parsed['chapters'] ?? [];
-
-            if (isset($parsed['paragraphs'])) {
-                $brief['paragraphs'] = $parsed['paragraphs'];
-            }
-        }
-
-        $content = [
-            'schema_version' => 1,
-            'type' => $this->type,
+        $result = app(DocumentService::class)->createDraft(Auth::user(), [
+            'title' => $this->title,
+            'type' => $this->documentType(),
+            'level' => $this->level(),
             'cover' => [
-                'title' => $this->title,
                 'name' => $this->name,
                 'nim' => $this->nim,
                 'prodi' => $this->prodi,
@@ -284,72 +229,26 @@ new #[Title('Dokumen baru')] class extends Component {
                 'year' => $this->year,
             ],
             'style' => $this->style,
-            'chapters' => $chapters,
-            'references' => [],
-            'sources' => $this->inputMode === 'topic' ? $this->sources() : [],
-            'brief' => $brief,
-        ];
+            'input' => $this->inputMode,
+            'raw_text' => $this->rawText,
+            'upload' => $this->upload,
+            'topic' => $this->topic,
+            'chapter_count' => $this->chapterCount,
+            'length' => $this->length,
+            'instructions' => $this->instructions,
+            'facts' => $this->inputMode === 'topic' ? $this->briefFacts() : [],
+            'sources' => self::lines($this->sourcesText),
+        ], request()->ip());
 
-        if (($errors = app(SchemaValidator::class)->validate($content)) !== []) {
-            if ($this->inputMode === 'upload') {
-                $this->addError('upload', 'Struktur heading di file tidak valid. Periksa judul bab dan subbab.');
-            } else {
-                report(new \RuntimeException('Draft content failed schema validation: '.implode('; ', $errors)));
-                $this->addError($this->inputMode === 'topic' ? 'topic' : 'rawText', 'Data belum lengkap atau tidak valid. Periksa kembali isian.');
-            }
-
-            return;
-        }
-
-        $needsAi = $this->inputMode === 'topic' || $chapters === [];
-
-        if ($needsAi && ! app(GenerationLimiter::class)->consume()) {
-            $this->addError('generate', app(GenerationLimiter::class)->dailyQuotaExhausted()
-                ? __('Kuota generate AI hari ini sudah habis. Coba lagi besok atau upgrade ke Pro.')
-                : __('Terlalu banyak permintaan AI. Coba lagi beberapa menit lagi.'));
+        if ($result['document'] === null) {
+            $this->addError($result['field'] ?? 'title', $result['errors'][0]);
 
             return;
-        }
-
-        if ($this->inputMode === 'upload') {
-            $content['brief']['upload_path'] = $this->upload->store('document-uploads/'.Auth::id());
-        }
-
-        try {
-            $document = $this->createDocument($content);
-
-            if ($this->inputMode === 'topic') {
-                GenerateOutline::dispatch($document);
-            } elseif ($needsAi) {
-                StructureDocument::dispatch($document);
-            }
-        } catch (\Throwable $e) {
-            if (isset($content['brief']['upload_path'])) {
-                Storage::delete($content['brief']['upload_path']);
-            }
-
-            throw $e;
         }
 
         Flux::toast(variant: 'success', text: __('Dokumen draft dibuat'));
 
         $this->redirectRoute('dashboard', navigate: true);
-    }
-
-    /**
-     * @param  array<string, mixed>  $content
-     */
-    protected function createDocument(array $content): Document
-    {
-        return Document::create([
-            'user_id' => Auth::id(),
-            'title' => $this->title,
-            'type' => $this->type,
-            'education_level' => $this->level(),
-            'status' => DocumentStatus::Draft,
-            'template_key' => 'default',
-            'content' => $content,
-        ]);
     }
 };
 ?>

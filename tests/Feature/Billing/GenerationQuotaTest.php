@@ -3,13 +3,17 @@
 use App\Models\User;
 use App\Services\Ai\GenerationLimiter;
 use App\Services\Billing\PlanLimits;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
 
-/** Clears the per-minute burst so the daily quota is what the test exercises. */
+/** Clears the per-minute burst so the daily quota is what the test exercises. Builds the key like GenerationLimiter does. */
 function clearMinuteBurst(): void
 {
-    RateLimiter::clear(RateLimiter::limiter('ai-generate')(request())->key);
+    $request = Request::create('/', 'POST', server: ['REMOTE_ADDR' => '127.0.0.1']);
+    $request->setUserResolver(fn () => auth()->user());
+
+    RateLimiter::clear(RateLimiter::limiter('ai-generate')($request)->key);
 }
 
 function spendOne(): bool
