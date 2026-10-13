@@ -23,12 +23,13 @@ function spendOne(): bool
     return app(GenerationLimiter::class)->consume();
 }
 
-test('a free user gets five generations a day, then is refused', function () {
+test('a free user gets the free daily allowance, then is refused', function () {
     $this->actingAs(User::factory()->create());
+    $free = config('plans.free_generations_per_day');
 
-    $granted = collect(range(1, 6))->map(fn () => spendOne());
+    $granted = collect(range(1, $free + 1))->map(fn () => spendOne());
 
-    expect($granted->filter()->count())->toBe(5)
+    expect($granted->filter()->count())->toBe($free)
         ->and($granted->last())->toBeFalse();
 });
 
@@ -45,21 +46,23 @@ test('generations from earlier days do not count toward today', function () {
     $user = User::factory()->create();
     $this->actingAs($user);
 
-    DB::table('ai_generations')->insert(array_fill(0, 5, [
+    $free = config('plans.free_generations_per_day');
+    DB::table('ai_generations')->insert(array_fill(0, $free, [
         'user_id' => $user->id,
         'kind' => 'generate',
         'created_at' => now()->subDay(),
     ]));
 
     expect(spendOne())->toBeTrue()
-        ->and(app(PlanLimits::class)->generationsLeftToday($user))->toBe(4);
+        ->and(app(PlanLimits::class)->generationsLeftToday($user))->toBe($free - 1);
 });
 
 test('a multi-chapter write spends one unit per chapter and is refused as a whole when short', function () {
     $user = User::factory()->create();
     $this->actingAs($user);
 
-    DB::table('ai_generations')->insert(array_fill(0, 3, [
+    // Leave exactly 2 units today, whatever the free allowance is.
+    DB::table('ai_generations')->insert(array_fill(0, config('plans.free_generations_per_day') - 2, [
         'user_id' => $user->id,
         'kind' => 'generate',
         'created_at' => now(),
@@ -78,7 +81,7 @@ test('dailyQuotaExhausted tells a refusal caused by the daily quota apart from t
     $user = User::factory()->create();
     $this->actingAs($user);
 
-    DB::table('ai_generations')->insert(array_fill(0, 5, [
+    DB::table('ai_generations')->insert(array_fill(0, config('plans.free_generations_per_day'), [
         'user_id' => $user->id,
         'kind' => 'generate',
         'created_at' => now(),
@@ -91,10 +94,11 @@ test('dailyQuotaExhausted tells a refusal caused by the daily quota apart from t
 
 test('a guest shares the free daily allowance', function () {
     $this->actingAs(User::factory()->create(['is_guest' => true]));
+    $free = config('plans.free_generations_per_day');
 
-    $granted = collect(range(1, 6))->map(fn () => spendOne());
+    $granted = collect(range(1, $free + 1))->map(fn () => spendOne());
 
-    expect($granted->filter()->count())->toBe(5);
+    expect($granted->filter()->count())->toBe($free);
 });
 
 test('without a signed-in user nothing is granted', function () {

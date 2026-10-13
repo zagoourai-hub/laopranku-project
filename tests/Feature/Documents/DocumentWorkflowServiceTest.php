@@ -111,7 +111,7 @@ test('the monthly document quota is enforced by the service, not only by the pag
 
 test('an exhausted daily AI quota creates no document', function () {
     $user = User::factory()->create();
-    DB::table('ai_generations')->insert(array_fill(0, 5, ['user_id' => $user->id, 'kind' => 'topic', 'created_at' => now()]));
+    DB::table('ai_generations')->insert(array_fill(0, config('plans.free_generations_per_day'), ['user_id' => $user->id, 'kind' => 'topic', 'created_at' => now()]));
 
     $result = app(DocumentService::class)->createDraft($user, topicDraft());
 
@@ -139,13 +139,14 @@ test('approving an outline from the service queues one job and one unit per chap
 
 test('an approval the daily quota cannot cover is refused as a whole', function () {
     $user = User::factory()->create();
-    DB::table('ai_generations')->insert(array_fill(0, 3, ['user_id' => $user->id, 'kind' => 'topic', 'created_at' => now()]));
+    // Leave 2 units, fewer than the 3 chapters, whatever the free allowance is.
+    DB::table('ai_generations')->insert(array_fill(0, config('plans.free_generations_per_day') - 2, ['user_id' => $user->id, 'kind' => 'topic', 'created_at' => now()]));
 
     $result = app(OutlineService::class)->approve(approvedOutlineDoc($user), $user);
 
     expect($result['outcome'])->toBe('limited')
         ->and($result['message'])->toContain('Kuota generate AI hari ini')
-        ->and(unitsSpent($user))->toBe(3);
+        ->and(unitsSpent($user))->toBe(config('plans.free_generations_per_day') - 2);
 
     Queue::assertNothingPushed();
 });

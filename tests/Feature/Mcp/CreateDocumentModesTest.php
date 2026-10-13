@@ -101,7 +101,7 @@ test('create_document with paste queues structuring and needs raw_text', functio
 
 test('topic and paste draws on the same daily AI quota as the web form', function () {
     $user = User::factory()->create();
-    DB::table('ai_generations')->insert(array_fill(0, 5, ['user_id' => $user->id, 'kind' => 'topic', 'created_at' => now()]));
+    DB::table('ai_generations')->insert(array_fill(0, config('plans.free_generations_per_day'), ['user_id' => $user->id, 'kind' => 'topic', 'created_at' => now()]));
 
     LaporankuServer::actingAs($user)
         ->tool(CreateDocument::class, [
